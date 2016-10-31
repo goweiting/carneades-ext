@@ -1,0 +1,151 @@
+# project pycairo (1.10.0) configured on Mon Oct 31 12:22:17 2016 by
+# waf 1.6.4 (abi 98, python 30405f0 on linux)
+# using ./waf configure --prefix=/media/Data/Year3_sem1/AILP/ailp_env
+#
+----------------------------------------
+Setting top to
+/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0
+----------------------------------------
+Setting out to
+/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/build_directory
+----------------------------------------
+Checking for 'gcc' (c compiler)
+find program=['gcc', 'cc'] paths=['/media/Data/Year3_sem1/AILP/ailp_env/bin', '/home/goweiting/bin', '/home/goweiting/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/usr/lib/jvm/java-7-oracle/bin', '/usr/lib/jvm/java-7-oracle/db/bin', '/usr/lib/jvm/java-7-oracle/jre/bin'] var='CC' -> '/usr/bin/gcc'
+find program=['ar'] paths=['/media/Data/Year3_sem1/AILP/ailp_env/bin', '/home/goweiting/bin', '/home/goweiting/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/usr/lib/jvm/java-7-oracle/bin', '/usr/lib/jvm/java-7-oracle/db/bin', '/usr/lib/jvm/java-7-oracle/jre/bin'] var='AR' -> '/usr/bin/ar'
+ok
+----------------------------------------
+Checking for program python
+/media/Data/Year3_sem1/AILP/ailp_env/bin/python
+find program=['python'] paths=['/media/Data/Year3_sem1/AILP/ailp_env/bin', '/home/goweiting/bin', '/home/goweiting/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/usr/lib/jvm/java-7-oracle/bin', '/usr/lib/jvm/java-7-oracle/db/bin', '/usr/lib/jvm/java-7-oracle/jre/bin'] var='PYTHON' -> '/media/Data/Year3_sem1/AILP/ailp_env/bin/python'
+['/media/Data/Year3_sem1/AILP/ailp_env/bin/python', '-c', 'import sys\nfor x in sys.version_info: print(str(x))']
+out: 3
+4
+5
+final
+0
+
+['/media/Data/Year3_sem1/AILP/ailp_env/bin/python', '-c', "from distutils.sysconfig import get_python_lib\n\nprint(repr(get_python_lib(standard_lib=0, prefix='/media/Data/Year3_sem1/AILP/ailp_env') or ''))"]
+out: '/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages'
+
+['/media/Data/Year3_sem1/AILP/ailp_env/bin/python', '-c', "from distutils.sysconfig import get_python_lib\n\nprint(repr(get_python_lib(plat_specific=1, standard_lib=0, prefix='/media/Data/Year3_sem1/AILP/ailp_env') or ''))"]
+out: '/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages'
+
+----------------------------------------
+Checking for python version
+(3, 4, 5, 'final', 0)
+['/media/Data/Year3_sem1/AILP/ailp_env/bin/python', '-c', "from distutils.sysconfig import get_config_var\n\nprint(repr(get_config_var('prefix') or ''))\nprint(repr(get_config_var('SO') or ''))\nprint(repr(get_config_var('LDFLAGS') or ''))\nprint(repr(get_config_var('LIBDIR') or ''))\nprint(repr(get_config_var('LIBPL') or ''))\nprint(repr(get_config_var('INCLUDEPY') or ''))\nprint(repr(get_config_var('Py_ENABLE_SHARED') or ''))\nprint(repr(get_config_var('MACOSX_DEPLOYMENT_TARGET') or ''))\nprint(repr(get_config_var('LDSHARED') or ''))\nprint(repr(get_config_var('CFLAGS') or ''))"]
+out: '/media/Data/Year3_sem1/AILP/ailp_env'
+'.cpython-34m.so'
+'-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro'
+'/usr/lib'
+'/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu'
+'/usr/include/python3.4m'
+1
+''
+'x86_64-linux-gnu-gcc -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro'
+'-Wno-unused-result -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -fstack-protector-strong -Wformat -Werror=format-security -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -g -flto -fuse-linker-plugin -ffat-lto-objects'
+
+Configuration returned from ['/media/Data/Year3_sem1/AILP/ailp_env/bin/python']:
+"prefix = '/media/Data/Year3_sem1/AILP/ailp_env'\nSO = '.cpython-34m.so'\nLDFLAGS = '-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro'\nLIBDIR = '/usr/lib'\nLIBPL = '/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu'\nINCLUDEPY = '/usr/include/python3.4m'\nPy_ENABLE_SHARED = 1\nMACOSX_DEPLOYMENT_TARGET = ''\nLDSHARED = 'x86_64-linux-gnu-gcc -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions -Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-Bsymbolic-functions -Wl,-z,relro'\nCFLAGS = '-Wno-unused-result -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -g -fstack-protector-strong -Wformat -Werror=format-security -g -O2 -fstack-protector-strong -Wformat -Werror=format-security -g -flto -fuse-linker-plugin -ffat-lto-objects'"
+
+
+
+# try again with -L$python_LIBDIR: ['/usr/lib']
+
+----------------------------------------
+Checking for library python3.4 in LIBDIR
+==>
+
+int main() {
+	return 0;
+}
+
+<==
+[1/2] [32mc: build_directory/.conf_check_a0b5cb11a4bf0b7c0757ca2a942a1f80/test.c -> build_directory/.conf_check_a0b5cb11a4bf0b7c0757ca2a942a1f80/testbuild/test.c.0.o
+[0m
+['/usr/bin/gcc', '-pthread', '-fwrapv', '-fstack-protector-strong', '-fstack-protector-strong', '-flto', '-fuse-linker-plugin', '-ffat-lto-objects', '-DPYTHONDIR="/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages"', '-DPYTHONARCHDIR="[\'/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages\']"', '-DNDEBUG', '../test.c', '-c', '-o', 'test.c.0.o']
+[2/2] [33mcprogram: build_directory/.conf_check_a0b5cb11a4bf0b7c0757ca2a942a1f80/testbuild/test.c.0.o -> build_directory/.conf_check_a0b5cb11a4bf0b7c0757ca2a942a1f80/testbuild/testprog
+[0m
+['/usr/bin/gcc', 'test.c.0.o', '-o', '/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/build_directory/.conf_check_a0b5cb11a4bf0b7c0757ca2a942a1f80/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/usr/lib', '-lpython3.4', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-pthread', '-Wl,-O1', '-Wl,-Bsymbolic-functions', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro']
+err: /usr/bin/ld: cannot find -lpython3.4
+collect2: error: ld returned 1 exit status
+
+from /media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0: Test does not build: Traceback (most recent call last):
+  File "/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/.waf3-1.6.4-e3c1e08604b18a10567cfcd2d02eb6e6/waflib/Tools/c_config.py", line 435, in run_c_code
+    bld.compile()
+  File "/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/.waf3-1.6.4-e3c1e08604b18a10567cfcd2d02eb6e6/waflib/Build.py", line 192, in compile
+    raise Errors.BuildError(self.producer.error)
+waflib.Errors.BuildError: Build failed
+ -> task failed (exit status 1): 
+	{task 140248164881016: cprogram test.c.0.o -> testprog}
+['/usr/bin/gcc', 'test.c.0.o', '-o', '/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/build_directory/.conf_check_a0b5cb11a4bf0b7c0757ca2a942a1f80/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/usr/lib', '-lpython3.4', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-pthread', '-Wl,-O1', '-Wl,-Bsymbolic-functions', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro']
+
+not found
+from /media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0: The configuration failed
+
+
+# try again with -L$python_LIBPL (some systems don't install the python library in $prefix/lib)
+
+----------------------------------------------
+Checking for library python3.4 in python_LIBPL
+==>
+
+int main() {
+	return 0;
+}
+
+<==
+[1/2] [32mc: build_directory/.conf_check_7ad44dc5e30ac95331efd0bd2306299d/test.c -> build_directory/.conf_check_7ad44dc5e30ac95331efd0bd2306299d/testbuild/test.c.0.o
+[0m
+['/usr/bin/gcc', '-pthread', '-fwrapv', '-fstack-protector-strong', '-fstack-protector-strong', '-flto', '-fuse-linker-plugin', '-ffat-lto-objects', '-DPYTHONDIR="/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages"', '-DPYTHONARCHDIR="[\'/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages\']"', '-DNDEBUG', '../test.c', '-c', '-o', 'test.c.0.o']
+[2/2] [33mcprogram: build_directory/.conf_check_7ad44dc5e30ac95331efd0bd2306299d/testbuild/test.c.0.o -> build_directory/.conf_check_7ad44dc5e30ac95331efd0bd2306299d/testbuild/testprog
+[0m
+['/usr/bin/gcc', 'test.c.0.o', '-o', '/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/build_directory/.conf_check_7ad44dc5e30ac95331efd0bd2306299d/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu', '-lpython3.4', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-pthread', '-Wl,-O1', '-Wl,-Bsymbolic-functions', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro']
+yes
+----------------------------------------------
+Checking for program python3.4-config
+/usr/bin/python3.4-config
+find program=['python3.4-config'] paths=['/media/Data/Year3_sem1/AILP/ailp_env/bin', '/home/goweiting/bin', '/home/goweiting/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/usr/lib/jvm/java-7-oracle/bin', '/usr/lib/jvm/java-7-oracle/db/bin', '/usr/lib/jvm/java-7-oracle/jre/bin'] var='PYTHON_CONFIG' -> '/usr/bin/python3.4-config'
+['/usr/bin/python3.4-config', '--includes']
+out: -I/usr/include/python3.4m -I/usr/include/python3.4m
+
+Include path for Python extensions (found via python-config --includes): ['/usr/include/python3.4m']
+
+----------------------------------------------
+Checking for header Python.h
+==>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+	void Py_Initialize(void);
+	void Py_Finalize(void);
+#ifdef __cplusplus
+}
+#endif
+int main()
+{
+   Py_Initialize();
+   Py_Finalize();
+   return 0;
+}
+
+<==
+[1/2] [32mc: build_directory/.conf_check_1f9457ef41ecc46e651ab1c25d1c325d/test.c -> build_directory/.conf_check_1f9457ef41ecc46e651ab1c25d1c325d/testbuild/test.c.0.o
+[0m
+['/usr/bin/gcc', '-pthread', '-fwrapv', '-fstack-protector-strong', '-fstack-protector-strong', '-flto', '-fuse-linker-plugin', '-ffat-lto-objects', '-fno-strict-aliasing', '-I/usr/include/python3.4m', '-DPYTHONDIR="/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages"', '-DPYTHONARCHDIR="[\'/media/Data/Year3_sem1/AILP/ailp_env/lib/python3.4/site-packages\']"', '-DNDEBUG', '../test.c', '-c', '-o', 'test.c.0.o']
+[2/2] [33mcprogram: build_directory/.conf_check_1f9457ef41ecc46e651ab1c25d1c325d/testbuild/test.c.0.o -> build_directory/.conf_check_1f9457ef41ecc46e651ab1c25d1c325d/testbuild/testprog
+[0m
+['/usr/bin/gcc', 'test.c.0.o', '-o', '/media/Data/Year3_sem1/AILP/ailp_env/pycairo-1.10.0/build_directory/.conf_check_1f9457ef41ecc46e651ab1c25d1c325d/testbuild/testprog', '-Wl,-Bstatic', '-Wl,-Bdynamic', '-L/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu', '-lpython3.4', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-pthread', '-Wl,-O1', '-Wl,-Bsymbolic-functions', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro', '-Wl,-Bsymbolic-functions', '-Wl,-z,relro']
+yes
+----------------------------------------------
+Checking for program pkg-config
+/usr/bin/pkg-config
+find program=['pkg-config'] paths=['/media/Data/Year3_sem1/AILP/ailp_env/bin', '/home/goweiting/bin', '/home/goweiting/.local/bin', '/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin', '/usr/games', '/usr/local/games', '/snap/bin', '/usr/lib/jvm/java-7-oracle/bin', '/usr/lib/jvm/java-7-oracle/db/bin', '/usr/lib/jvm/java-7-oracle/jre/bin'] var='PKGCONFIG' -> '/usr/bin/pkg-config'
+----------------------------------------------
+Checking for 'cairo' >= 1.10.0
+['/usr/bin/pkg-config', '--atleast-version=1.10.0', 'cairo']
+['/usr/bin/pkg-config', 'cairo', '--cflags', '--libs']
+out: -I/usr/local/include/cairo -I/usr/local/include/pixman-1 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/freetype2 -I/usr/include/libpng12 -L/usr/local/lib -lcairo
+
+yes

@@ -1,0 +1,4 @@
+#!/media/Data/Year3_sem1/AILP/ailp_env/bin/python3.4
+"""Small script to execute the igraph command line interface"""
+from igraph.app.shell import main
+main()
