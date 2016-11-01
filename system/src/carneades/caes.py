@@ -824,7 +824,7 @@ def arg_demo():
     caes.acceptable(murder.negate())
 
 
-DOCTEST = False
+DOCTEST = True
 
 if __name__ == '__main__':
 
