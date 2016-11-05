@@ -6,156 +6,156 @@
 #
 # For license information, see LICENSE
 
-"""
-==========
- Overview
-==========
-
-Propositions
-============
-
-First, let's create some propositions using the :class:`PropLiteral`
-constructor. All propositions are atomic, that is, either positive or
-negative literals.
-
->>> kill = PropLiteral('kill')
->>> kill.polarity
-True
->>> intent = PropLiteral('intent')
->>> murder = PropLiteral('murder')
->>> witness1 = PropLiteral('witness1')
->>> unreliable1 = PropLiteral('unreliable1')
->>> witness2 = PropLiteral('witness2')
->>> unreliable2 = PropLiteral('unreliable2')
-
-The :meth:`negate` method allows us to introduce negated propositions.
-
->>> neg_intent = intent.negate()
->>> print(neg_intent)
--intent
->>> neg_intent.polarity
-False
->>> neg_intent == intent
-False
->>> neg_intent.negate() == intent
-True
-
-Arguments
-=========
-
-Arguments are built with the :class:`Argument` constructor. They are required
-to have a conclusion, and may also have premises and exceptions.
-
->>> arg1 = Argument(murder, premises={kill, intent})
->>> arg2 = Argument(intent, premises={witness1}, exceptions={unreliable1})
->>> arg3 = Argument(neg_intent, premises={witness2}, exceptions={unreliable2})
->>> print(arg1)
-[intent, kill], ~[] => murder
-
-In order to organise the dependencies between the conclusion of an argument
-and its premises and exceptions, we model them using a directed graph called
-an :class:`ArgumentSet`. Notice that the premise of one argument (e.g., the
-``intent`` premise of ``arg1``) can be the conclusion of another argument (i.e.,
-``arg2``)).
-
->>> argset = ArgumentSet()
->>> argset.add_argument(arg1, arg_id='arg1')
->>> argset.add_argument(arg2, arg_id='arg2')
->>> argset.add_argument(arg3, arg_id='arg3')
-
-There is a :func:`draw` method which allows us to view the resulting graph.
-
->>> argset.draw() # doctest: +SKIP
-
-Proof Standards
-===============
-
-In evaluating the relative value of arguments for a particular conclusion
-``p``, we need to determine what standard of *proof* is required to establish
-``p``. The notion of proof used here is not formal proof in a logical
-system. Instead, it tries to capture how substantial the arguments are
-in favour of, or against, a particular conclusion.
-
-The :class:`ProofStandard` constructor is initialised with a list of
-``(proposition, name-of-proof-standard)`` pairs. The default proof standard,
-viz., ``'scintilla'``, is the weakest level.  Different
-propositions can be assigned different proof standards that they need
-to attain.
-
->>> ps = ProofStandard([(intent, "beyond_reasonable_doubt")],
-... default='scintilla')
-
-Carneades Argument Evaluation Structure
-=======================================
-
-The core of the argumentation model is a data structure plus set of
-rules for evaluating arguments; this is called a Carneades Argument
-Evaluation Structure (CAES). A CAES consists of a set of arguments,
-an audience (or jury), and a method for determining whether propositions
-satisfy the relevant proof standards.
-
-The role of the audience is modeled as an :class:`Audience`, consisting
-of a set of assumed propositions, and an assignment of weights to
-arguments.
-
->>> assumptions = {kill, witness1, witness2, unreliable2}
->>> weights = {'arg1': 0.8, 'arg2': 0.3, 'arg3': 0.8}
->>> audience = Audience(assumptions, weights)
-
-Once an audience has been defined, we can use it to initialise a
-:class:`CAES`, together with instances of :class:`ArgumentSet` and
-:class:`ProofStandard`:
-
->>> caes = CAES(argset, audience, ps)
->>> caes.get_all_arguments()
-[intent, kill], ~[] => murder
-[witness1], ~[unreliable1] => intent
-[witness2], ~[unreliable2] => -intent
-
-The :meth:`get_arguments` method returns the list of arguments in an
-:class:`ArgumentSet` which support a given proposition.
-
-A proposition is said to be *acceptable* in a CAES if it meets its required
-proof standard. The process of checking whether a proposition meets its proof
-standard requires another notion: namely, whether the arguments that support
-it are *applicable*. An argument ``arg`` is applicable if and only if all its
-premises either belong to the audience's assumptions or are acceptable;
-moreover, the exceptions of ``arg`` must not belong to the assumptions or be
-acceptable. For example, `arg2`, which supports the conclusion `intent`, is
-acceptable since `witness1` is an assumption, while the exception
-`unreliable1` is neither an assumption nor acceptable.
-
->>> arg_for_intent = argset.get_arguments(intent)[0]
->>> print(arg_for_intent)
-[witness1], ~[unreliable1] => intent
->>> caes.applicable(arg_for_intent)
-True
-
->>> caes.acceptable(intent)
-False
-
-Although there is an argument (``arg3``) for `-intent`, it is not applicable,
-since the exception `unreliable2` does belong to the audience's assumptions.
-
->>> any(caes.applicable(arg) for arg in argset.get_arguments(neg_intent))
-False
-
-This in turn has the consequence that `-intent` is not acceptable.
-
->>> caes.acceptable(neg_intent)
-False
-
-Despite the fact that the argument `arg2` for `murder` is applicable,
-the conclusion `murder` is not acceptable, since
-
->>> caes.acceptable(murder)
-False
->>> caes.acceptable(murder.negate())
-False
-
-
-
-"""
+# """
+# ==========
+#  Overview
+# ==========
+#
+# Propositions
+# ============
+#
+# First, let's create some propositions using the :class:`PropLiteral`
+# constructor. All propositions are atomic, that is, either positive or
+# negative literals.
+#
+# >>> kill = PropLiteral('kill')
+# >>> kill.polarity
+# True
+# >>> intent = PropLiteral('intent')
+# >>> murder = PropLiteral('murder')
+# >>> witness1 = PropLiteral('witness1')
+# >>> unreliable1 = PropLiteral('unreliable1')
+# >>> witness2 = PropLiteral('witness2')
+# >>> unreliable2 = PropLiteral('unreliable2')
+#
+# The :meth:`negate` method allows us to introduce negated propositions.
+#
+# >>> neg_intent = intent.negate()
+# >>> print(neg_intent)
+# -intent
+# >>> neg_intent.polarity
+# False
+# >>> neg_intent == intent
+# False
+# >>> neg_intent.negate() == intent
+# True
+#
+# Arguments
+# =========
+#
+# Arguments are built with the :class:`Argument` constructor. They are required
+# to have a conclusion, and may also have premises and exceptions.
+#
+# >>> arg1 = Argument(murder, premises={kill, intent})
+# >>> arg2 = Argument(intent, premises={witness1}, exceptions={unreliable1})
+# >>> arg3 = Argument(neg_intent, premises={witness2}, exceptions={unreliable2})
+# >>> print(arg1)
+# [intent, kill], ~[] => murder
+#
+# In order to organise the dependencies between the conclusion of an argument
+# and its premises and exceptions, we model them using a directed graph called
+# an :class:`ArgumentSet`. Notice that the premise of one argument (e.g., the
+# ``intent`` premise of ``arg1``) can be the conclusion of another argument (i.e.,
+# ``arg2``)).
+#
+# >>> argset = ArgumentSet()
+# >>> argset.add_argument(arg1, arg_id='arg1')
+# >>> argset.add_argument(arg2, arg_id='arg2')
+# >>> argset.add_argument(arg3, arg_id='arg3')
+#
+# There is a :func:`draw` method which allows us to view the resulting graph.
+#
+# >>> argset.draw() # doctest: +SKIP
+#
+# Proof Standards
+# ===============
+#
+# In evaluating the relative value of arguments for a particular conclusion
+# ``p``, we need to determine what standard of *proof* is required to establish
+# ``p``. The notion of proof used here is not formal proof in a logical
+# system. Instead, it tries to capture how substantial the arguments are
+# in favour of, or against, a particular conclusion.
+#
+# The :class:`ProofStandard` constructor is initialised with a list of
+# ``(proposition, name-of-proof-standard)`` pairs. The default proof standard,
+# viz., ``'scintilla'``, is the weakest level.  Different
+# propositions can be assigned different proof standards that they need
+# to attain.
+#
+# >>> ps = ProofStandard([(intent, "beyond_reasonable_doubt")],
+# ... default='scintilla')
+#
+# Carneades Argument Evaluation Structure
+# =======================================
+#
+# The core of the argumentation model is a data structure plus set of
+# rules for evaluating arguments; this is called a Carneades Argument
+# Evaluation Structure (CAES). A CAES consists of a set of arguments,
+# an audience (or jury), and a method for determining whether propositions
+# satisfy the relevant proof standards.
+#
+# The role of the audience is modeled as an :class:`Audience`, consisting
+# of a set of assumed propositions, and an assignment of weights to
+# arguments.
+#
+# >>> assumptions = {kill, witness1, witness2, unreliable2}
+# >>> weights = {'arg1': 0.8, 'arg2': 0.3, 'arg3': 0.8}
+# >>> audience = Audience(assumptions, weights)
+#
+# Once an audience has been defined, we can use it to initialise a
+# :class:`CAES`, together with instances of :class:`ArgumentSet` and
+# :class:`ProofStandard`:
+#
+# >>> caes = CAES(argset, audience, ps)
+# >>> caes.get_all_arguments()
+# [intent, kill], ~[] => murder
+# [witness1], ~[unreliable1] => intent
+# [witness2], ~[unreliable2] => -intent
+#
+# The :meth:`get_arguments` method returns the list of arguments in an
+# :class:`ArgumentSet` which support a given proposition.
+#
+# A proposition is said to be *acceptable* in a CAES if it meets its required
+# proof standard. The process of checking whether a proposition meets its proof
+# standard requires another notion: namely, whether the arguments that support
+# it are *applicable*. An argument ``arg`` is applicable if and only if all its
+# premises either belong to the audience's assumptions or are acceptable;
+# moreover, the exceptions of ``arg`` must not belong to the assumptions or be
+# acceptable. For example, `arg2`, which supports the conclusion `intent`, is
+# acceptable since `witness1` is an assumption, while the exception
+# `unreliable1` is neither an assumption nor acceptable.
+#
+# >>> arg_for_intent = argset.get_arguments(intent)[0]
+# >>> print(arg_for_intent)
+# [witness1], ~[unreliable1] => intent
+# >>> caes.applicable(arg_for_intent)
+# True
+#
+# >>> caes.acceptable(intent)
+# False
+#
+# Although there is an argument (``arg3``) for `-intent`, it is not applicable,
+# since the exception `unreliable2` does belong to the audience's assumptions.
+#
+# >>> any(caes.applicable(arg) for arg in argset.get_arguments(neg_intent))
+# False
+#
+# This in turn has the consequence that `-intent` is not acceptable.
+#
+# >>> caes.acceptable(neg_intent)
+# False
+#
+# Despite the fact that the argument `arg2` for `murder` is applicable,
+# the conclusion `murder` is not acceptable, since
+#
+# >>> caes.acceptable(murder)
+# False
+# >>> caes.acceptable(murder.negate())
+# False
+#
+#
+#
+# """
 
 
 from collections import namedtuple, defaultdict
@@ -171,10 +171,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from carneades.tracecalls import TraceCalls
 
 
-LOGLEVEL = logging.DEBUG
+# LOGLEVEL = logging.DEBUG
 # Uncomment the following line to raise the logging level and thereby turn off
 # debug messages
-# LOGLEVEL = logging.INFO
+LOGLEVEL = logging.INFO
 
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
@@ -475,7 +475,7 @@ class ArgumentSet(object):
             elif prop_label:
                 dot_str = ('"{}"'.format(prop_label) +
                            ' [color="black", fillcolor="lightblue", '
-                           'fixedsize=true, width=1  shape="circle", '
+                           'fixedsize=false, width=1  shape="circle", '
                            'style="filled"]; \n')
             result += dot_str
 
@@ -824,7 +824,7 @@ def arg_demo():
     caes.acceptable(murder.negate())
 
 
-DOCTEST = True
+DOCTEST = False
 
 if __name__ == '__main__':
 

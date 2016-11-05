@@ -1,0 +1,16 @@
+# This is a case file taken from https://www.judiciary.gov.uk/wp-content/uploads/2016/11/judgment-r-miller-v-secretary-of-state-for-exiting-the-eu-20161103.pdf
+# for case of If the Government is entitled to prerogrative pwoers and without reference to the parliment - a question of law
+
+proposition:
+  -
+
+
+assumptions: []
+
+argument:
+  - qnoflaw:
+    premise: 
+
+proofstandard:
+
+parameters:

@@ -1,0 +1,29 @@
+# This is a case file taken from https://www.judiciary.gov.uk/wp-content/uploads/2016/11/judgment-r-miller-v-secretary-of-state-for-exiting-the-eu-20161103.pdf
+# for 'If the Government is entitled to prerogrative powers and without reference to the parliment'. This is a question of law
+
+proposition:
+  - parlimentary_sovereignty :
+      text :|
+        principle that crown cannot  use it prerogrative power to alter domestic law. This principle asserts parlimentary sovereignty and constraint the prerogrative power of the Crown.
+
+  - limited_prerogrative_power:
+      text: |
+        principle that it is a constitutional understanding that the conduct of intenrational relations is a matter for the crown in the exercise of its prerogrative powers.
+  - case-Rees-Mogg:
+      text: |
+        the Secretary of state use ex p Rees-Mogg to provide guidance on the case
+  - ~case-Rees-Mogg:
+      text: |
+        The ex p Rees-Mogg case is not a good guidance since the judgement is clear that the ratification of the protcol in question will not have any effect on domestic law. the case also did not touch on whether the withdrawl of UK from the EU will have any effect on domestic law.
+  - ECA1972:
+      text: |
+
+
+
+assumptions:
+
+argument:
+
+proofstandard:
+
+parameters:
