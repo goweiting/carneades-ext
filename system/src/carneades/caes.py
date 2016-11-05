@@ -179,6 +179,7 @@ LOGLEVEL = logging.INFO
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
+
 class PropLiteral(object):
     """
     Proposition literals have most of the properties of ordinary strings,
@@ -188,13 +189,13 @@ class PropLiteral(object):
     >>> a.negate().negate() == a
     True
     """
+
     def __init__(self, string, polarity=True):
         """
         Propositions are either positive or negative atoms.
         """
         self.polarity = polarity
         self._string = string
-
 
     def negate(self):
         """
@@ -204,7 +205,6 @@ class PropLiteral(object):
         """
         polarity = (not self.polarity)
         return PropLiteral(self._string, polarity=polarity)
-
 
     def __str__(self):
         """
@@ -234,9 +234,6 @@ class PropLiteral(object):
         return self.__str__() < other.__str__()
 
 
-
-
-
 class Argument(object):
     """
     An argument consists of a conclusion, a set of premises and a set of
@@ -246,6 +243,7 @@ class Argument(object):
     to specify these when calling the :meth:`add_argument` method of
     :class:`ArgumentSet`.
     """
+
     def __init__(self, conclusion, premises=set(), exceptions=set()):
         """
         :param conclusion: The conclusion of the argument.
@@ -260,7 +258,6 @@ class Argument(object):
         self.premises = premises
         self.exceptions = exceptions
         self.arg_id = None
-
 
     def __str__(self):
         """
@@ -296,6 +293,7 @@ class ArgumentSet(object):
     `igraph tutorial\
     <http://igraph.org/python/doc/tutorial/tutorial.html#setting-and-retrieving-attributes>`_.
     """
+
     def __init__(self):
         self.graph = Graph()
         self.graph.to_directed()
@@ -331,18 +329,18 @@ class ArgumentSet(object):
         """
         if isinstance(proposition, PropLiteral):
             if proposition in self.propset():
-                logging.debug("Proposition '{}' is already in graph".\
+                logging.debug("Proposition '{}' is already in graph".
                               format(proposition))
             else:
                 # add the proposition as a vertex attribute, recovered via the
                 # key 'prop'
                 self.graph.add_vertex(prop=proposition)
-                logging.debug("Added proposition '{}' to graph".\
+                logging.debug("Added proposition '{}' to graph".
                               format(proposition))
             return self.graph.vs.select(prop=proposition)[0]
 
         else:
-            raise TypeError('Input {} should be PropLiteral'.\
+            raise TypeError('Input {} should be PropLiteral'.
                             format(proposition))
 
     def add_argument(self, argument, arg_id=None):
@@ -372,14 +370,14 @@ class ArgumentSet(object):
         premise_vs =\
             [self.add_proposition(prop) for prop in sorted(argument.premises)]
         exception_vs =\
-            [self.add_proposition(prop) for prop in sorted(argument.exceptions)]
+            [self.add_proposition(prop)
+             for prop in sorted(argument.exceptions)]
         target_vs = premise_vs + exception_vs
 
         # add new edges to the graph
         edge_to_arg = [(conclusion_v.index, arg_v.index)]
         edges_from_arg = [(arg_v.index, target.index) for target in target_vs]
         g.add_edges(edge_to_arg + edges_from_arg)
-
 
     def get_arguments(self, proposition):
         """
@@ -400,7 +398,8 @@ class ArgumentSet(object):
 
         try:
             conc_v_index = vs[0].index
-            # IDs of vertices reachable in one hop from the proposition's vertex
+            # IDs of vertices reachable in one hop from the proposition's
+            # vertex
             target_IDs = [e.target for e in g.es.select(_source=conc_v_index)]
 
             # the vertices indexed by target_IDs
@@ -410,12 +409,8 @@ class ArgumentSet(object):
             args = [arg for arg in self.arguments if arg.arg_id in arg_IDs]
             return args
         except IndexError:
-            raise ValueError("Proposition '{}' is not in the current graph".\
+            raise ValueError("Proposition '{}' is not in the current graph".
                              format(proposition))
-
-
-
-
 
     def draw(self, debug=False):
         """
@@ -442,9 +437,8 @@ class ArgumentSet(object):
 
         g.vs['label'] = labels
 
-
         roots = [i for i in range(len(g.vs)) if g.indegree()[i] == 0]
-        ALL = 3 # from igraph
+        ALL = 3  # from igraph
         layout = g.layout_reingold_tilford(mode=ALL, root=roots)
 
         plot_style = {}
@@ -456,8 +450,6 @@ class ArgumentSet(object):
         plot_style['margin'] = 40
         plot_style['layout'] = layout
         plot(g, **plot_style)
-
-
 
     def write_to_graphviz(self, fname=None):
         g = self.graph
@@ -510,6 +502,7 @@ class ProofStandard(object):
     `"clear_and_convincing"`, `"beyond_reasonable_doubt"`, and
     `"dialectical_validity"`.
     """
+
     def __init__(self, propstandards, default='scintilla'):
         """
         :param propstandards: the proof standard associated with\
@@ -527,10 +520,9 @@ class ProofStandard(object):
     def _set_standard(self, propstandards):
         for (prop, standard) in propstandards:
             if standard not in self.proof_standards:
-                raise ValueError("{} is not a valid proof standard".\
+                raise ValueError("{} is not a valid proof standard".
                                  format(standard))
             self.config[prop] = standard
-
 
     def get_proofstandard(self, proposition):
         """
@@ -555,12 +547,12 @@ assigns weights to arguments.
 """
 
 
-
 class CAES(object):
     """
     A class that represents a Carneades Argument Evaluation Structure (CAES).
 
     """
+
     def __init__(self, argset, audience, proofstandard, alpha=0.4, beta=0.3,
                  gamma=0.2):
         """
@@ -600,7 +592,6 @@ class CAES(object):
         self.beta = beta
         self.gamma = gamma
 
-
     def get_all_arguments(self):
         """
         Show all arguments in the :class:`ArgSet` of the CAES.
@@ -636,21 +627,21 @@ class CAES(object):
         :type _acceptable: LambdaType
         :rtype: bool
         """
-        logging.debug('Checking applicability of {}...'.format(argument.arg_id))
+        logging.debug(
+            'Checking applicability of {}...'.format(argument.arg_id))
         logging.debug('Current assumptions: {}'.format(self.assumptions))
         logging.debug('Current premises: {}'.format(argument.premises))
-        b1 = all(p in self.assumptions or \
-                 (p.negate() not in self.assumptions and \
+        b1 = all(p in self.assumptions or
+                 (p.negate() not in self.assumptions and
                   _acceptable(p)) for p in argument.premises)
 
         if argument.exceptions:
             logging.debug('Current exception: {}'.format(argument.exceptions))
-        b2 = all(e not in self.assumptions and \
-                 (e.negate() in self.assumptions or \
+        b2 = all(e not in self.assumptions and
+                 (e.negate() in self.assumptions or
                   not _acceptable(e)) for e in argument.exceptions)
 
         return b1 and b2
-
 
     @TraceCalls()
     def acceptable(self, proposition):
@@ -668,7 +659,7 @@ class CAES(object):
 
         standard = self.standard.get_proofstandard(proposition)
         logging.debug("Checking whether proposition '{}'"
-                      "meets proof standard '{}'.".\
+                      "meets proof standard '{}'.".
                       format(proposition, standard))
         return self.meets_proof_standard(proposition, standard)
 
@@ -705,10 +696,10 @@ class CAES(object):
             diff_exceeds_gamma = (mwp - mwc) > self.gamma
             logging.debug("max weight pro '{}' is {}".format(proposition, mwp))
             logging.debug("max weight con '{}' is {}".format(proposition, mwc))
-            logging.debug("max weight pro '{}' >  alpha '{}': {}".\
+            logging.debug("max weight pro '{}' >  alpha '{}': {}".
                           format(mwp, self.alpha, exceeds_alpha))
-            logging.debug("diff between pro and con = {} > gamma: {}".\
-                          format(mwp-mwc, diff_exceeds_gamma))
+            logging.debug("diff between pro and con = {} > gamma: {}".
+                          format(mwp - mwc, diff_exceeds_gamma))
 
             result = (mwp > self.alpha) and (mwp - mwc > self.gamma)
         elif standard == 'beyond_reasonable_doubt':
@@ -732,9 +723,8 @@ class CAES(object):
         try:
             return self.weight[arg_id]
         except KeyError:
-            raise ValueError("No weight assigned to argument '{}'.".\
+            raise ValueError("No weight assigned to argument '{}'.".
                              format(arg_id))
-
 
     def max_weight_applicable(self, arguments):
         """
@@ -754,7 +744,7 @@ class CAES(object):
             return 0.0
 
         applic_arg_ids = [arg.arg_id for arg in applicable_args]
-        logging.debug('Checking applicability and weights of {}'.\
+        logging.debug('Checking applicability and weights of {}'.
                       format(applic_arg_ids))
         weights = [self.weight_of(argument) for argument in applicable_args]
         logging.debug('Weights of {} are {}'.format(applic_arg_ids, weights))
@@ -786,8 +776,6 @@ class CAES(object):
         con = proposition.negate()
         args = self.argset.get_arguments(con)
         return self.max_weight_applicable(args)
-
-
 
 
 def arg_demo():

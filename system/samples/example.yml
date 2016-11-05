@@ -1,0 +1,63 @@
+proposition:
+# a list of map (dictionary) mapping the key to the `text` field
+# a ~ before the key is a special character that denotes the negation of the # proposition.
+- kill:
+    text: kill
+- intent:
+    text: intent
+- ~intent: # implementation note : will append `neg_` infront of the variable name to prevent conflict
+    text : negation of intent
+- murder:
+    text: murder
+- witness1:
+    text: first witness
+- witess2:
+    text: second witness
+- unreliable1:
+    text: first unreliable
+- unreliable 2: # spaces are allow, in python, replace with `_` (underscores)
+    text: |
+      an extended amount of text can be
+      represented using a 'bar' after the colon (:)
+
+assumption:
+# can be presented in a list or inflow style
+- kill
+- witness1
+- witness2
+- unreliable2
+# equivalently:
+# assumptions: [kill, witness1, witness2, unreliable2]
+
+argument:
+# a list of map (dictionary) mapping the argument id to its fields - premise,
+# exception, conclusion and weight
+# premise and exception are list while conclusion is a single propositions
+# the weights are double, ranging from 0 to 1
+- arg1:
+    premise: [kill, intent]
+    exception: [] # implementation note: if no exception is defined, it will be detected
+    conclusion: murder
+    weight: 0.8
+- arg2:
+    premise: [witness1]
+    exception: [unreliable1]
+    conclusion: intent
+    weight: 0.3
+- arg3:
+    premise: [witnes2]
+    exception: [unreliable2]
+    conclusion: ~intent
+    weight: 0.8
+
+proofstandard:
+# define a list of proposition and the proof standard used.
+# available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
+- intent: beyond reasonable doubt
+
+parameters:
+  # define the parameters use for the proofstandard
+  # each parameter is in the range of 0 and 1
+  alpha:  0.4
+  beta:   0.3
+  gamma:  0.3
