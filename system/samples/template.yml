@@ -1,0 +1,18 @@
+PROPOSITION :
+# a sequence of map (dictionary) mapping the key to the `text` field
+
+ASSUMPTION :
+
+ARGUMENT :
+# a sequence of map (dictionary) mapping the argument id to its fields - premise,
+# exception, conclusion and weight
+# premise and exception are list while conclusion is a single propositions
+# the weights are double, ranging from 0 to 1
+
+PROOFSTANDARD :
+# define a list of proposition and the proof standard used.
+# available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
+
+PARAMETERS :
+# define the parameters use for the proofstandard
+# each parameter is in the range of 0 and 1

@@ -2,20 +2,20 @@ PROPOSITION :
 # a list of map (dictionary) mapping the key to the `text` field
 # a ~ before the key is a special character that denotes the negative polarity of a proposition.
   - kill :
-      text: kill
+      text : kill
   - intent :
-      text: intent
+      text : intent
   - intent : # implementation note : will append `neg_` infront of the variable name to prevent conflict
       text : negation of intent
-  - murder:
-      text : murder
+  - murder :
+      text  : murder
   - witness1 :
       text : first witness
       info : here is an example of other information included
   - witess2 :
       text : second witness
   - unreliable1 :
-      text: first unreliable
+      text : first unreliable
   - unreliable 2 : # spaces are allow, in python, replace with `_` (underscores)
       text : an extended amount of text can be represented using a 'bar' after the colon (:)
 
@@ -35,25 +35,33 @@ ARGUMENT :
 # the weights are double, ranging from 0 to 1
   - arg1 :
       premise :
-      - kill
-      - intent
+        - kill
+        - intent
       exception : # implementation note: if no exception is defined, it will be detected
-      conclusion : murder
-      weight : 0.8
+      conclusion :
+        murder
+      weight :
+        0.8
+
   - arg2 :
       premise :
-      - witness1
+        - witness1
       exception :
-      - unreliable1
-      conclusion : intent
-      weight : 0.3
+        - unreliable1
+      conclusion :
+        intent
+      weight :
+        0.3
+        
   - arg3 :
       premise :
         - witnes2
       exception :
         - unreliable2
-      conclusion : ~intent
-      weight : 0.8
+      conclusion :
+        ~intent
+      weight :
+        0.8
 
 PROOFSTANDARD :
 # define a list of proposition and the proof standard used.

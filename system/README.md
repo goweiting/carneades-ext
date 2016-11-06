@@ -22,6 +22,7 @@ Overview
 The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
 
 A general workflow:
+
 1. User creates file for arguments, e.g. `caes.yml`
 2. Setup virual environment - `ailp_env`
 3. Either:
@@ -89,7 +90,7 @@ Assuming your source files are in the `system/samples` folder:
 ```
 
 ## Syntax for `.yml` files
-The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed.
+The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. Syntax for caes illustrates the essential elements required for each caes.
 
 ### Rules:
 1. Spaces and newlines are delimiters. Usage of tab will throw errors. (unless your editor converts them to 'soft tabs' - space)
@@ -112,9 +113,10 @@ MAPS ::= STMT[STMT]* ':' [MAP_ELEMENT | MAPS]*
 MAP_ELEMENT ::= INDENT[INDENT]* STMTS   # each MAP_ELEMENT must start on a new line, and must have an indent set the key (in previous line) to the elements
 ```
 
-Examples:
-1. Sequence
+### Examples
+* Sequence
 A sequnce is similar to `list()` in python.
+
 ```
 # a simple sequence
 - kill # the indent level follows the location of the key (ASSUMPTION here)
@@ -130,8 +132,9 @@ A sequnce is similar to `list()` in python.
   - ...
 ```
 
-2. Maps
+* Maps
 A map is similar to `dict()` in python:
+
 ```
 ASSUMPTION: # simple
   kill
@@ -142,7 +145,7 @@ ASSUMPTION: # mapping ASSUMPTION to a list
   - wintess2
   - unreliable1
 
-PARAMETERS: # PARAMETERS have a value with 3 maps
+PARAMETER: # PARAMETERS have a value with 3 maps
   alpha :   # this is same as the simple map
     0.4     # double indent to denote membership to 'alpha'
   beta :
@@ -151,6 +154,89 @@ PARAMETERS: # PARAMETERS have a value with 3 maps
     0.10
 ```
 
+###  Syntax for CAES
+These fields must be present in order for an argument graph to be presented
 
+* `PROPOSITION`
+..- Begin with 'PROPOSITION'
+..- A sequence of map; each map is a proposition uniquely identified by `PROP_ID`. the `polarity` is a compulsory field. The polarity indicates the falsehood of the proposition.
+```
+PROPOSITION :
+  - <PROP_ID> :
+      text : <elaboration of proposition>
+      polarity : <True, False>
+
+  # EXAMPLE:
+  - ID CAN HAVE SPACES :
+      text : this is an example
+      polarity : True
+```
+
+* `ASSUMPTION`
+..- Begin with 'ASSUMPTION'
+..- A sequence of `PROP_ID` defined in `PROPOSITION`
+```
+ASSUMPTION :
+  - <PROP_ID>
+
+  # EXAMPLE
+  - ID CAN HAVE SPACES
+```
+
+* `ARGUMENT`
+..- Begins in with 'ARGUMENT'
+..- A sequence of map, with `ARG_ID` as key. Each map consist of the following maps: `premise`, `exception`, `conclusions`, `weight`
+```
+ARGUMENT :
+  - <ARG_ID> :
+    premise :  # premise is a sequence
+      - <PROP_ID>
+    exception : # exception is a sequence
+      - <PROP_ID>
+    conclusion:
+      <PROP_ID> # only ONE conclusions
+    weight :
+      <Double between 0 and 1>
+
+  # EXAMPLE:
+  - arg1 :
+    premise :
+      - kill
+      - intent
+    exception :
+    conclusion :
+      murder
+    weight :
+      0.8
+```
+
+* `PROOFSTANDARD`
+..- Begins with 'PROOFSTANDARD'
+..- a sequence of map, each maps a `PROP_ID` to a `PROOFSTANDARD`
+..- accepted `PS` are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
+```
+PROOFSTANDARD :
+  - <PROP_ID> : <PS>
+
+  # Example
+  - intent : beyond reasonable doubt
+```
+
+* `PARAMETER`
+..- Begins with 'PARAMETER'
+..- A map with 3 maps
+..- 3 compulsory fields: `alpha`, `beta`, `gamma`
+```
+PARAMETER :
+  alpha : <Double between 0 and 1>
+  beta : <Double between 0 and 1>
+  gamma : <Double between 0 and 1>
+```
+
+### Template
+The template can also be found in [system/samples/template.yml](#)
+```
+
+```
 
 ## Tests
