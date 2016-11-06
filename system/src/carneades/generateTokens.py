@@ -1,5 +1,5 @@
 import string
-
+from error import *
 
 class tokenizer(object):
     """
@@ -7,22 +7,33 @@ class tokenizer(object):
     ---
     DOCTEST:
     Every stream is just a list of one str for modularised testing
-    >>> stream = ['# IGNORE MY COMMENT ! ##\\n', \
-                    '~\\n',\
-                     ':\\n']
+    >>> stream = ['# IGNORE MY COMMENT ! ##\\n','~\\n',':\\n']
     >>> t = tokenizer(stream, 2)
     >>> t.tokenize();
     >>> t.tokens
     [POLARITY_SIGN, MAPPING_VALUE]
-    ---
 
+    ---
+    Check syntax - Proper end of line: If no '\\n' found raise error
+    >>> t = tokenizer(['w w '], 2)
+    >>> try:
+    ...     t.tokenize()
+    ... except SyntaxError:
+    ...         pass
+
+    ---
     Correctly find word boundary in a sentence:
-    >>> stream2 = ['this is a sentence with 7 tokens\\n',\
-                    'only 4 tokens here #RIGHT\\n']
+    >>> stream2 = ['a sentence with 5 tokens\\n']
     >>> t2 = tokenizer(stream2, 2);
     >>> t2.tokenize();
     >>> t2.tokens
-    [STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT]
+    [STMT, STMT, STMT, STMT, STMT]
+
+    >>> stream3 = ['A mixute of :\\n','- ~tokens\\n']
+    >>> t3 = tokenizer(stream3, 2)
+    >>> t3.tokenize();
+    >>> t3.tokens
+    [STMT, STMT, STMT, MAPPING_VALUE, SEQUENCE_ENTRY, POLARITY_SIGN, STMT]
     """
 
 
@@ -39,24 +50,12 @@ class tokenizer(object):
     ALPHA_DIGITS = string.ascii_letters + string.digits  # other characters allowed
     special_list = special_tokens.values()  # a list of values, for easy search
 
-    # Class variables
-    pointer = -1  # the index we are currently lexing
-    lineIdx = -1
-    colIdx  = -1
-    totalcount = -1;
-    tokens = [];
-
     def __init__(self, stream, indent_size):
         self.stream = stream
         self.indent_size = indent_size
         self.indent_stack = []
-        tokenizer.totalcount = sum([len(stream[i]) for i in range(0,len(stream))]); # update the total length
-
-        # reset the value everytime it is called
-        tokenizer.pointer = -1;
-        tokenizer.lineIdx = -1;
-        tokenizer.colIdx = -1;
-        tokenizer.tokens = [];
+        self.colIdx = -1
+        self.tokens = []
 
     def tokenize(self):
         """
@@ -70,94 +69,71 @@ class tokenizer(object):
         0
 
         """
-        pointer = tokenizer.pointer + 1;
-        lineIdx = tokenizer.lineIdx + 1;
-        colIdx = tokenizer.colIdx + 1;
-        totalcount = tokenizer.totalcount
-        tokens = tokenizer.tokens
+        colIdx = self.colIdx + 1;
+        # totalcount = tokenizer.totalcount
+        tokens = self.tokens
         stream = self.stream
 
-        while pointer < totalcount: # iterate through all the character until the end of the source
+        for lineIdx in range(0, len(stream)):
+            # iterate through all the character until the end of the source
             line = stream[lineIdx];
-            print(line)
-            lineBoundary = len(line) # this is local to the function, -1 because the line must end with a new line
+            # print(line) # DEBUG
 
-            # ---------------------
+            if line[-1:] != '\n':
+                raise SyntaxError('No end of line found')
+            else:
+                line = line[:-1] # remove the end of line!
+                lineBoundary = len(line) # this is local to the function, -1 because the line must end with a new line
+                colIdx = 0; # start from the very first character
+
+            # ---------------------------------------------------------------
             #   COMMENT CHECKER:
-            # ---------------------
-            if line.find('#') != -1: # check if there's a comment in the line
+            #    Take the nearest # found and truncate the sentence by reducing #    the lineBoundary
+            # ---------------------------------------------------------------
+            if line.find('#') != -1: # check if there's a comment in the line, return the first '#' found
                 lineBoundary = line.find('#') # and set the lineBoundary if there is
-
-            print('current pointer at ', str(pointer)) # DEBUG
-            print('Lineboundary = {}\tlineIdx = {}'.format(lineBoundary, lineIdx)) # DEBUG
 
             # Now, iterate through each column (starting from 0)
             while colIdx < lineBoundary: # iterate through the line
                 c = line[colIdx]
-                print(c, colIdx, pointer); # DEBUG
-
                 # -----------------------
                 #   SINGLE VALUE TOKENS
                 # -----------------------
-                token = None
                 if c == '~':
                     token = Token(c, lineIdx, colIdx, 'POLARITY_SIGN')
+
                 elif c == ':':
                     token = Token(c, lineIdx, colIdx, 'MAPPING_VALUE')
+
                 elif c == '-':
                     token = Token(c, lineIdx, colIdx, 'SEQUENCE_ENTRY')
-                # elif c == ' ':
-                #
-                elif c in tokenizer.ALPHA_DIGITS: # start longest matching rule here!
-                    # find boundary using longest matching rule to tokenise!
-                    (token, colIdx) = self.longest_matching(line, lineIdx, colIdx, lineBoundary)
+                    colIdx += self.indent_size-1; # SEQUENCE_ENTRY takes up 1 space and the rest is the indent
 
+                elif c in tokenizer.ALPHA_DIGITS:
+                    # start longest matching rule here!
+                    # find the next whitespace and use it as word boundary
+                    line_cut = line[colIdx:]
+                    space_idx = line_cut.find(' ');
+                    endmark = line_cut.find('\n');
 
-                tokenizer.tokens.append(token)
-                colIdx += 1; # increment
-                pointer += 1;
+                    if space_idx +1: # a space is found:
+                        c = line[colIdx : colIdx+space_idx] # slice the word out
+                        token = Token(c, lineIdx, colIdx, 'STMT')
+                        colIdx += space_idx;
 
-            # conditions at end of the line:
-            colIdx = 0;
-            delta = len(line) - lineBoundary
-            pointer += delta
-            lineIdx += 1
+                    else:
+                        c = line[colIdx : -1]
+                        token = Token(c, lineIdx, colIdx, 'STMT')
+                        colIdx = lineBoundary
 
+                    # else:
+                    #     TokenizerError(lineIdx, colIdx, 'STMT not bounded by white space!')
 
-    def longest_matching(self, line, lineIdx, colIdx, lineBoundary):
-        """
-        use the longest matching rule to find the word boundary,
-        returns :class: token with boundary index
-        ------
-        :param: c - the current character it is evaluating
-        :param: lineBoundary - the limit it should go to
-        :param: colIdx
-        :return: The token found and the colIdx that it ends at
-        :rtype: :class:`token`
-        :rtype: colIdx - the new colIdx that longest matching ended with
-        """
+                # Get ready for the next character
+                self.tokens.append(token)
+                colIdx += 1;
+                # print(colIdx) # DEBUG
 
-        if colIdx < lineBoundary:
-            # if there are still characters remain in the line:
-            # find spaces:
-            space_idx = line.find(' ');
-            endline_idx = line.find('\n')
-            if space_idx + 1:
-                c = line[colIdx:space_idx] # slice the word out
-                token = Token(c, lineIdx, colIdx, 'STMT')
-                next_colIdx = space_idx;
-                break;
-
-            elif endline_idx + 1: # end of line case
-                c = line[colIdx:endline_idx]
-                token = Token(c, lineIdx, colIdx, 'STMT')
-                next_colIdx = endline_idx + 1; # sice endline is 2 character long
-                break;
-
-        return (token, next_colIdx)
-
-    def next(self, line, colIdx, lineBoundary):
-        pass
 
 
 class Token(object):
@@ -179,7 +155,7 @@ class Token(object):
         self.lineIdx    = lineIdx
         self.colIdx     = colIdx
         self.tok_type   = tok_type
-        print('Token at {}, {} = {}'.format(lineIdx, colIdx, c)) # DEBUG
+        # print('Token at {}, {} = {}'.format(lineIdx, colIdx, c)) # DEBUG
 
     def output(self):
         return (str(self.lineIdx) + ' ' + str(self.colIdx) +
@@ -190,6 +166,9 @@ class Token(object):
 
     def __repr__(self):
         return (str(self.tok_type))
+
+
+
 
 # -----------------------------------------------------------------------
 # MAIN
