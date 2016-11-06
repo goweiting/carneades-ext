@@ -10,53 +10,77 @@ Requirements for the second coursework for INFR09043 Artificial Intelligence Lar
 ## Getting around this file:
 Sections for this documentation includes:
 * [Directory of folders](#directory)
-* Setting up the [system](#setup)
+* [Setting up the `ailp_env` virtual environment](#environment)
+* [Understanding the workflow](#workflow)
+* [Syntax for `.yml` files](#syntax)
 * [Instructions for testing the system](#demo)
+* [Running regression test](#testing)
 
+Overview
+======
+The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
 
----
-
+-------
 ## Directory
 The directory of the files is as such:
 ```
-system (<< you are here)
+system
 |   README.md
 └───src
-|   |   README.md
-|   |   LICENSE
-|   |
 |   └───carneades
-|       |   __init__.py
-|       |   caes.doctest.py
 |       |   caes.py
+|       |   reader.py
+|       |   generateTokens.py
+|       |   parser.py
+|       |   error.py
+|       |   caes.doctest.py
 |       |   tracecalls.py
-|       |
-|       └───examples
-|           |   sherlock.py
-|           |   library.py
+|      
+└───samples
+|   |
+|   |
 |
 └───ailp_env
     └───bin
         |   activate
-        |   ... (omitting rest of bin folder)
+        |   ...
 
 ```
-## SETUP
+## Setup
 
-### Activating the `ailp_env` first
-Need to activate the `ailp_env` before running the code:
+### `ailp_env` virtual environment
+Need to activate the `ailp_env` before running the code (assumed is done; commands are listed below):
 ```$
-[From the current folder]
+[From the system folder]
 $ source ailp_env/bin/activate
 (ailp_env) $  # the environment name should appear on each line in terminal
 ```
+User should refer to the assignemtn document for a more detailed documentation.
 
 ### How to run
+There is a few mode supported for this running CAES:
+* Single file
+* Multiple files
+* All `.yml` files in a directory
+
+#### Single or multiple files
+Assuming your source files are in the `system/samples` folder:
 ```$
-(ailp_env) $ cd src/carneades
-(ailp_env) $ python
-(ailp_env) >>> import caes # import the evaluation system
+(ailp_env) $
+(ailp_env) $
+(ailp_env) $
 ```
+#### Running CAES on an entire directory
+```$
+(ailp_env) $
+(ailp_env) $
+(ailp_env) $
+```
+-----------
+Workflow
+========
+---
+## Syntax for `.yml` files
 
 ---
 ## DEMO

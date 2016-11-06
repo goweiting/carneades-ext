@@ -1,4 +1,5 @@
 import string
+import re
 from error import *
 
 class tokenizer(object):
@@ -128,6 +129,7 @@ class tokenizer(object):
 
                     # else:
                     #     TokenizerError(lineIdx, colIdx, 'STMT not bounded by white space!')
+                elif c == ' ': # find indents
 
                 # Get ready for the next character
                 self.tokens.append(token)
