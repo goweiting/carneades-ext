@@ -22,13 +22,13 @@ Overview
 The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
 
 A general workflow:
-1) User creates file for arguments, e.g. `caes.yml`
-2) Setup virual environment - `ailp_env`
-3) Either:
-3a) Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter))
-3b) Run from the command line
-4) The file will go through lexical analysis to ensure [synatx](#syntax) is correct and tokenize the files, then parsing it.
-5) The will be used as python arguments for `caes.py` program.
+1. User creates file for arguments, e.g. `caes.yml`
+2. Setup virual environment - `ailp_env`
+3. Either:
+..* Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter))
+..* Run from the command line
+4. The file will go through lexical analysis to ensure [synatx](#syntax) is correct and tokenize the files, then parsing it.
+5. The will be used as python arguments for `caes.py` program.
 
 ## Directory
 The directory of the files is as such:
@@ -92,9 +92,9 @@ Assuming your source files are in the `system/samples` folder:
 The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed.
 
 ### Rules:
-1) Spaces and newlines are delimiters. Usage of tab will throw errors. (unless your editor converts them to 'soft tabs' - space)
-2) the standard indent size is `2`. Similar to python, indents determine the grouping of statements, which allowes us to compute the nesting of maps and sequences, if any.
-3) Special characters: `:`, `-`, `~` are not allowed as individual tokens, unless they are used to define sequence or map. They can be used after any `CHAR` as long as it is before a white space.
+1. Spaces and newlines are delimiters. Usage of tab will throw errors. (unless your editor converts them to 'soft tabs' - space)
+2. the standard indent size is `2`. Similar to python, indents determine the grouping of statements, which allowes us to compute the nesting of maps and sequences, if any.
+3. Special characters: `:`, `-`, `~` are not allowed as individual tokens, unless they are used to define sequence or map. They can be used after any `CHAR` as long as it is before a white space.
 
 ```
 INDENT = '  '
@@ -113,7 +113,7 @@ MAP_ELEMENT ::= INDENT[INDENT]* STMTS   # each MAP_ELEMENT must start on a new l
 ```
 
 Examples:
-1) Sequence
+1. Sequence
 A sequnce is similar to `list()` in python.
 ```
 # a simple sequence
@@ -130,7 +130,7 @@ A sequnce is similar to `list()` in python.
   - ...
 ```
 
-2) Maps
+2. Maps
 A map is similar to `dict()` in python:
 ```
 ASSUMPTION: # simple
