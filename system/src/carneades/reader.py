@@ -9,33 +9,21 @@ import os
 import sys
 import logging
 
-special_char = {
-#  grouped in order or frequency
-'PADDING_SPACE'               : ' ',
-'PADDING_TAB'                 : '\t',
-'PADDING_NEWLINE'             : '\n',
-'INDICATOR_SEQUENCE_ENTRY'    : '-',
-'INDICATOR_MAP'               : ':',
-'INDICATOR_SEQUENCE_START'    : '[',
-'INDICATOR_SEQUENCE_END'      : ']',
-'INDICATOR_BLOCK'             : '|',
-'COMMENT_START'               : '#',
-}
-
-special_list = special_char.values();
-
+import carneades.generateTokens
+import carneades.parser 
 
 class Reader(object):
     """
     Reader class encapsulates the processing of the file using the load function
     """
-    buffer_size = 4096; # default to 4086, unless user define otherwise
+    buffer_size = 4096  # default to 4086, unless user define otherwise
+    indent_size = 2
 
-
-    def __init__(self, buffer_size=4096):
+    def __init__(self, buffer_size=4096, indent_size=2):
         self.buffer_size = buffer_size  # if defined, set buffer_size
-        self.lineIdx = -1;
-        self.colIdx  = -1;
+        self.indent_size = indent_size  # use can define the indent size for the syntax
+        self.lineIdx = -1
+        self.colIdx = -1
 
     def load(self, path_to_file):
         """
@@ -45,81 +33,21 @@ class Reader(object):
 
         """
 
-        # Scanning and lexing
-        print('\tTokenizing file...');
-        s = '{}.tok'.format(path_to_file);
-        with open(s, 'w') as w:
-            with open(path_to_file, 'r', buffering=self.buffer_size) as f:
-                self.tokenize(f, w) # tokenise the file
-        f.close();
-        w.close();
+        # Scanning and lexical analsys
+        print('\tTokenizing file...')
+        s = '{}.tok'.format(path_to_file)
+
+        lines = open(path_to_file, 'r', buffering=self.buffer_size).readlines() # read the file and store it as a list of lines!
+        tokens = tokenizer.tokenize(lines);
+
         print('\tdone')
 
         # Parsing:
         print('\tParsing tokens...')
 
 
-    def tokenize(self, f, w):
-        """
-        Iterate through all the characters in the file and find the boundaries
-        """
-        # global colIdx, lineIdx;
-
-        for line in f: # read each line
-            self.lineIdx += 1;
-            for c in line: # iterate through each c
-                self.colIdx += 1;
-                # print(c, self.lineIdx, self.colIdx) # DEBUG
-
-                # parse the stream according to the syntax devised:
-                # Find the word boundaries and special characters:
-                tok_c = token(c, self.lineIdx, self.colIdx);
-                w.write(tok_c.output());
 
 
-class token(object):
-    """
-    A tokenizer convert the character into tokens
-    """
-
-    #  ':' - a map mapping a key to value or start of a sequence
-    #  '-' - an item in the a sequence
-    #  '|' - the following lines are values of the nearest key
-    # '#' - denote the start of a comment
-    # '[', ']' - boundary of a sequence
-
-    def __init__(self, c, lineIdx, colIdx):
-        """
-        initialised the character
-
-        -----
-        :param c : a single character
-        :param lineIdx : the line number of the file
-        :param colIdx : the column number of the file
-        :parm sourceID : if multiple files are given in the argument, this corresponds to the nth file.
-        """
-        self.c = c
-        self.lineIdx = lineIdx
-        self.colIdx = colIdx
-        self.type = None;
-
-        if c in special_list: # add the token type into the tokens
-            if c == '\n':
-                self.c = '' # replace it to prevent it from writing newline
-                self.type = 'PADDING_NEWLINE';
-            else:
-                for tok_type, val in special_char.items():
-                    if val == c:
-                        self.type = tok_type;
-        else:
-            self.type = 'SYMBOL'
-
-    def output(self):
-        return (str(self.lineIdx) + ' ' + str(self.colIdx) +
-        ' ' + self.type + ' ' + str(self.c) + '\n')
-
-    def __str__(self): # same as output
-        return self.output();
 
 
 # ---------------------------------------------------------------------------
@@ -133,11 +61,10 @@ if __name__ == '__main__':
     filenames = sys.argv[1:]
     num_files = len(filenames)
 
-    cwd = os.getcwd();
+    cwd = os.getcwd()
 
-    r = Reader();
+    r = Reader()
     r.load(filenames[0])
-
 
     # if filenames == []:  # no argument passed into the command line
     #     print('\tERROR: No filename detected!\n\n')
