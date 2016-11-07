@@ -158,8 +158,8 @@ PARAMETER: # PARAMETERS have a value with 3 maps
 These fields must be present in order for an argument graph to be presented
 
 * `PROPOSITION`
-..- Begin with 'PROPOSITION'
-..- A sequence of map; each map is a proposition uniquely identified by `PROP_ID`. the `polarity` is a compulsory field. The polarity indicates the falsehood of the proposition.
+..* Begin with 'PROPOSITION'
+..* A sequence of map; each map is a proposition uniquely identified by `PROP_ID`. the `polarity` is a compulsory field. The polarity indicates the falsehood of the proposition.
 ```
 PROPOSITION :
   - <PROP_ID> :
@@ -173,8 +173,8 @@ PROPOSITION :
 ```
 
 * `ASSUMPTION`
-..- Begin with 'ASSUMPTION'
-..- A sequence of `PROP_ID` defined in `PROPOSITION`
+..* Begin with 'ASSUMPTION'
+..* A sequence of `PROP_ID` defined in `PROPOSITION`
 ```
 ASSUMPTION :
   - <PROP_ID>
@@ -184,8 +184,8 @@ ASSUMPTION :
 ```
 
 * `ARGUMENT`
-..- Begins in with 'ARGUMENT'
-..- A sequence of map, with `ARG_ID` as key. Each map consist of the following maps: `premise`, `exception`, `conclusions`, `weight`
+..* Begins in with 'ARGUMENT'
+..* A sequence of map, with `ARG_ID` as key. Each map consist of the following maps: `premise`, `exception`, `conclusions`, `weight`
 ```
 ARGUMENT :
   - <ARG_ID> :
@@ -211,9 +211,9 @@ ARGUMENT :
 ```
 
 * `PROOFSTANDARD`
-..- Begins with 'PROOFSTANDARD'
-..- a sequence of map, each maps a `PROP_ID` to a `PROOFSTANDARD`
-..- accepted `PS` are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
+..* Begins with 'PROOFSTANDARD'
+..* a sequence of map, each maps a `PROP_ID` to a `PROOFSTANDARD`
+..* accepted `PS` are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
 ```
 PROOFSTANDARD :
   - <PROP_ID> : <PS>
@@ -223,9 +223,9 @@ PROOFSTANDARD :
 ```
 
 * `PARAMETER`
-..- Begins with 'PARAMETER'
-..- A map with 3 maps
-..- 3 compulsory fields: `alpha`, `beta`, `gamma`
+..* Begins with 'PARAMETER'
+..* A map with 3 maps
+..* 3 compulsory fields: `alpha`, `beta`, `gamma`
 ```
 PARAMETER :
   alpha : <Double between 0 and 1>
@@ -234,7 +234,7 @@ PARAMETER :
 ```
 
 ### Template
-The template can also be found in [system/samples/template.yml](#)
+The template can also be found in [system/samples/template.yml](samples/template.yml)
 ```
 
 ```

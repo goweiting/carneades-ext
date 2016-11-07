@@ -3,14 +3,12 @@
 # generates the json file which can be used by the caes to create the
 # argumentation graph.
 
-__all__ = ['Reader']
 
 import os
 import sys
-import logging
 
 import carneades.generateTokens
-import carneades.parser 
+import carneades.parser
 
 class Reader(object):
     """

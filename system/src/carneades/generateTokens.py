@@ -8,33 +8,11 @@ class tokenizer(object):
     ---
     DOCTEST:
     Every stream is just a list of one str for modularised testing
-    >>> stream = ['# IGNORE MY COMMENT ! ##\\n','~\\n',':\\n']
+    >>> stream = ['Hello # IGNORE MY COMMENT ! ##\\n', ':\\n', '\\n']
     >>> t = tokenizer(stream, 2)
     >>> t.tokenize();
     >>> t.tokens
-    [POLARITY_SIGN, MAPPING_VALUE]
 
-    ---
-    Check syntax - Proper end of line: If no '\\n' found raise error
-    >>> t = tokenizer(['w w '], 2)
-    >>> try:
-    ...     t.tokenize()
-    ... except SyntaxError:
-    ...         pass
-
-    ---
-    Correctly find word boundary in a sentence:
-    >>> stream2 = ['a sentence with 5 tokens\\n']
-    >>> t2 = tokenizer(stream2, 2);
-    >>> t2.tokenize();
-    >>> t2.tokens
-    [STMT, STMT, STMT, STMT, STMT]
-
-    >>> stream3 = ['A mixute of :\\n','- ~tokens\\n']
-    >>> t3 = tokenizer(stream3, 2)
-    >>> t3.tokenize();
-    >>> t3.tokens
-    [STMT, STMT, STMT, MAPPING_VALUE, SEQUENCE_ENTRY, POLARITY_SIGN, STMT]
     """
 
 
@@ -43,13 +21,11 @@ class tokenizer(object):
         'SPACE': ' ',
         'SEQUENCE_ENTRY': '-',
         'MAPPING_VALUE': ':',
-        'LITERAL_BLOCK': '|',
         'COMMENT': '#',
         'POLARITY_SIGN': '~'
     }
 
     ALPHA_DIGITS = string.ascii_letters + string.digits  # other characters allowed
-    special_list = special_tokens.values()  # a list of values, for easy search
 
     def __init__(self, stream, indent_size):
         self.stream = stream
@@ -61,14 +37,7 @@ class tokenizer(object):
     def tokenize(self):
         """
         Iterate through all the characters in the file and find the boundaries
-        ----
-        Some testing:
-        ----
-        .find('#') always returns the smallest #
-        >>> line = ['# comment # comment\\n'];
-        >>> line[0].find('#')
-        0
-
+        ---
         """
         colIdx = self.colIdx + 1;
         # totalcount = tokenizer.totalcount
@@ -78,63 +47,57 @@ class tokenizer(object):
         for lineIdx in range(0, len(stream)):
             # iterate through all the character until the end of the source
             line = stream[lineIdx];
+            pointer = 0;
             # print(line) # DEBUG
 
             if line[-1:] != '\n':
                 raise SyntaxError('No end of line found')
             else:
                 line = line[:-1] # remove the end of line!
-                lineBoundary = len(line) # this is local to the function, -1 because the line must end with a new line
-                colIdx = 0; # start from the very first character
+                print(line)
+
+            # ---------------------------------------------------------------
+            #   Find INDENNT:
+            # ---------------------------------------------------------------
+            indents = re.split(r'^  ', line)
+            depth = -1;
+            while len(indents) > 1:
+                depth += 1
+                token = Token('  ', lineIdx, depth*2, 'INDENT')
+                line = line[2:] # shorten the line
+                pointer += 2
+                indents = re.split(r'^  ', line)
+
+            print(line) # DEBUG
 
             # ---------------------------------------------------------------
             #   COMMENT CHECKER:
             #    Take the nearest # found and truncate the sentence by reducing #    the lineBoundary
             # ---------------------------------------------------------------
-            if line.find('#') != -1: # check if there's a comment in the line, return the first '#' found
-                lineBoundary = line.find('#') # and set the lineBoundary if there is
+            comment_idx = line.find('#')
+            if comment_idx != -1: # check if there's a comment in the line, return the first '#' found
+                # lineBoundary = comment_idx # and set the lineBoundary if there is
+                line = line[:comment_idx]; # remove trailing whitespace on the right too
 
-            # Now, iterate through each column (starting from 0)
-            while colIdx < lineBoundary: # iterate through the line
-                c = line[colIdx]
-                # -----------------------
-                #   SINGLE VALUE TOKENS
-                # -----------------------
-                if c == '~':
-                    token = Token(c, lineIdx, colIdx, 'POLARITY_SIGN')
+            # ---------------------------------------------------------------
+            #   TOKENIZE the rest of the stuff
+            # ---------------------------------------------------------------
+            line = line.rstrip();
+            split_bywhite = line.split(' ');
+            for idx, toks in enumerate(split_bywhite):
 
-                elif c == ':':
-                    token = Token(c, lineIdx, colIdx, 'MAPPING_VALUE')
+                # if len(toks) == 0: # random white space found
+                #     raise TokenizerError(lineIdx, pointer, 'more than one white space used {}'.format(toks))
 
-                elif c == '-':
-                    token = Token(c, lineIdx, colIdx, 'SEQUENCE_ENTRY')
-                    colIdx += self.indent_size-1; # SEQUENCE_ENTRY takes up 1 space and the rest is the indent
+                if toks == ':':
+                    self.tokens.append(Token(toks, lineIdx, pointer, 'MAPPING_VALUE'))
+                elif toks == '-':
+                    self.tokens.append(Token(toks, lineIdx, pointer, 'SEQUENCE_ENTRY'))
+                elif len(toks) > 0: 
+                    self.tokens.append(Token(toks, lineIdx, pointer, 'STMT'))
 
-                elif c in tokenizer.ALPHA_DIGITS:
-                    # start longest matching rule here!
-                    # find the next whitespace and use it as word boundary
-                    line_cut = line[colIdx:]
-                    space_idx = line_cut.find(' ');
-                    endmark = line_cut.find('\n');
+                pointer += len(toks) + 1; # add one for each whitespace stripped
 
-                    if space_idx +1: # a space is found:
-                        c = line[colIdx : colIdx+space_idx] # slice the word out
-                        token = Token(c, lineIdx, colIdx, 'STMT')
-                        colIdx += space_idx;
-
-                    else:
-                        c = line[colIdx : -1]
-                        token = Token(c, lineIdx, colIdx, 'STMT')
-                        colIdx = lineBoundary
-
-                    # else:
-                    #     TokenizerError(lineIdx, colIdx, 'STMT not bounded by white space!')
-                elif c == ' ': # find indents
-
-                # Get ready for the next character
-                self.tokens.append(token)
-                colIdx += 1;
-                # print(colIdx) # DEBUG
 
 
 
@@ -157,7 +120,7 @@ class Token(object):
         self.lineIdx    = lineIdx
         self.colIdx     = colIdx
         self.tok_type   = tok_type
-        # print('Token at {}, {} = {}'.format(lineIdx, colIdx, c)) # DEBUG
+        print('Token at {}, {} = {}'.format(lineIdx, colIdx, c)) # DEBUG
 
     def output(self):
         return (str(self.lineIdx) + ' ' + str(self.colIdx) +
