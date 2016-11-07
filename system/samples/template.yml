@@ -1,54 +1,54 @@
 PROPOSITION :
 # a sequence of map (dictionary) mapping the key to the `text` field
-  - <PROP ID> :
-      text :
-        Include everything within this line. The line can be V v v long!
-      polarity :
-        True # only True or False
+  first :
+    text :
+      Include everything within this line. The line can be V v v long!
+    polarity :
+      True # only True or False
 
-  - <Prop ID> :  # Another example
-      text :
-        Yes!
-      polarity :
-        False
+  second one :  # Another example
+    text :
+      Yes!
+    polarity :
+      False
 
 ASSUMPTION :
-  - <PROP ID>
-  - <Prop ID>
+  <PROP ID>
+  <Prop ID>
 
 ARGUMENT :
 # a sequence of map (dictionary) mapping the argument id to its fields - premise,
 # exception, conclusion and weight
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
-  - <ARG ID> :
-      premise :
-        - something
-        - another thing
-      exception :
-        # nothing!
-      conclusion :
-        something else
-      weight :
-        0.01
+  arg1 :
+    premise :
+      something
+      another thing
+    exception :
+      # nothing!
+    conclusion :
+      something else
+    weight :
+      0.01
 
-  - <ARG ID2>:
-      premise :
-        - something
-      exception:
-        - something else
-      conclusion:
-        another thing
-      weight:
-        0.2
+  arg 2 :
+    premise :
+      something
+    exception:
+      something else
+    conclusion:
+      another thing
+    weight:
+      0.2
 
 PROOFSTANDARD :
 # define a list of proposition and the proof standard used.
 # available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  - something :
-      beyond reasonable doubt
-  - something else :
-      scintilla
+  something :
+    beyond reasonable doubt
+  something else :
+    scintilla
 
 PARAMETER :
 # define the parameters use for the proofstandard

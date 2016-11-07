@@ -1,52 +1,59 @@
 PROPOSITION :
 # a list of map (dictionary) mapping the key to the `text` field
 # a ~ before the key is a special character that denotes the negative polarity of a proposition.
-  - kill :
-      text :
-        kill
-      polarity :
-        True
-  - intent :
-      text :
-        intent
-      polarity :
-        True
-  - neg_intent :
-      text :
-        negation of intent
-      polarity :
-        False
-  - murder :
-      text  :
-        murder
-      polarity :
-        True
-  - witness1 :
-      text :
-        first witness
-      polarity :
-        True
-  - witess2 :
-      text :
-        second witness
-      polarity :
-        True
-  - unreliable1 :
-      text :
-        first unreliable
-      polarity :
-        True
-  - unreliable 2 : # spaces are allow, in python
-      text :
-        a very very long description of unreliable2 must all be in this line........!
-      polarity :
-        True
+  kill :
+    text :
+      kill
+    polarity :
+      True
+
+  intent :
+    text :
+      intent
+    polarity :
+      True
+
+  neg_intent :
+    text :
+      negation of intent
+    polarity :
+      False
+
+  murder :
+    text  :
+      murder
+    polarity :
+      True
+
+  witness1 :
+    text :
+      first witness
+    polarity :
+      True
+
+  witess2 :
+    text :
+      second witness
+    polarity :
+      True
+
+  unreliable1 :
+    text :
+      first unreliable
+    polarity :
+      True
+
+  unreliable 2 : # spaces are allow, in python
+    text :
+      a very very long description of unreliable2 must all be in this line........!
+    polarity :
+      True
 
 ASSUMPTION :
-  - kill
-  - witness1
-  - witness2
-  - unreliable2
+  kill
+  witness1
+  witness2
+  unreliable2
 
 
 ARGUMENT :
@@ -54,43 +61,43 @@ ARGUMENT :
 # exception, conclusion and weight
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
-  - arg1 :
-      premise :
-        - kill
-        - intent
-      exception : # no exception is okay!
-      conclusion :
-        murder
-      weight :
-        0.8
+  arg1 :
+    premise :
+      kill
+      intent
+    exception : # no exception is okay!
+    conclusion :
+      murder
+    weight :
+      0.8
 
-  - arg2 :
-      premise :
-        - witness1
-      exception :
-        - unreliable1
-      conclusion :
-        intent
-      weight :
-        0.3
+  arg2 :
+    premise :
+      witness1
+    exception :
+      unreliable1
+    conclusion :
+      intent
+    weight :
+      0.3
 
-  - arg3 :
-      premise :
-        - witnes2
-      exception :
-        - unreliable2
-      conclusion :
-        ~intent
-      weight :
-        0.8
+  arg3 :
+    premise :
+      witnes2
+    exception :
+      unreliable2
+    conclusion :
+      intent
+    weight :
+      0.8
 
 PROOFSTANDARD :
 # define a list of proposition and the proof standard used.
 # available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  - intent :
-      beyond reasonable doubt
+  intent :
+    beyond reasonable doubt
 
-PARAMETERS :
+PARAMETER :
   # define the parameters use for the proofstandard
   # each parameter is in the range of 0 and 1
   alpha :
