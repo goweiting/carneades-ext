@@ -2,31 +2,52 @@ PROPOSITION :
 # a list of map (dictionary) mapping the key to the `text` field
 # a ~ before the key is a special character that denotes the negative polarity of a proposition.
   - kill :
-      text : kill
+      text :
+        kill
+      polarity :
+        True
   - intent :
-      text : intent
-  - intent : # implementation note : will append `neg_` infront of the variable name to prevent conflict
-      text : negation of intent
+      text :
+        intent
+      polarity :
+        True
+  - neg_intent :
+      text :
+        negation of intent
+      polarity :
+        False
   - murder :
-      text  : murder
+      text  :
+        murder
+      polarity :
+        True
   - witness1 :
-      text : first witness
-      info : here is an example of other information included
+      text :
+        first witness
+      polarity :
+        True
   - witess2 :
-      text : second witness
+      text :
+        second witness
+      polarity :
+        True
   - unreliable1 :
-      text : first unreliable
-  - unreliable 2 : # spaces are allow, in python, replace with `_` (underscores)
-      text : an extended amount of text can be represented using a 'bar' after the colon (:)
+      text :
+        first unreliable
+      polarity :
+        True
+  - unreliable 2 : # spaces are allow, in python
+      text :
+        a very very long description of unreliable2 must all be in this line........!
+      polarity :
+        True
 
 ASSUMPTION :
-# can be presented in a list or inflow style
   - kill
   - witness1
   - witness2
   - unreliable2
-# equivalently:
-# assumptions: [kill, witness1, witness2, unreliable2]
+
 
 ARGUMENT :
 # a list of map (dictionary) mapping the argument id to its fields - premise,
@@ -37,7 +58,7 @@ ARGUMENT :
       premise :
         - kill
         - intent
-      exception : # implementation note: if no exception is defined, it will be detected
+      exception : # no exception is okay!
       conclusion :
         murder
       weight :
@@ -52,7 +73,7 @@ ARGUMENT :
         intent
       weight :
         0.3
-        
+
   - arg3 :
       premise :
         - witnes2
@@ -66,11 +87,15 @@ ARGUMENT :
 PROOFSTANDARD :
 # define a list of proposition and the proof standard used.
 # available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  - intent : beyond reasonable doubt
+  - intent :
+      beyond reasonable doubt
 
 PARAMETERS :
   # define the parameters use for the proofstandard
   # each parameter is in the range of 0 and 1
-  alpha : 0.4
-  beta : 0.3
-  gamma : 0.3
+  alpha :
+    0.4
+  beta :
+    0.3
+  gamma :
+    0.3

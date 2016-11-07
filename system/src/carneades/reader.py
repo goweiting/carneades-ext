@@ -3,25 +3,26 @@
 # generates the json file which can be used by the caes to create the
 # argumentation graph.
 
-
 import os
 import sys
 
-import carneades.generateTokens
+from carneades.generateTokens import tokenizer
 import carneades.parser
 
 class Reader(object):
     """
     Reader class encapsulates the processing of the file using the load function
+    ---
+    DOCTEST:
+    >>> reader = Reader(); # use default buffer_size
+    >>> reader.load('../../samples/test_lexer.yml')
     """
     buffer_size = 4096  # default to 4086, unless user define otherwise
     indent_size = 2
 
-    def __init__(self, buffer_size=4096, indent_size=2):
+    def __init__(self, buffer_size=4096):
         self.buffer_size = buffer_size  # if defined, set buffer_size
-        self.indent_size = indent_size  # use can define the indent size for the syntax
-        self.lineIdx = -1
-        self.colIdx = -1
+        # self.indent_size = indent_size  # use can define the indent size for the syntax (default to 2)
 
     def load(self, path_to_file):
         """
@@ -30,17 +31,22 @@ class Reader(object):
         :param path_to_file : the path to the file to be opened
 
         """
-
-        # Scanning and lexical analsys
+        # ---------------------------------------------------------------
+        #   Scanning and lexical analsys
+        # ---------------------------------------------------------------
         print('\tTokenizing file...')
         s = '{}.tok'.format(path_to_file)
 
-        lines = open(path_to_file, 'r', buffering=self.buffer_size).readlines() # read the file and store it as a list of lines!
-        tokens = tokenizer.tokenize(lines);
-
+        stream = open(path_to_file, 'r', buffering=self.buffer_size).readlines() # read the file and store it as a list of lines!
+        t = tokenizer(stream);
+        t.tokenize()
+        stream_tokens = t.tokens;
+        # print(stream_tokens) # DEBUG
         print('\tdone')
 
-        # Parsing:
+        # ---------------------------------------------------------------
+        #   Parsing:
+        # ---------------------------------------------------------------
         print('\tParsing tokens...')
 
 
@@ -51,18 +57,25 @@ class Reader(object):
 # ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
+DOCTEST = True
+
 if __name__ == '__main__':
     """
     the main function that processes the file(s) passed into the command line:
     Usage: $ python carneades/reader.py [file(s)/directory]
     """
-    filenames = sys.argv[1:]
-    num_files = len(filenames)
-
-    cwd = os.getcwd()
-
-    r = Reader()
-    r.load(filenames[0])
+    # if DOCTEST:
+    import doctest
+    print('Starting doctest!')
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
+    # else:
+    #     filenames = sys.argv[1:]
+    #     num_files = len(filenames)
+    #
+    #     cwd = os.getcwd()
+    #
+    #     r = Reader()
+    #     r.load(filenames[0])
 
     # if filenames == []:  # no argument passed into the command line
     #     print('\tERROR: No filename detected!\n\n')

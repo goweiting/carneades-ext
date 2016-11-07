@@ -6,9 +6,11 @@ Requirements for the second coursework for INFR09043 Artificial Intelligence Lar
 - [4.3](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
 - [4.4](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
 
+You can preview this markdown file using this [tool](https://jbt.github.io/markdown-editor/)
 
 ## Getting around this file:
 Sections for this documentation includes:
+
 * [Directory of folders](#directory)
 * [Setting up the `ailp_env` virtual environment](#setup)
 * [Instructions for testing the system](#demo)
@@ -26,8 +28,8 @@ A general workflow:
 1. User creates file for arguments, e.g. `caes.yml`
 2. Setup virual environment - `ailp_env`
 3. Either:
-..* Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter))
-..* Run from the command line
+  * Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter))
+  * Run from the command line
 4. The file will go through lexical analysis to ensure [synatx](#syntax) is correct and tokenize the files, then parsing it.
 5. The will be used as python arguments for `caes.py` program.
 
@@ -114,8 +116,9 @@ MAP_ELEMENT ::= INDENT[INDENT]* STMTS   # each MAP_ELEMENT must start on a new l
 ```
 
 ### Examples
+
 * Sequence
-A sequnce is similar to `list()` in python.
+A sequence is similar to `list()` in python.
 
 ```
 # a simple sequence

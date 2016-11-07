@@ -8,11 +8,30 @@ class tokenizer(object):
     ---
     DOCTEST:
     Every stream is just a list of one str for modularised testing
-    >>> stream = ['Hello # IGNORE MY COMMENT ! ##\\n', ':\\n', '\\n']
-    >>> t = tokenizer(stream, 2)
+    >>> stream = ['Hello World# IGNORE MY COMMENT ! ##\\n', ':\\n', '\\n']
+    >>> t = tokenizer(stream)
     >>> t.tokenize();
     >>> t.tokens
+    [STMT, STMT, MAPPING_VALUE]
 
+    Ill form (no End of line)
+    >>> stream = ['A sequence : ', '  - An indent expected here!']
+    >>> try:
+    ...     t = tokenizer(stream).tokenize()
+    ... except TokenizerError:
+    ...     pass
+
+
+    Indent detector
+    >>> stream = ['A sequence : \\n', '  - An indent expected here!\\n', '    - nested indents\\n']
+    >>> t = tokenizer(stream); t.tokenize()
+    >>> t.tokens
+    [STMT, STMT, MAPPING_VALUE, INDENT, SEQUENCE_ENTRY, STMT, STMT, STMT, STMT, INDENT, INDENT, SEQUENCE_ENTRY, STMT, STMT]
+
+    # >>> stream = open('../../samples/test_lexer.yml').readlines();
+    # >>> t = tokenizer(stream)
+    # >>> t.tokenize()
+    # >>> t.tokens
     """
 
 
@@ -27,9 +46,9 @@ class tokenizer(object):
 
     ALPHA_DIGITS = string.ascii_letters + string.digits  # other characters allowed
 
-    def __init__(self, stream, indent_size):
+    def __init__(self, stream):
         self.stream = stream
-        self.indent_size = indent_size
+        # self.indent_size = indent_size
         self.indent_stack = []
         self.colIdx = -1
         self.tokens = []
@@ -51,10 +70,9 @@ class tokenizer(object):
             # print(line) # DEBUG
 
             if line[-1:] != '\n':
-                raise SyntaxError('No end of line found')
+                raise TokenizerError(lineIdx, '-1', 'No end of line found')
             else:
                 line = line[:-1] # remove the end of line!
-                print(line)
 
             # ---------------------------------------------------------------
             #   Find INDENNT:
@@ -63,12 +81,12 @@ class tokenizer(object):
             depth = -1;
             while len(indents) > 1:
                 depth += 1
-                token = Token('  ', lineIdx, depth*2, 'INDENT')
+                self.tokens.append(Token('  ', lineIdx, depth*2, 'INDENT'))
                 line = line[2:] # shorten the line
                 pointer += 2
                 indents = re.split(r'^  ', line)
 
-            print(line) # DEBUG
+            # print(line) # DEBUG
 
             # ---------------------------------------------------------------
             #   COMMENT CHECKER:
@@ -93,7 +111,7 @@ class tokenizer(object):
                     self.tokens.append(Token(toks, lineIdx, pointer, 'MAPPING_VALUE'))
                 elif toks == '-':
                     self.tokens.append(Token(toks, lineIdx, pointer, 'SEQUENCE_ENTRY'))
-                elif len(toks) > 0: 
+                elif len(toks) > 0:
                     self.tokens.append(Token(toks, lineIdx, pointer, 'STMT'))
 
                 pointer += len(toks) + 1; # add one for each whitespace stripped
@@ -120,7 +138,7 @@ class Token(object):
         self.lineIdx    = lineIdx
         self.colIdx     = colIdx
         self.tok_type   = tok_type
-        print('Token at {}, {} = {}'.format(lineIdx, colIdx, c)) # DEBUG
+        # print('Token at {}, {}\t= {}'.format(lineIdx, colIdx, c)) # DEBUG
 
     def output(self):
         return (str(self.lineIdx) + ' ' + str(self.colIdx) +

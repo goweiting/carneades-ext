@@ -11,11 +11,12 @@ class Error(Exception):
 
 
 # ------------------------------------------------
-#   Error for Scanning, Tokenising and Parsing
+#   Error for Scanning, Tokenising
 # ------------------------------------------------
 class TokenizerError(Error): # extend the Error class
     """
-    If the syntax is wrong or not obeyed, tell user where it occurs!
+    Tokenizer throws error if basic syntax error (such as no End of line) is found.
+    May add more functionality here
     """
     def __init__(self, lineIdx, colIdx, message):
         self.lineIdx    = lineIdx
@@ -23,5 +24,15 @@ class TokenizerError(Error): # extend the Error class
         self.message    = message
 
     def __str__(self):
-        s = '{} ocured at line {}, column {}'.format(self.message, self.lineIdx, self.colIdx)
+        s = '{} at line {}, column {}'.format(self.message, self.lineIdx, self.colIdx)
         return(s)
+
+# ------------------------------------------------
+#   Error for Parsing
+# ------------------------------------------------
+class ParseError(Error):
+    """
+    Parser throws error is the syntax for forming sequences or maps are not obeyed
+    """
+    def __init__(self, message):
+        self.message = message
