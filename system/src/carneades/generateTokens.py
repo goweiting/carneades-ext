@@ -1,4 +1,3 @@
-import string
 import re
 from error import *
 
@@ -34,17 +33,6 @@ class tokenizer(object):
     # >>> t.tokens
     """
 
-
-    special_tokens = {
-        #  grouped in order or frequency
-        'SPACE': ' ',
-        'SEQUENCE_ENTRY': '-',
-        'MAPPING_VALUE': ':',
-        'COMMENT': '#',
-        'POLARITY_SIGN': '~'
-    }
-
-    ALPHA_DIGITS = string.ascii_letters + string.digits  # other characters allowed
 
     def __init__(self, stream):
         self.stream = stream

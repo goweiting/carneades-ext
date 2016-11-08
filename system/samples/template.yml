@@ -2,7 +2,7 @@ PROPOSITION :
 # a sequence of map (dictionary) mapping the key to the `text` field
   first :
     text :
-      Include everything within this line. The line can be V v v long!
+      Includes everything within this line. The line can be V v v long!
     polarity :
       True # only True or False
 
@@ -35,11 +35,11 @@ ARGUMENT :
   arg 2 :
     premise :
       something
-    exception:
+    exception :
       something else
-    conclusion:
+    conclusion :
       another thing
-    weight:
+    weight :
       0.2
 
 PROOFSTANDARD :

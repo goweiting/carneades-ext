@@ -126,30 +126,53 @@ class parser(object):
         """
 
 
-def generateStruct(toks):
-    toks = deque(toks); # use as a queue
-    level = 0;
-    tree = tree();
+def generateStruct(toks, level):
+    """
+    given a specific number of indent level (0 being the HEADER), return a list of values at that level. If indent level increases, terminate
+
+    checks for list:
+    ASSUMPTION:
+      PROP
+      PROP
+
+    DOCTEST:
+    >>> from generateTokens import Token
+    >>> STMT = Token('',1,0, 'STMT')
+    >>> MAPPING_VALUE = Token('',1,0, 'MAPPING_VALUE')
+    >>> INDENT = Token('',1,0, 'INDENT')
+    >>> toks = [STMT, MAPPING_VALUE, INDENT, STMT STMT, INDENT, STMT]
+    """
+    toks = deque(toks) # use as a queue
+    sentence = []
+    items = []
+    check = 1;
     # longsentence = sentence.join(' '); # add space between words
 
     while len(toks): # if len(toks)==0 == False
-        current_tok = toks.popleft()
-        stack_count = 0
+        t = toks.popleft()
 
         if t.tok_type == 'STMT':
-            try:
-                struct[stack_count].append(t);
-            except KeyError:
-                struct[stack_count] = {};
-                struct[stack_count]
 
+            sentence.append(t);
+
+        elif t.tok_type == 'INDENT':
+            while level-1: # if there are still more indents to be seen
+                if toks.popleft().tok_type != 'INDENT':
+                    check = 0; # if sth other than indent pops up, stop
+                    break
+                level -= 1
+            add = 1;
         elif t.tok_type == 'MAPPING_VALUE': # Expect indent next
-
-            if toks[stack_count].tok_type != 'INDENT':
-                raise ParseError('Expect indent after MAPPING_VALUE, : in line {} col {}'.format(t.lineIdx, t.colIdx))
-            else:
-                while toks.popleft().tok_type == 'INDENT':
-                    stack_count += 1;
+            pass
+            #  if toks[0].tok_type != 'INDENT':
+            #      raise ParseError('Expect indent after MAPPING_VALUE, : in line {} col {}'.format(t.lineIdx, t.colIdx))
+            #  else:
+            #      level += 1 # increase level, and call generateStruct
+            #      toks.popleft();
+            #      generateStruct(toks)
+    if check:
+        # conditions met
+        return sentence
 
 def tree():
     return defaultdict(tree)
