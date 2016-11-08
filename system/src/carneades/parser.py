@@ -1,4 +1,4 @@
-from collections import  namedtuple, defaultdict
+from collections import  namedtuple, defaultdict, deque
 from error import *
 
 class parser(object):
@@ -124,28 +124,74 @@ class parser(object):
         """
         find all the tokens relevant to parameter
         """
-        parameters = tree() # to be passed to caes
-        for i, tok in enumerate(toks):
-            # go through the tokens:
 
-def make_tree(object, tokens):
-    STMT = list()
-    for tok in tokens:
-        if tok.tok_type == 'STMT':
-            STMT.append(tok);
-        elif tok.tok_type == 'MAPPING_VALUE':
-            value = STMT.
+
+def generateStruct(toks):
+    toks = deque(toks); # use as a queue
+    level = 0;
+    tree = tree();
+    # longsentence = sentence.join(' '); # add space between words
+
+    while len(toks): # if len(toks)==0 == False
+        current_tok = toks.popleft()
+        stack_count = 0
+
+        if t.tok_type == 'STMT':
+            try:
+                struct[stack_count].append(t);
+            except KeyError:
+                struct[stack_count] = {};
+                struct[stack_count]
+
+        elif t.tok_type == 'MAPPING_VALUE': # Expect indent next
+
+            if toks[stack_count].tok_type != 'INDENT':
+                raise ParseError('Expect indent after MAPPING_VALUE, : in line {} col {}'.format(t.lineIdx, t.colIdx))
+            else:
+                while toks.popleft().tok_type == 'INDENT':
+                    stack_count += 1;
+
+def tree():
+    return defaultdict(tree)
 
 class Node(object):
     """
-    A tree data structure
+    The node of the tree
     """
-    def __init__(self, data):
+    def __init__(self, level, data):
         self.data = data
+        self.level = level
         self.children = []
 
-    def add_child(self, obj):
-        self.children.append(obj)
+    def add_children(self, level, data):
+        child = Node(level, data) # the child is a node it self
+        # if levself.level
+        self.children.append(child)
+
+
+class Tree(object):
+    """
+    Tree data structure to hold nodes
+    """
+    def __init__(self):
+        """
+        Tree to keep track of its own depth and number of elements
+        """
+        self.levels = dict();
+        self.num_nodes = 0;
+        self.depth = -1;
+
+    def add_node(self, node):
+        lev = node.level;
+
+        if lev > self.depth:
+            self.levels[lev] = []
+            self.levels[lev].append(node)
+            self.depth = lev
+        else:
+            self.levels[lev].append(node)
+
+
 
 # class indent_stack(object):
 #     """
