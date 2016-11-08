@@ -14,11 +14,5 @@
 #   value of the maps
 # # [STMT, STMT, STMT, MAPPING_VALUE, STMT, STMT, STMT, STMT]
 
-Nested Sequnece :
-  - level 1 :
-    - level 11
-    - level 12
-  - level 2 :
-    - level 21
-    - level 22
-# [STMT, STMT, MAPPING_VALUE, SEQUENCE_ENTRY, STMT, STMT, MAPPING_VALUE, SEQUENCE_ENTRY, STMT, STMT, SEQUENCE_ENTRY, STMT, STMT, SEQUENCE_ENTRY, STMT, STMT, MAPPING_VALUE, SEQUENCE_ENTRY, STMT, STMT, SEQUENCE_ENTRY, STMT, STMT]
+# # A list:
+list : [ open , close]

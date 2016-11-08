@@ -1,20 +1,32 @@
+# {'ARGUMENT': {'arg 2': {'conclusion': 'another thing',
+#                         'exception': ['something else'],
+#                         'premise': ['something'],
+#                         'weight': 0.20000000000000001},
+#               'arg1': {'conclusion': 'something else',
+#                        'exception': [],
+#                        'premise': ['something', 'another thing'],
+#                        'weight': 0.01}},
+#  'ASSUMPTION': ['first', 'second'],
+#  'PARAMETER': {'alpha': 0.29999999999999999,
+#                'beta': 0.20000000000000001,
+#                'gamma': 0.29999999999999999},
+#  'PROOFSTANDARD': {'something': 'beyond reasonable doubt',
+#                    'something else': 'scintilla'},
+#  'PROPOSITION': {'first': {'polarity': True,
+#                            'text': 'Includes everything within this line. The line can be V v v long!'},
+#                  'second': {'polarity': False, 'text': 'Yes!'}}}
+
 PROPOSITION :
 # a sequence of map (dictionary) mapping the key to the `text` field
   first :
-    text :
-      Includes everything within this line. The line can be V v v long!
-    polarity :
-      True # only True or False
+    text : Includes everything within this line. The line can be V v v long!
+    polarity : True # only True or False
 
-  second one :  # Another example
-    text :
-      Yes!
-    polarity :
-      False
+  second :  # Another example
+    text : Yes!
+    polarity : False
 
-ASSUMPTION :
-  <PROP ID>
-  <Prop ID>
+ASSUMPTION : [ first , second ] # a list of assumptions
 
 ARGUMENT :
 # a sequence of map (dictionary) mapping the argument id to its fields - premise,
@@ -22,40 +34,26 @@ ARGUMENT :
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
   arg1 :
-    premise :
-      something
-      another thing
-    exception :
-      # nothing!
-    conclusion :
-      something else
-    weight :
-      0.01
+    premise : [ something , another thing ]
+    exception : [ ]   # nothing!
+    conclusion : something else # is not a list!
+    weight : 0.01
 
   arg 2 :
-    premise :
-      something
-    exception :
-      something else
-    conclusion :
-      another thing
-    weight :
-      0.2
+    premise :  [ something ]
+    exception : [ something else ]
+    conclusion : another thing
+    weight : 0.2
 
 PROOFSTANDARD :
 # define a list of proposition and the proof standard used.
 # available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  something :
-    beyond reasonable doubt
-  something else :
-    scintilla
+  something :  beyond reasonable doubt
+  something else :  scintilla
 
 PARAMETER :
 # define the parameters use for the proofstandard
 # each parameter is in the range of 0 and 1
-  alpha :
-    0.3
-  beta :
-    0.2
-  gamma :
-    0.3
+  alpha : 0.3
+  beta : 0.2
+  gamma : 0.3
