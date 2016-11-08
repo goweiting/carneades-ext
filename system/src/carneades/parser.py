@@ -97,27 +97,14 @@ class parser(object):
                     raise ParseError(
                         'More than one header of {} is found. Check that you only have one of each headers: {}'.format(tok.c, headers))
 
+
 def generateStruct(toks, expect_depth):
     """
-    The basic structure that we want is a dictionary of dictionary. Every time the parser sees a MAPPING_VALUE, a dictionary willl be created.
+    generateStruct generates the structure of the tokens in the `toks` stream. The two strcuture supported are 1) in-line lists/sequence, 2) dictionarys/maps
 
-    But before that, it has to infer the depth level (i.e. the maximum number of indents in the given text. The depth will indicate how many dictionary it should create.)
+    if there is a MAPPING_VALUE, and hence a map exists, a dict() is called and then it calls on generateStruct for the rest of the token streams.
 
-    checks for list:
-    ASSUMPTION:
-      PROP
-      PROP
-
-    DOCTEST:
-    >>> from generateTokens import Token ; from parser import *
-    >>> STMT = Token('',1,0, 'STMT')
-    >>> MAPPING_VALUE = Token('',1,0, 'MAPPING_VALUE')
-    >>> INDENT = Token('',1,0, 'INDENT')
-    >>> toks = [STMT, STMT, MAPPING_VALUE, INDENT, STMT, STMT, INDENT, STMT]
-    >>> generateStruct(toks, 0)
-
-    # >>> toks2 = [STMT, MAPPING_VALUE, INDENT, STMT, STMT, MAPPING_VALUE, INDENT, INDENT, STMT]
-    # >>> generateStruct(toks2, 0)
+    if there is a SEQUENCE_OPEN, and hence a list/sequence exists, a list() is used to store the list/sequence elements. The SEQUENCE_CLOSE token indicates the end of the sequence. Each element is separated by the SEQEUNCE_SEPARATOR token.
     """
 
     toks = deque(toks)  # use as a queue
@@ -145,13 +132,9 @@ def generateStruct(toks, expect_depth):
 
             if t_next.tok_type == 'MAPPING_VALUE':
                 expect_depth += 1  # expect the next depth to be 1
-                print(expect_depth) # DEBUG
+                print(expect_depth)  # DEBUG
                 master[longsentence] = generateStruct(toks, expect_depth)
                 return master
-
-
-
-
 
         if t_type == 'INDENT':  # is an INDENT, add the value to the master
             depth = infer_depth(toks)
@@ -160,7 +143,7 @@ def generateStruct(toks, expect_depth):
             t_next = toks.popleft()
             if depth == expect_depth and t_next.tok_type != 'MAPPING_VALUE':
                 toks.appendleft(t_next)
-                return generateStruct(toks, -1) # add value
+                return generateStruct(toks, -1)  # add value
 
         # if t_type == 'INDENT':
         #     # if we found an indent, check it against the max_indent level.
@@ -183,6 +166,84 @@ def generateStruct(toks, expect_depth):
         # else:
         #     pass
 
+
+def generateList(toks):
+    """
+    When a SEQUENCE_OPEN is found in the stream of toks, generateList creates a list and add those STMT into the list.
+
+    If a SEQUENCE_CLOSE is not found when no toks are left, an error is raised.
+
+    >>> from generateTokens import Token; from collections import deque
+    >>> S_OPEN = Token('[', 0,0, 'SEQUENCE_OPEN' )
+    >>> S_CLOSE = Token(']', 0,1, 'SEQUENCE_CLOSE')
+    >>> S_SEP = Token(',', 0,1, 'SEQEUNCE_SEPARATOR')
+    >>> STMT = Token('item', 0,1, 'STMT')
+    >>> MAPPING_VALUE = Token(':', 0,1, 'MAPPING_VALUE')
+
+    >>> empty = deque([S_OPEN, S_CLOSE])
+    >>> generateList(empty)
+    []
+
+    Error: No element in it but SEQEUNCE_SEPARATOR found
+    >>> bad = deque([S_OPEN, S_SEP, S_CLOSE ])
+    >>> try:
+    ...     generateList(bad)
+    ... except ParseError:
+    ...     pass
+
+    Good: two element
+    >>> ok = deque([S_OPEN, STMT, S_SEP, STMT, S_CLOSE])
+    >>> generateList(ok)
+    ['item', 'item']
+
+    Bad: mapping unit found
+    >>> bad = deque([S_OPEN, STMT, MAPPING_VALUE, STMT, S_CLOSE])
+    >>> try:
+    ...     generateList(bad)
+    ... except ParseError:
+    ...     print('bad error')
+    bad error
+    """
+    the_List = []
+    t = toks.popleft()
+    if t.tok_type == 'SEQUENCE_OPEN':
+        found = 0
+        num = 0 # count the number of sequence found
+        while len(toks) and not found:  # if the token stream is not dry
+            t = toks.popleft()
+            if t.tok_type == 'SEQUENCE_CLOSE':
+                # print('Number of item in list = {}'.format(str(num))) # DEBUG
+                found = 1
+
+                # check the number of elements in the list corresponds to the number of SEQEUNCE_SEPARATOR found:
+                if num == 0:
+                    if len(the_List)>1:
+                        raise ParseError('{} SEQUENCE_SEPARATOR is found but none is expected'.format(str(num)))
+                    else:
+                        return the_List # empty list!
+                else: # a separator found
+                    expectation = len(the_List) -1
+                    if expectation != num:
+                        raise ParseError('{} SEQUENCE_SEPARATOR is found but none is expected'.format(num))
+                    else:
+                        return the_List # empty list!
+
+            elif t.tok_type == 'SEQUENCE_OPEN':
+                raise ParseError('[ found at line {} col {} before closing. Nesting of list is not allowed'.format(
+                    t.lineIdx, t.colIdx))
+            elif t.tok_type == 'MAPPING_VALUE':
+                raise ParseError(
+                    ': found at line {} col {} before closing.'.format(t.lineIdx, t.colIdx))
+            elif t.tok_type == 'STMT':
+                toks.appendleft(t);
+                statement = find_STMT(toks)
+                the_List.append(statement)
+            elif t.tok_type == 'SEQEUNCE_SEPARATOR':
+                num += 1;
+
+    return the_List
+
+
 def infer_depth(toks):
     """
     Given the remaining toks, infer the depth of this sentence
@@ -190,7 +251,7 @@ def infer_depth(toks):
 
     One is added because of the one that has already been pop-ed
     """
-    print('check depth'); # DEBUG
+    print('check depth')  # DEBUG
     depth = 1  # starts with 1 to include the one that already been pop-ed
     while len(toks):
         t = toks.popleft()
@@ -203,12 +264,13 @@ def infer_depth(toks):
 
     return depth
 
+
 def find_STMT(toks):
     """
     Given a partial sentence, and toks, find the rest of STMT in the toks queue by iteratively calling popleft() and checking if the tok_type is STMT.
     If it is not (ie. the next tok in toks is "INDENT" or "MAPPING_VALUE"), then concatenate the sentence to form a longsentence and return it
     """
-    print('find STMT') # DEBUG
+    # print('find STMT')  # DEBUG
     sentence = []
     while len(toks):
         t = toks.popleft()
@@ -219,69 +281,13 @@ def find_STMT(toks):
             toks.appendleft(t)
             break
 
-    get_type = lambda s: s.tok_type  # lambda function to iteratively get the tyoe
-    longsentence = [get_type(s) for s in sentence]
+    get_c = lambda s: s.c  # lambda function to iteratively get the tyoe
+    longsentence = [get_c(s) for s in sentence]
     # append white space between tokens to form a string.
     longsentence = ' '.join(longsentence)
 
     return longsentence
 
-
-# def tree():
-#     return defaultdict(tree)
-
-
-# class Node(object):
-#     """
-#     The node of the tree
-#     """
-#
-#     def __init__(self, level, data):
-#         self.data = data
-#         self.level = level
-#         self.children = []
-#
-#     def add_children(self, level, data):
-#         child = Node(level, data)  # the child is a node it self
-#         # if levself.level
-#         self.children.append(child)
-#
-#
-# class Tree(object):
-#     """
-#     Tree data structure to hold nodes
-#     """
-#
-#     def __init__(self):
-#         """
-#         Tree to keep track of its own depth and number of elements
-#         """
-#         self.levels = dict()
-#         self.num_nodes = 0
-#         self.depth = -1
-#
-#     def add_node(self, node):
-#         lev = node.level
-#
-#         if lev > self.depth:
-#             self.levels[lev] = []
-#             self.levels[lev].append(node)
-#             self.depth = lev
-#         else:
-#             self.levels[lev].append(node)
-
-
-# class indent_stack(object):
-#     """
-#     defines the stack to calculate indent level
-#     """
-#     def __init__ (self):
-#         self.list = list();
-#
-#     def get_depth(self):
-#
-#     def add(self):
-#         self.list.append(1);
 
 # ---------------------------------------------------------------------------
 # MAIN

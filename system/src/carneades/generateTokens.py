@@ -33,10 +33,10 @@ class tokenizer(object):
     >>> t = tokenizer(Stream); t.tokenize()
     >>> t.tokens
 
-    # >>> stream = open('../../samples/test_lexer.yml').readlines();
-    # >>> t = tokenizer(stream)
-    # >>> t.tokenize()
-    # >>> t.tokens
+    >>> stream = open('../../samples/test_lexer.yml').readlines();
+    >>> t = tokenizer(stream)
+    >>> t.tokenize()
+    >>> t.tokens
     """
 
     def __init__(self, stream):
@@ -147,7 +147,7 @@ class Token(object):
                 ' ' + self.type + ' ' + str(self.c) + '\n')
 
     def __str__(self):  # same as output
-        return (str(self.tok_type))
+        return (str(self.c))
 
     def __repr__(self):
         return (str(self.tok_type))

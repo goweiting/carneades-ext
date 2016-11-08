@@ -15,4 +15,5 @@
 # # [STMT, STMT, STMT, MAPPING_VALUE, STMT, STMT, STMT, STMT]
 
 # # A list:
-list : [ open , close]
+list : [ open , close ]
+# [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
