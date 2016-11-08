@@ -6,10 +6,6 @@ class parser(object):
     """
     Checks the syntax of the file and strip off unnecessary tokens!
     The parser is very sensitive to indents!
-    -----
-    SYNTAX:
-
-    -----
 
     DOCTEST:
     # >>> from generateTokens import *
@@ -98,78 +94,76 @@ class parser(object):
                         'More than one header of {} is found. Check that you only have one of each headers: {}'.format(tok.c, headers))
 
 
-def generateStruct(toks, expect_depth):
+def generateStruct(toks):
     """
     generateStruct generates the structure of the tokens in the `toks` stream. The two strcuture supported are 1) in-line lists/sequence, 2) dictionarys/maps
 
     if there is a MAPPING_VALUE, and hence a map exists, a dict() is called and then it calls on generateStruct for the rest of the token streams.
 
     if there is a SEQUENCE_OPEN, and hence a list/sequence exists, a list() is used to store the list/sequence elements. The SEQUENCE_CLOSE token indicates the end of the sequence. Each element is separated by the SEQEUNCE_SEPARATOR token.
+
+    DOCTEST:
+    >>> from generateTokens import Token
+
+    >>> stream = ['list : [ open , close ]\\n']
+    >>> t = tokenizer(stream); t.tokenize()
+    >>> toks = t.tokens
+    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
+    >>> Node = generateStruct(toks)
+
     """
 
     toks = deque(toks)  # use as a queue
-    master = {}
+    root = None
+    current_value = ""
+    current_level = 0
 
-    while len(toks):  # if there is still a token yet to be parsed:
-        t = toks.popleft()
-        t_type = t.tok_type
+    t = toks.popleft()
+    t_type = t.tok_type
 
-        if t_type == 'STMT':
-            # find any more part of the STMT
-            toks.appendleft(t)
-            longsentence = find_STMT(toks)
+    if t_type == 'STMT':
+        # find any more part of the STMT
+        toks.appendleft(t)
+        toks, longsentence = find_STMT(toks)  # find the string
+        print(toks)  # DEBUG
 
-            if expect_depth == -1:
-                return longsentence
+        try:
+            t_next = toks.popleft()  # get the next token
+        # print(t_next)  # DEBUG
+        # print(toks) # DEBUG
+        except IndexError:
+            raise ParseError('HEADER: {} does not have any information!'.format_map(t.c)) # end of the stream, this is the last value
 
-            # if the next token after STMT is MAPPING_VALUE, then we use this longsentence as a key
-            # Otherwise, if indent is seen, it is an element to the current
-            # key!
-            try:
-                t_next = toks.popleft()
-            except IndexError:
-                break
+        # We will exepct a MAPPING_VALUE first:
+        if t_next.tok_type is 'MAPPING_VALUE':
+            root = Node(longsentence, 0)  # create the root node
+        else:
+            raise ParseError('MAPPING_VALUE (:) is expected at line {} col {} after HEADER `{}`'.format(
+                t_next.lineIdx, t_next.colIdx, t.c))
 
-            if t_next.tok_type == 'MAPPING_VALUE':
-                expect_depth += 1  # expect the next depth to be 1
-                print(expect_depth)  # DEBUG
-                master[longsentence] = generateStruct(toks, expect_depth)
-                return master
+        # ----------------------------------------------------------
+        #       And find the children of the root:
+        #       - a children is either a list/sequence
+        #       - or a map of stuffs
+        # ----------------------------------------------------------
+        if t_next.tok_type == 'SEQUENCE_OPEN':
+            # a sequence list is given
+            toks, the_List = find_SEQUENCE(toks)
+            print(toks)
+            root.add_child(the_List)  # node will create a child node
 
-        if t_type == 'INDENT':  # is an INDENT, add the value to the master
-            depth = infer_depth(toks)
-
-            # lookahead:
-            t_next = toks.popleft()
-            if depth == expect_depth and t_next.tok_type != 'MAPPING_VALUE':
-                toks.appendleft(t_next)
-                return generateStruct(toks, -1)  # add value
-
-        # if t_type == 'INDENT':
-        #     # if we found an indent, check it against the max_indent level.
-        #     # if the indent level is a new max, create another dictionary
-        #     # to host it
+        # if t_type == 'INDENT':  # is an INDENT, add the value to the master
         #     depth = infer_depth(toks)
-        #
-        # elif
-        #
-        # elif t_type == 'MAPPING_VALUE':
-        #     # use longsentence as the key of the dictionary
-        #     master[longsentence] = {} # since it got to map to something!
-        #     master_keys.append(longsentence)
-        #
-        #
-        # if current_depth > max_depth:
-        #     # a new indent level, then...
-        #     key = master_keys[current_depth-1]
-        #     master[key] = generateStruct(toks, current_depth)
-        # else:
-        #     pass
+
+    while len(toks):
+        print(toks.popleft())
+
+    return Node
 
 
-def generateList(toks):
+def find_SEQUENCE(toks):
     """
-    When a SEQUENCE_OPEN is found in the stream of toks, generateList creates a list and add those STMT into the list.
+    When a SEQUENCE_OPEN is found in the stream of toks, find_SEQUENCE creates a list and add those STMT into the list.
 
     If a SEQUENCE_CLOSE is not found when no toks are left, an error is raised.
 
@@ -181,67 +175,79 @@ def generateList(toks):
     >>> MAPPING_VALUE = Token(':', 0,1, 'MAPPING_VALUE')
 
     >>> empty = deque([S_OPEN, S_CLOSE])
-    >>> generateList(empty)
-    []
+    >>> find_SEQUENCE(empty)
+
 
     Error: No element in it but SEQEUNCE_SEPARATOR found
     >>> bad = deque([S_OPEN, S_SEP, S_CLOSE ])
     >>> try:
-    ...     generateList(bad)
+    ...     find_SEQUENCE(bad)
     ... except ParseError:
     ...     pass
 
     Good: two element
     >>> ok = deque([S_OPEN, STMT, S_SEP, STMT, S_CLOSE])
-    >>> generateList(ok)
-    ['item', 'item']
+    >>> toks, the_List = find_SEQUENCE(ok)
+    >>> the_List
+    >>> toks
+    []
 
     Bad: mapping unit found
     >>> bad = deque([S_OPEN, STMT, MAPPING_VALUE, STMT, S_CLOSE])
     >>> try:
-    ...     generateList(bad)
+    ...     find_SEQUENCE(bad)
     ... except ParseError:
     ...     print('bad error')
     bad error
+
+
     """
     the_List = []
     t = toks.popleft()
     if t.tok_type == 'SEQUENCE_OPEN':
         found = 0
-        num = 0 # count the number of sequence found
+        num = 0  # count the number of sequence found
+
         while len(toks) and not found:  # if the token stream is not dry
             t = toks.popleft()
             if t.tok_type == 'SEQUENCE_CLOSE':
                 # print('Number of item in list = {}'.format(str(num))) # DEBUG
                 found = 1
 
-                # check the number of elements in the list corresponds to the number of SEQEUNCE_SEPARATOR found:
+                # check the number of elements in the list corresponds to the
+                # number of SEQEUNCE_SEPARATOR found:
                 if num == 0:
-                    if len(the_List)>1:
-                        raise ParseError('{} SEQUENCE_SEPARATOR is found but none is expected'.format(str(num)))
+                    if len(the_List) > 1:
+                        raise ParseError(
+                            '{} SEQUENCE_SEPARATOR is found but none is expected'.format(str(num)))
                     else:
-                        return the_List # empty list!
-                else: # a separator found
-                    expectation = len(the_List) -1
+                        return the_List  # empty list!
+                else:  # a separator found
+                    expectation = len(the_List) - 1
                     if expectation != num:
-                        raise ParseError('{} SEQUENCE_SEPARATOR is found but none is expected'.format(num))
+                        raise ParseError(
+                            '{} SEQUENCE_SEPARATOR is found but none is expected'.format(num))
                     else:
-                        return the_List # empty list!
+                        return the_List  # empty list!
 
             elif t.tok_type == 'SEQUENCE_OPEN':
                 raise ParseError('[ found at line {} col {} before closing. Nesting of list is not allowed'.format(
                     t.lineIdx, t.colIdx))
+
             elif t.tok_type == 'MAPPING_VALUE':
                 raise ParseError(
                     ': found at line {} col {} before closing.'.format(t.lineIdx, t.colIdx))
+
             elif t.tok_type == 'STMT':
-                toks.appendleft(t);
+                toks.appendleft(t)
                 statement = find_STMT(toks)
                 the_List.append(statement)
-            elif t.tok_type == 'SEQEUNCE_SEPARATOR':
-                num += 1;
 
-    return the_List
+            elif t.tok_type == 'SEQEUNCE_SEPARATOR':
+                num += 1
+
+        print(toks)
+    return toks, the_List
 
 
 def infer_depth(toks):
@@ -262,7 +268,7 @@ def infer_depth(toks):
             toks.appendleft(t)
             break
 
-    return depth
+    return toks, depth
 
 
 def find_STMT(toks):
@@ -285,8 +291,47 @@ def find_STMT(toks):
     longsentence = [get_c(s) for s in sentence]
     # append white space between tokens to form a string.
     longsentence = ' '.join(longsentence)
+    # print(toks);
+    return toks, longsentence
 
-    return longsentence
+
+class Node(object):
+    """
+    Nodes have children and contain data about itself, it uses `list()` to hold the multiple children
+
+
+    """
+
+    def __init__(self, data, level):
+        self.data = data
+        self.level = level
+        self.children = []
+
+    def add_child(self, child):
+        if type(child) is Node:
+            # if child is a node already, add it into the list, and done
+            self.children.append(child)
+
+        else:
+            # create node for child: using child as data
+            child_node = Node(child, self.level + 1)
+            self.children.append(child_node)
+
+    def get_child(self, value):
+        """
+        Given the data of the child, iteratively search the Node's children to find the child's node. Once found, return that node.
+        """
+        num_child = len(self.children)
+        found = 0
+        for i in range(0, num_child):
+            # iterate through all the child and check the data attribute of
+            # child
+            child = self.children[i]
+            if child.data == value:
+                return child
+
+        if not found:
+            raise IndexError('No child {} found!'.format(value))
 
 
 # ---------------------------------------------------------------------------
