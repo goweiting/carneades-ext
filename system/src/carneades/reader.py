@@ -6,8 +6,8 @@
 import os
 import sys
 
-from carneades.generateTokens import tokenizer
-import carneades.parser
+import carneades.tokenizer as tokenizer
+import carneades.parser as parser
 
 class Reader(object):
     """
@@ -18,7 +18,7 @@ class Reader(object):
     >>> reader.load('../../samples/test_lexer.yml')
     """
     buffer_size = 4096  # default to 4086, unless user define otherwise
-    indent_size = 2
+    # indent_size = 2
 
     def __init__(self, buffer_size=4096):
         self.buffer_size = buffer_size  # if defined, set buffer_size

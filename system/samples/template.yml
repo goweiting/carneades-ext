@@ -20,36 +20,30 @@ PROPOSITION :
 # a sequence of map (dictionary) mapping the key to the `text` field
   first :
     text : Includes everything within this line. The line can be V v v long!
-    polarity : True # only True or False
 
   second :  # Another example
     text : Yes!
-    polarity : False
 
 ASSUMPTION : [ first , second ] # a list of assumptions
 
 ARGUMENT :
-# a sequence of map (dictionary) mapping the argument id to its fields - premise,
-# exception, conclusion and weight
+# a sequence of map (dictionary) mapping the argument id to its fields - premise, exception, conclusion weight
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
+# available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
   arg1 :
-    premise : [ something , another thing ]
+    premise : [ -something , another thing ] # - infront will denote the negation of the proposition above, if it exists
     exception : [ ]   # nothing!
     conclusion : something else # is not a list!
     weight : 0.01
+    proofstandard : preponderance
 
   arg 2 :
     premise :  [ something ]
     exception : [ something else ]
     conclusion : another thing
     weight : 0.2
-
-PROOFSTANDARD :
-# define a list of proposition and the proof standard used.
-# available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  something :  beyond reasonable doubt
-  something else :  scintilla
+    proofstandard : beyond reasonable doubt
 
 PARAMETER :
 # define the parameters use for the proofstandard

@@ -1,5 +1,5 @@
 import re
-from error import *
+from error import TokenizerError
 
 
 class tokenizer(object):
@@ -10,7 +10,6 @@ class tokenizer(object):
     Every stream is just a list of one str for modularised testing
     >>> stream = ['Hello World# IGNORE MY COMMENT ! ##\\n', ':\\n', '\\n']
     >>> t = tokenizer(stream)
-    >>> t.tokenize();
     >>> t.tokens
     [STMT, STMT, MAPPING_VALUE]
 
@@ -24,19 +23,15 @@ class tokenizer(object):
 
     Indent detector
     >>> stream = ['A sequence : \\n', '  An indent expected here!\\n', '    nested indents\\n']
-    >>> t = tokenizer(stream); t.tokenize()
+    >>> t = tokenizer(stream)
     >>> t.tokens
     [STMT, STMT, MAPPING_VALUE, INDENT, STMT, STMT, STMT, STMT, INDENT, INDENT, STMT, STMT]
 
     Sequence separator:
     >>> Stream = ["ASSUMPTION : [ ONE , TWO , THREE ]\\n"]
-    >>> t = tokenizer(Stream); t.tokenize()
+    >>> t = tokenizer(Stream)
     >>> t.tokens
-
-    >>> stream = open('../../samples/test_lexer.yml').readlines();
-    >>> t = tokenizer(stream)
-    >>> t.tokenize()
-    >>> t.tokens
+    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
     """
 
     def __init__(self, stream):
@@ -45,6 +40,7 @@ class tokenizer(object):
         self.indent_stack = []
         self.colIdx = -1
         self.tokens = []
+        self.tokenize()  # call tokenize function
 
     def tokenize(self):
         """
@@ -123,7 +119,12 @@ class tokenizer(object):
 
 class Token(object):
     """
-    A tokenizer convert the character into tokens
+    A tokenizer convert the character into tokens. The :class: Token describes the attributes of each Token.
+
+    :param: c : the character or word itself
+    :param: lineIdx : the line number where c is found
+    :param: colIdx : the character number of the lineIdx
+    :param: tok_type : the type of token, either `STMT`, `MAPPING_VALUE`, `SEQEUNCE_SEPARATOR`, `SEQUENCE_OPEN`, `SEQUENCE_CLOSE` and `INDENT`
     """
 
     def __init__(self, c, lineIdx, colIdx, tok_type):
@@ -136,10 +137,20 @@ class Token(object):
         :param colIdx : the column number of the file
         :parm sourceID : if multiple files are given in the :argument, this corresponds to the nth file.
         """
+        accepted_tokens = ['STMT',
+                           'MAPPING_VALUE',
+                           'SEQEUNCE_SEPARATOR',
+                           'SEQUENCE_OPEN',
+                           'SEQUENCE_CLOSE',
+                           'INDENT']
         self.c = c
         self.lineIdx = lineIdx
         self.colIdx = colIdx
-        self.tok_type = tok_type
+        if tok_type in accepted_tokens: # check that i have input an allowed token type
+            self.tok_type = tok_type
+        else:
+            TokenizerError(lineIdx, colIdx,
+                           'Irrelevant token type given {}'.format(tok_type))
         # print('Token at {}, {}\t= {}'.format(lineIdx, colIdx, c)) # DEBUG
 
     def output(self):
@@ -150,7 +161,13 @@ class Token(object):
         return (str(self.c))
 
     def __repr__(self):
-        return (str(self.tok_type))
+        return str(self.tok_type)
+
+    def __eq__(self, other):
+        return self.__str__() == other
+
+    def __hash__(self):
+        return self.tok_type.__hash__()
 
 
 # -----------------------------------------------------------------------
