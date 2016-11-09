@@ -7,40 +7,50 @@ class parser(object):
     Checks the syntax of the file and strip off unnecessary tokens!
     The parser is very sensitive to indents!
 
+    -------
     DOCTEST:
-    # >>> from tokenier import *
-    # >>> stream = open('../../samples/template.yml').readlines();
-    # >>> t = tokenizer(stream);
-    # >>> tokens = t.tokens;
-    # >>> p = parser(tokens)
-    # >>> p.parse()
-    #
-    # If more than one HEADER found, throw ParseError:
-    # >>> stream=['    PROPOSITION\\n','PROPOSITION\\n']
-    # >>> t = tokenizer(stream);
-    # >>> p = parser(t.tokens)
-    # >>> try:
-    # ...     p.parse()
-    # ... except ParseError:
-    # ...     pass
+    -------
+    >>> from tokenizer import *
+    >>> stream = open('../../samples/template.yml').readlines();
+    >>> t = tokenizer(stream);
+    >>> p = parser(t.tokens)
+    >>> p.proposition.children
+    [first, second]
+    >>> p.assumption.children
+    [['first', 'second']]
+    >>> p.argument.children
+    [arg1, arg 2]
+    >>> p.argument.find_child('arg 2')
+    arg 2
+    >>> p.parameter.children
+    [alpha, beta, gamma]
+
+
+    If more than one HEADER found, throw ParseError:
+    >>> stream=['    PROPOSITION\\n','PROPOSITION\\n']
+    >>> t = tokenizer(stream);
+    >>> try:
+    ...     parser(t.tokens)
+    ... except ParseError:
+    ...     pass
 
 
     """
 
     def __init__(self, tokens):
-        self.tokens = tokens  # a list of tokens from the tokenizer
-        # split the tokens according to the headers =  {PROPOSITION, ARGUMENT,
-        # ASSUMPTION, PROOFSTANDARD, PARAMETER}
-        self.proposition = []
-        self.assumption = []
-        self.argument = []
-        self.proofstandard = []
-        self.parameter = []
-        self.indices = {'PROPOSITION': [0, 0],
-                        'ASSUMPTION': [0, 0],
-                        'ARGUMENT': [0, 0],
-                        'PARAMTER': [0, 0]
-                        }
+        """
+        Create a parser for the stream of tokens.
+        When initiailised, the parser will call self.parse() to parse the tokens into the components.
+
+        If the headers are not found, or more than one of each type of label is found, an error will be raised.
+
+        """
+        self.tokens = tokens
+        self.proposition = None
+        self.assumption = None
+        self.argument = None
+        self.parameter = None
+        self.parse()
 
     def parse(self):
         """
@@ -55,28 +65,24 @@ class parser(object):
         previous_idx = len(self.tokens)  # starting from the back
         for idx, tok in reversed(list(enumerate(self.tokens))):
             # find tok_type = `STMT`, and check if it is one of the headers
-            if tok.tok_type == 'STMT':
-                if tok.c in headers and tok.c not in found:
-                    # print('Found {} at {}, previous_idx = {}'.format(tok.c,
-                    # idx, previous_idx))  # DEBUG
-
-                    # store the start and stop indices, and call generateStruct
-                    # to create nodes for each headers
+            if tok.tok_type == 'STMT' and tok.c in headers:
+                if tok.c not in found:
+                    # call generateStruct to create nodes for each headers
                     if tok.c == 'PROPOSITION':
-                        self.indices['PROPOSITION'] = [idx, previous_idx]
-                        # toks = self.tokens[idx, previous_idx];
+                        toks = self.tokens[idx : previous_idx]
+                        self.proposition = generateStruct(toks)
 
                     elif tok.c == 'ASSUMPTION':
-                        self.indices['ASSUMPTION'] = [idx, previous_idx]
-                        # toks = self.tokens[idx, previous_idx];
+                        toks = self.tokens[idx : previous_idx]
+                        self.assumption = generateStruct(toks)
 
                     elif tok.c == 'ARGUMENT':
-                        self.indices['ARGUMENT'] = [idx, previous_idx]
-                        # toks = self.tokens[idx, previous_idx];
+                        toks = self.tokens[idx : previous_idx]
+                        self.argument = generateStruct(toks)
 
                     elif tok.c == 'PARAMETER':
-                        self.indices['PARAMETER'] = [idx, previous_idx]
-                        # toks = self.tokens[idx, previous_idx];
+                        toks = self.tokens[idx : previous_idx]
+                        self.parameter = generateStruct(toks)
 
                     previous_idx = idx  # update the index so that the next header's indices will not include those of the previous header
                     found.add(tok.c)  # maintain a list of this that is found
@@ -85,6 +91,10 @@ class parser(object):
                     # prevent multiple usage of headers!
                     raise ParseError(
                         'More than one header of {} is found. Check that you only have one of each headers: {}'.format(tok.c, headers))
+
+        if len(found) != len(headers):
+            raise ParseError(
+                'Expected labels are: {}. However, only {} fonud.'.format(headers, found))
 
 
 def generateStruct(toks):
