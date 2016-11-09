@@ -1,5 +1,6 @@
 import re
-from error import TokenizerError
+from carneades.error import TokenizerError
+
 
 
 class tokenizer(object):
@@ -167,7 +168,7 @@ class Token(object):
         return self.__str__() == other
 
     def __hash__(self):
-        return self.tok_type.__hash__()
+        return hash(str(self.lineIdx)+str(self.colIdx)) # since the line and col indices are unique, we can use it as a hash code.
 
 
 # -----------------------------------------------------------------------

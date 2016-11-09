@@ -36,3 +36,14 @@ class ParseError(Error):
     """
     def __init__(self, message):
         self.message = message
+
+
+# ------------------------------------------------
+#   Error for Parsing
+# ------------------------------------------------
+class ReaderError(Error):
+    """
+    Error class for Reader
+    """
+    def __init__(self, message):
+        self.message = message

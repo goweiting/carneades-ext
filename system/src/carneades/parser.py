@@ -1,5 +1,5 @@
 from collections import deque
-from error import ParseError
+from carneades.error import ParseError
 
 
 class parser(object):
@@ -69,19 +69,19 @@ class parser(object):
                 if tok.c not in found:
                     # call generateStruct to create nodes for each headers
                     if tok.c == 'PROPOSITION':
-                        toks = self.tokens[idx : previous_idx]
+                        toks = self.tokens[idx: previous_idx]
                         self.proposition = generateStruct(toks)
 
                     elif tok.c == 'ASSUMPTION':
-                        toks = self.tokens[idx : previous_idx]
+                        toks = self.tokens[idx: previous_idx]
                         self.assumption = generateStruct(toks)
 
                     elif tok.c == 'ARGUMENT':
-                        toks = self.tokens[idx : previous_idx]
+                        toks = self.tokens[idx: previous_idx]
                         self.argument = generateStruct(toks)
 
                     elif tok.c == 'PARAMETER':
-                        toks = self.tokens[idx : previous_idx]
+                        toks = self.tokens[idx: previous_idx]
                         self.parameter = generateStruct(toks)
 
                     previous_idx = idx  # update the index so that the next header's indices will not include those of the previous header
@@ -476,33 +476,43 @@ class Node(object):
         if type(child_data) is Node:
             self.children.append(child_data)
         else:
-            child_node = Node(child_data)
-            self.children.append(child_node)
+            if type(child_data) is list: # if it is already a list, extend the list of children
+                self.children.extend(child_data)
+            else:
+                # otherwise if is just a word/statement, add it to the list
+                child_node = Node(child_data)
+                self.children.append(child_node)
 
     def find_child(self, value):
         """
         Given the data of the child, iteratively search the Node's children. Once found, return that node.
 
         """
-        queue = deque(self.children)
-        visited = set()
+        queue = deque(self.children) # add the list of children (nodes) into the queue
+        # visited = set()
 
         while len(queue) > 0:
-            child = queue.pop()
-            if child in visited:
-                continue  # start from the next item in queue
+            this_node = queue.pop()
+            # if this_node in visited:
+            #     continue  # start from the next item in queue
 
             # unique value:
-            visited.add(child)
-            if child.data == value:
-                return child
+            # visited.add(child)
+            # if type(this_node.data) is list:
+            #     for ele in this_node.data:
+            #         if ele == value:
+            #             return this_node
+            # else:
+            if this_node.data == value:
+                return this_node
 
-            for child_node in child.children:  # breath first search
-                if child_node not in visited:
+            for child_node in this_node.children:  # breath first search
+                # if child_node not in visited:
                     queue.appendleft(child_node)
 
-        raise IndexError('{} not found in {}'.format(
-            value, self))  # throw error if not found
+        # throw error if not found
+        raise ParseError('{} not found in {}'.format(
+            value, self))
 
     def __str__(self):
         return str(self.data)
@@ -514,7 +524,7 @@ class Node(object):
         return self.__str__() == other
 
     def __hash__(self):
-        return self.data.__hash__()
+        return hash(self.data)
 
 
 # ---------------------------------------------------------------------------

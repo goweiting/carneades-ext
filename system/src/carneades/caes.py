@@ -1,10 +1,10 @@
-Carneades Argument Evaluation Structure
-
-Copyright (C) 2014 Ewan Klein
-Author: Ewan Klein <ewan@inf.ed.ac.uk>
-Based on: https://hackage.haskell.org/package/CarneadesDSL
-
-For license information, see LICENSE
+# Carneades Argument Evaluation Structure
+#
+# Copyright (C) 2014 Ewan Klein
+# Author: Ewan Klein <ewan@inf.ed.ac.uk>
+# Based on: https://hackage.haskell.org/package/CarneadesDSL
+#
+# For license information, see LICENSE
 
 """
 ==========
