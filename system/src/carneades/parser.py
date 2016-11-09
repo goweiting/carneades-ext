@@ -102,8 +102,17 @@ def generateStruct(toks):
     >>> t = tokenizer(stream);
     >>> t.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
+    >>> list = generateStruct(t.tokens)
+    >>> list.children
+    [['open', 'close']]
 
-    # >>> Node = generateStruct(t.tokens)
+    >>> stream = ['PROPOSITION : # a sequence of map (dictionary) mapping the key to the `text` field \\n', '  first : \\n', '    text : Includes everything within this line. The line can be V v v long!\\n', '  second :  # Another example \\n', '    text : Yes!\\n']
+    >>> t = tokenizer(stream)
+    >>> proposition = generateStruct(t.tokens)
+    >>> proposition.children
+    [first, second]
+    >>> proposition.children[0].children[0]
+    text
 
     """
 
@@ -134,11 +143,11 @@ def generateStruct(toks):
             return longsentence
 
         else:  # more tokens left to be processed:
-            t_next = toks[0]
+            t_next = toks.popleft()
 
             # We will exepct a MAPPING_VALUE first:
             if t_next.tok_type is 'MAPPING_VALUE':
-                root = Node(longsentence, 0)  # create the root node
+                root = Node(longsentence)  # create the root node
             else:
                 raise ParseError('MAPPING_VALUE (:) is expected at line {} col {} `{}`. Instead, {} is found!'.format(
                     t_next.lineIdx, t_next.colIdx, t.c, t_next.c))
@@ -150,6 +159,7 @@ def generateStruct(toks):
             #           - a children is either a list/sequence
             #           - or a sentence
             # ----------------------------------------------------------
+            t_next = toks.popleft()
             if t_next.tok_type == 'SEQUENCE_OPEN':
                 # a sequence list is given
                 toks.appendleft(t_next)
@@ -174,16 +184,17 @@ def generateStruct(toks):
             # ----------------------------------------------------------
             #
             elif t_next.tok_type == 'INDENT':  # is an INDENT, add the value to the master
-
+                toks.appendleft(t_next)
                 depth = infer_depth(toks)
                 # call find_args_depth to get the tokens that belongs to the
                 # this key
-                chunks = find_args_depth(toks, depth)
-                for node in chunks:
-                    root.add_child(node)
+                chunks = find_chunks_depth(toks, depth)
+                for chunk in chunks:
+                    root.add_child(generateStruct(chunk))
 
-        # while len(toks):
-        #     print(toks.popleft())
+        while len(toks):
+            print(toks.popleft())
+    return root
 
 
 def find_chunks_depth(toks, expected_depth):
