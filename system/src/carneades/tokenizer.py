@@ -1,5 +1,6 @@
 import re
-from carneades.error import TokenizerError
+from collections import deque
+from error import TokenizerError
 
 
 # ---------------------------------------------------------------------------
@@ -9,7 +10,7 @@ class Tokenizer(object):
     ---
     DOCTEST:
     Every stream is just a list of one str for modularised testing
-    >>> stream = ['Hello World# IGNORE MY COMMENT ! ##\\n', ':\\n', '\\n']
+    >>> stream = ['Hello World :# IGNORE MY COMMENT ! ##\\n', '\\n']
     >>> t = Tokenizer(stream)
     >>> t.tokens
     [STMT, STMT, MAPPING_VALUE]
@@ -35,7 +36,18 @@ class Tokenizer(object):
     >>> Stream = ["ASSUMPTION : [ ONE , TWO , THREE ]\\n"]
     >>> t = Tokenizer(Stream)
     >>> t.tokens
-    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
+    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
+
+    >>> stream = ['ASSUMPTION : [ one, two, three only ]\\n']
+    >>> t = Tokenizer(stream)
+    >>> t.tokens
+    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
+
+    # added support for not having to separate it by spaces:
+    >>> stream = ['ASSUMPTION:[one,two,three only]\\n']
+    >>> t=Tokenizer(stream)
+    >>> t.tokens
+    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
     """
 
     def __init__(self, stream, indent_size=2):
@@ -81,21 +93,26 @@ class Tokenizer(object):
             #   True
             #   """
             # ---------------------------------------------------------------
-            indent_pattern = '^ {'+ str(self.indent_size) +'}' # use regex to find the indent based on the user defined indent_size
+            # use regex to find the indent based on the user defined
+            # indent_size
+            indent_pattern = '^ {' + str(self.indent_size) + '}'
+            indent = ' '
             indents = re.split(indent_pattern, line)
             depth = -1
             while len(indents) > 1:
                 depth += 1
                 self.tokens.append(
                     Token('  ', lineIdx, depth * self.indent_size, 'INDENT'))
-                line = line[self.indent_size:]  # shorten the line by removing the indent
+                # shorten the line by removing the indent
+                line = line[self.indent_size:]
                 pointer += self.indent_size
                 indents = re.split(indent_pattern, line)
 
-            # if there are more things to be tokenised, check if whitespaces are well-defined
+            # if there are more things to be tokenised, check if whitespaces
+            # are well-defined
             if len(line) and line[0] == ' ':
-                raise TokenizerError(lineIdx, pointer, 'The indent size is {}, but additional whitespaces are found'.format(self.indent_size))
-
+                raise TokenizerError(
+                    lineIdx, pointer, 'The indent size is {}, but additional whitespace is found'.format(self.indent_size))
 
             # ---------------------------------------------------------------
             #   COMMENT CHECKER:
@@ -111,29 +128,48 @@ class Tokenizer(object):
             # ---------------------------------------------------------------
             #   TOKENIZE the rest of the stuff
             # ---------------------------------------------------------------
-            split_bywhite = line.split(' ')
-            for idx, toks in enumerate(split_bywhite):
+            while len(line):
+                # add one for each whitespace stripped
+                pointer += 1
 
                 # if len(toks) == 0: # random white space found
                 #     raise TokenizerError(lineIdx, pointer, 'more than one white space used {}'.format(toks))
+                char = line[0]
+                if char == ':':
+                    self.tokens.append(
+                        Token(char, lineIdx, pointer, 'MAPPING_VALUE'))
+                    line = line[1:]
+                    continue
 
-                if toks == ':':
+                elif char == '[':
                     self.tokens.append(
-                        Token(toks, lineIdx, pointer, 'MAPPING_VALUE'))
-                elif toks == '[':
-                    self.tokens.append(
-                        Token(toks, lineIdx, pointer, 'SEQUENCE_OPEN'))
-                elif toks == ']':
-                    self.tokens.append(
-                        Token(toks, lineIdx, pointer, 'SEQUENCE_CLOSE'))
-                elif toks == ',':
-                    self.tokens.append(
-                        Token(toks, lineIdx, pointer, 'SEQEUNCE_SEPARATOR'))
-                elif len(toks) > 0:
-                    self.tokens.append(Token(toks, lineIdx, pointer, 'STMT'))
+                        Token(char, lineIdx, pointer, 'SEQUENCE_OPEN'))
+                    line = line[1:]
+                    continue
 
-                # add one for each whitespace stripped
-                pointer += len(toks) + 1
+                elif char == ']':
+                    self.tokens.append(
+                        Token(char, lineIdx, pointer, 'SEQUENCE_CLOSE'))
+                    line = line[1:]
+                    continue
+
+                elif char == ',':
+                    self.tokens.append(
+                        Token(char, lineIdx, pointer, 'SEQUENCE_SEPARATOR'))
+                    line = line[1:]
+                    continue
+
+                elif char == ' ':
+                    line = line[1:] # ignore the white spaces
+                    continue
+
+                else:  # word
+                    # anything as long as it is not a character found above
+                    pattern = r'^[^,:\[\] ]+'
+                    word = re.findall(pattern, line)[0]
+                    self.tokens.append(Token(word, lineIdx, pointer, 'STMT'))
+                    line = line[len(word):]
+                    pointer += len(word) - 1
 
 
 # ---------------------------------------------------------------------------
@@ -144,7 +180,7 @@ class Token(object):
     :param: c : the character or word itself
     :param: lineIdx : the line number where c is found
     :param: colIdx : the character number of the lineIdx
-    :param: tok_type : the type of token, either `STMT`, `MAPPING_VALUE`, `SEQEUNCE_SEPARATOR`, `SEQUENCE_OPEN`, `SEQUENCE_CLOSE` and `INDENT`
+    :param: tok_type : the type of token, either `STMT`, `MAPPING_VALUE`, `SEQUENCE_SEPARATOR`, `SEQUENCE_OPEN`, `SEQUENCE_CLOSE` and `INDENT`
     """
 
     def __init__(self, c, lineIdx, colIdx, tok_type):
@@ -159,7 +195,7 @@ class Token(object):
         """
         accepted_tokens = ['STMT',
                            'MAPPING_VALUE',
-                           'SEQEUNCE_SEPARATOR',
+                           'SEQUENCE_SEPARATOR',
                            'SEQUENCE_OPEN',
                            'SEQUENCE_CLOSE',
                            'INDENT']

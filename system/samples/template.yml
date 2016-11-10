@@ -2,7 +2,6 @@ PROPOSITION :
 # a sequence of map (dictionary) mapping the key to the `text` field
   first :
     text : Includes everything within this line. The line can be V v v long!
-
   second :  # Another example
     text : Yes!
 
