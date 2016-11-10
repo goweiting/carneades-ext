@@ -4,12 +4,12 @@
 # ---------------------------------------------------------------------------
 import logging
 
-from carneades.caes import *
-from carneades.tokenizer import Tokenizer
-from carneades.parser import Parser, Node
-from carneades.error import ReaderError
+from caes import *
+from tokenizer import Tokenizer
+from parser import Parser, Node
+from error import ReaderError
 
-LOGLEVEL = logging.INFO
+LOGLEVEL = logging.DEBUG
 logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
 
@@ -54,8 +54,6 @@ class Reader(object):
         # call tokenizer will call tokenize() when initialised
         t = Tokenizer(stream, self.indent_size)
         toks = t.tokens
-        # print(stream_tokens) # DEBUG
-        logging.info('\t\t\tdone')
 
         # ---------------------------------------------------------------
         #   Parsing:
@@ -64,51 +62,48 @@ class Reader(object):
 
         # parse() will be initiated automatically once initialised
         p = Parser(toks)
-        # retrieve the nodes from parser:
-        proposition = p.proposition
-        argument = p.argument
-        assumption = p.assumption
-        parameter = p.parameter
-
-        logging.info('\t\t\tdone')
 
         # ---------------------------------------------------------------
         #   Translate it into data structure for CAES
         # ---------------------------------------------------------------
+        caes_propliteral = dict()
+        caes_assumption = set()
+        caes_arguments = dict()
+        caes_proofstandard = dict()
+        caes_alpha = float()
+        caes_beta = float()
+        caes_gamma = float()
 
         # Processing proposition:
         logging.info('\tAdding propositions to CAES')
-        caes_propliteral = dict()
-        for p in proposition.children:  # iterate through the list of children
-            prop_id = p.data
-            text = p.children[0].data
+        for proplit in p.proposition.children:  # iterate through the list of children
+            assert type(proplit) is Node
+            prop_id = proplit.data
+            text = proplit.children[0].data
+            if prop_id[0] == '-':
+                raise ReaderError(
+                    '- found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.format(p))
             # rename the PROP_ID in case of long names
             # here, added prop_id as a field in PropLierals!
-            caes_propliteral[prop_id] = PropLiteral(
-                text)  # True by defailt
+            # polarity is set to True by defailt
+            caes_propliteral[prop_id] = PropLiteral(text)
 
         # -----------------------------------------------------------------
         logging.info('\tAdding assumptions to CAES')
-        caes_assumption = set()
-        tmp = assumption.children  # the list of assumptions
-        assert type(tmp) is list
+        tmp = p.assumption.children  # the list of assumptions
 
-        for assume in tmp:
-            assert type(assume) is str
+        for prop in tmp:
             # check that the assumptions are in the set of caes_propliteral
-            if check_prop(caes_propliteral, assume):
-
-                if assume[0] == '-':  # switch the polarity of the outcome!
-                    prop = caes_propliteral[assume[1:]]
+            if check_prop(caes_propliteral, prop):
+                if prop[0] == '-':  # switch the polarity of the outcome!
+                    # find the PropLiteral in the dictionary
+                    prop = caes_propliteral[prop[1:]]
                     prop = prop.negate()
                 else:
-                    prop = caes_propliteral[assume]
-
-            else:
-                raise ReaderError(
-                    'No such literal {} found in the propsitions defined above'.format(assume))
+                    prop = caes_propliteral[prop]
 
             caes_assumption.add(prop)
+            # logging.info(type(prop))
 
         # -----------------------------------------------------------------
         logging.info('\tAdding arguments to CAES')
@@ -118,9 +113,7 @@ class Reader(object):
         # exceptions
         # For proofstandards, it is a list of pairs consisting of proposition
         # and proof standard
-        caes_arguments = dict()  # a dictionary to hold the arguments
-        caes_proofstandard = dict()
-        for arg_id in argument.children:
+        for arg_id in p.argument.children:
             # iterating through the each node of argument
             assert type(arg_id) is Node  # typecheck
 
@@ -136,98 +129,49 @@ class Reader(object):
                     'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
 
             # check that the literals are valid:
-            ok = check_prop(caes_propliteral, conclusion) and \
-                check_proofstandard(proofstandard) and \
-                check_prop(premise) and \
-                check_prop(exception)
+            ok_c, conclusion = check_prop(caes_propliteral, conclusion)
+            ok_e, exception = check_prop(caes_propliteral, exception)
+            ok_p, premise = check_prop(caes_propliteral, premise)
+            ok_ps, proofstandard = check_proofstandard(proofstandard)
 
-            if ok:
-                caes_arguments[arg_id] = Argument(
-                    conclusion=conclusion, premises=premise, exceptions=exception)
+            if ok_c and ok_e and ok_p and ok_ps:
                 caes_proofstandard[arg_id] = proofstandard
-            else:
-                raise ReaderError(
-                    '{}\'s propositions are invalid'.format(arg_id))
-
+                caes_arguments[arg_id] = Argument(conclusion=conclusion,
+                                                  premises=premise, exceptions=exception)
         # -----------------------------------------------------------------
         logging.info('\tAdding parameter to CAES')
-        caes_alpha = 0
-        caes_beta = 0
-        caes_gamma = 0
-        for p in parameter.children:
-            assert type(p) is Node  # these are nodes!
 
-            if p.data == 'alpha':
-                caes_alpha = p.children[0].data
+        for param in p.parameter.children:
+            if param.data == 'alpha':
+                caes_alpha = float(param.children[0].data)
                 # check that they are within range
                 if caes_alpha > 1 or caes_alpha < 0:
                     raise SyntaxError(
                         'caes_alpha must be within the range of 0 and 1 inclusive. {} given'.format(caes_alpha))
 
-            elif p.data == 'beta':
-                caes_beta = p.children[0].data
+            elif param.data == 'beta':
+                caes_beta = float(param.children[0].data)
                 if caes_beta > 1 or caes_beta < 0:
                     raise SyntaxError(
                         'caes_beta must be within the range of 0 and 1 inclusive. {} given'.format(caes_beta))
 
-            elif p.data == 'gamma':
-                caes_gamma = p.children[0].data
+            elif param.data == 'gamma':
+                caes_gamma = float(param.children[0].data)
                 if caes_gamma > 1 or caes_gamma < 0:
                     raise SyntaxError(
                         'caes_gamma must be within the range of 0 and 1 inclusive. {} given'.format(caes_gamma))
 
-
-# -----------------------------------------------------------------------------
-#       Additional Functions to help check the propositions
-# -----------------------------------------------------------------------------
-def check_prop(caes_propliteral, prop_id):
-    """
-    given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
-    If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
-
-    :rtype: bool
-    """
-    if type(prop_id) is set:
-        props = list(prop_id)
-        checker = True
-        for p in props:
-            checker = checker and check_prop(caes_propliteral, p)
-        return checker
-    elif type(prop_id) is str:
-        if prop_id[0] == '-':
-            prop_id = prop_id[1:]
-
-        if prop_id in caes_propliteral.keys():
-            return True
-        else:
-            return False
+        logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
+        caes_alpha, caes_beta, caes_gamma))
+        logging.debug('propliterals: {} '.format(caes_propliteral))
+        logging.debug('arguments: {} '.format(caes_arguments))
+        logging.debug('assumptions: {} '.format(caes_assumption))
+        logging.debug('arguments {} :'.format(caes_arguments))
 
 
-def check_proofstandard(query):
-    """
-    check if the proofstandard user input is a valid input.
-    Return the CAES's version of the similar proofstandard
-    """
-    standards = {'scintilla': "scintilla",
-                 'preponderance': "preponderance",
-                 'clear and convincing': "clear_and_convincing",
-                 'beyond reasonable doubt': "beyond_reasonable_doubt",
-                 'dialectical validitys': "dialectical_validity"}
-
-    if query in standards.keys():
-        return standards[query]
-    else:
-        raise ReaderError('Invalid proof standard {} found'.format(query))
-
-
-def check_range(lower, higher, query):
-    """
-    check if query falls in the range of higher and lower
-    """
-    if query > higher or query < lower:
-        return False
-    else:
-        return True
+        # -----------------------------------------------------------------
+        #       draw the argument graph:
+        # -----------------------------------------------------------------
 
 # ---------------------------------------------------------------------------
 # MAIN

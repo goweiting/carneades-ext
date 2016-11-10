@@ -776,6 +776,66 @@ class CAES(object):
         args = self.argset.get_arguments(con)
         return self.max_weight_applicable(args)
 
+# -----------------------------------------------------------------------------
+#       Additional Functions to help check
+#      propositions and proofstandards from Reader
+# -----------------------------------------------------------------------------
+
+
+def check_prop(caes_propliteral, prop_id):
+    """
+    given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
+    If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
+
+    :rtype: bool - if the prop_id is in caes_propliteral
+    :rtype: prop - the PropLiteral of the given prop_id
+    """
+
+    if type(prop_id) is set:
+        props = list(prop_id)
+        checker = True
+        set_props = set()
+
+        for p in props:
+            yes, prop = check_prop(caes_propliteral, p)
+            checker = checker and yes  # if no, the function would already had raised an error
+            set_props.add(prop)
+
+        return checker, set_props
+
+    elif type(prop_id) is str:
+        negate = 0  # check for negation first
+        if prop_id[0] == '-':
+            prop_id = prop_id[1:]
+            negate = 1
+
+        if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
+            raise ReaderError(
+                '{} is not defined in propositions'.format(prop_id))
+            return False
+        else:
+            if negate:
+                return True, caes_propliteral[prop_id].negate()
+            else:
+                return True, caes_propliteral[prop_id]
+
+
+def check_proofstandard(query):
+    """
+    check if the proofstandard user input is a valid input.
+    Return the CAES's version of the similar proofstandard
+    """
+    standards = {'scintilla': "scintilla",
+                 'preponderance': "preponderance",
+                 'clear and convincing': "clear_and_convincing",
+                 'beyond reasonable doubt': "beyond_reasonable_doubt",
+                 'dialectical validitys': "dialectical_validity"}
+
+    if query in standards.keys():
+        return True, standards[query]
+    else:
+        raise ReaderError('Invalid proof standard {} found'.format(query))
+
 
 def arg_demo():
     """

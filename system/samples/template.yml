@@ -1,9 +1,8 @@
 PROPOSITION:
 # a sequence of map (dictionary) mapping the key to the `text` field
-  first:
-    text: Includes everything within this line. The line can be V v v long!
-  second:  # Another example
-    text: Yes!
+  first: Includes everything within this line. The line can be V v v long!
+  second: Yes!     # here
+  third: yeas
 
 ASSUMPTION: [first, second] # a list of assumptions
 
@@ -13,16 +12,16 @@ ARGUMENT:
 # the weights are double, ranging from 0 to 1
 # available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
   arg1:
-    premise: [-something,another thing] # - infront will denote the negation of the proposition above, if it exists
+    premise: [-first,second] # - infront will denote the negation of the proposition above, if it exists
     exception: []   # nothing!
-    conclusion: something else # is not a list!
+    conclusion: third # is not a list!
     weight: 0.01
     proofstandard: preponderance
 
   arg 2:
-    premise: [something]
-    exception: [something else]
-    conclusion: another thing
+    premise: [second]
+    exception: [first]
+    conclusion: third
     weight: 0.2
     proofstandard: beyond reasonable doubt
 

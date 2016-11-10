@@ -24,13 +24,17 @@ class Parser(object):
     >>> t = Tokenizer(stream);
     >>> p = Parser(t.tokens)
     >>> p.proposition.children
-    [first, second]
+    [first, second, third]
     >>> p.assumption.children
     ['first', 'second']
     >>> p.argument.children
     [arg1, arg 2]
     >>> p.argument.find_child('arg 2')
     arg 2
+    >>> p.argument.find_child('arg 2').children
+    [premise, exception, conclusion, weight, proofstandard]
+    >>> p.argument.find_child('arg 2').find_child('proofstandard').children[0].data
+    'beyond reasonable doubt'
     >>> p.parameter.children
     [alpha, beta, gamma]
 
@@ -174,7 +178,7 @@ class Parser(object):
                 #   to create these nodes
                 # ----------------------------------------------------------
                 #
-                elif t_next.tok_type == 'INDENT':  # is an INDENT, add the value to the master
+                elif t_next.tok_type == 'INDENT':  # is an INDENT, add the value to the master node
                     toks.appendleft(t_next)
                     depth = infer_depth(toks)
                     # call find_args_depth to get the tokens that belongs to the
@@ -182,10 +186,6 @@ class Parser(object):
                     chunks = find_chunks_depth(toks, depth)
                     for chunk in chunks:
                         root.add_child(self.generateStruct(chunk))
-
-            # while len(toks):
-            #     print(toks.popleft())
-
         return root
 
 # ---------------------------------------------------------------------------
