@@ -1,5 +1,5 @@
 from collections import deque
-from carneades.error import ParseError
+from error import ParseError
 # -------------------------------------------------------------------------
 # :class: parser
 # :class: Node
@@ -20,7 +20,7 @@ class Parser(object):
     DOCTEST:
     -------
     >>> from tokenizer import Tokenizer
-    >>> stream = open('../samples/template.yml').readlines();
+    >>> stream = open('../../samples/template.yml').readlines();
     >>> t = Tokenizer(stream);
     >>> p = Parser(t.tokens)
     >>> p.proposition.children
@@ -111,7 +111,7 @@ class Parser(object):
 
         if there is a MAPPING_VALUE, and hence a map exists, a dict() is called and then it calls on generateStruct for the rest of the token streams.
 
-        if there is a SEQUENCE_OPEN, and hence a list/sequence exists, a list() is used to store the list/sequence elements. The SEQUENCE_CLOSE token indicates the end of the sequence. Each element is separated by the SEQEUNCE_SEPARATOR token.
+        if there is a SEQUENCE_OPEN, and hence a list/sequence exists, a list() is used to store the list/sequence elements. The SEQUENCE_CLOSE token indicates the end of the sequence. Each element is separated by the SEQUENCE_SEPARATOR token.
         """
 
         toks = deque(toks)  # use as a queue
@@ -375,7 +375,7 @@ def find_SEQUENCE(toks):
     >>> from tokenizer import Token; from collections import deque
     >>> S_OPEN = Token('[', 0,0, 'SEQUENCE_OPEN' )
     >>> S_CLOSE = Token(']', 0,1, 'SEQUENCE_CLOSE')
-    >>> S_SEP = Token(',', 0,1, 'SEQEUNCE_SEPARATOR')
+    >>> S_SEP = Token(',', 0,1, 'SEQUENCE_SEPARATOR')
     >>> STMT = Token('item', 0,1, 'STMT')
     >>> MAPPING_VALUE = Token(':', 0,1, 'MAPPING_VALUE')
 
@@ -386,12 +386,10 @@ def find_SEQUENCE(toks):
     >>> the_list
     []
 
-    Error: No element in it but SEQEUNCE_SEPARATOR found
+    Error: No element in it but SEQUENCE_SEPARATOR found
     >>> bad = deque([S_OPEN, S_SEP, S_CLOSE ])
-    >>> try:
-    ...     find_SEQUENCE(bad)
-    ... except ParseError:
-    ...     pass
+    >>> try: find_SEQUENCE(bad)
+    ... except ParseError: pass
 
     Good: two element
     >>> ok = deque([S_OPEN, STMT, S_SEP, STMT, S_CLOSE])
@@ -408,9 +406,8 @@ def find_SEQUENCE(toks):
     ... except ParseError:
     ...     print('bad error')
     bad error
-
-
     """
+
     the_List = []
     t = toks.popleft()
     if t.tok_type == 'SEQUENCE_OPEN':
@@ -426,7 +423,7 @@ def find_SEQUENCE(toks):
                 found = 1
 
                 # check the number of elements in the list corresponds to the
-                # number of SEQEUNCE_SEPARATOR found:
+                # number of SEQUENCE_SEPARATOR found:
                 if num == 0:
                     if len(the_List) > 1:
                         raise ParseError(
@@ -454,7 +451,7 @@ def find_SEQUENCE(toks):
                 toks, statement = find_STMT(toks)
                 the_List.append(statement)
 
-            elif t.tok_type == 'SEQEUNCE_SEPARATOR':
+            elif t.tok_type == 'SEQUENCE_SEPARATOR':
                 num += 1
 
         raise ParseError(

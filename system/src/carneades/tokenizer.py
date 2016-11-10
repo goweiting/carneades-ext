@@ -8,17 +8,12 @@ class Tokenizer(object):
     """
     Takes in a stream of character and tokenize them according to the rule
     ---
-    DOCTEST:
+    Check that comments are removed:
     Every stream is just a list of one str for modularised testing
     >>> stream = ['Hello World :# IGNORE MY COMMENT ! ##\\n', '\\n']
     >>> t = Tokenizer(stream)
     >>> t.tokens
     [STMT, STMT, MAPPING_VALUE]
-
-    Ill form (no End of line)
-    >>> stream = ['A sequence : ', '  - An indent expected here!']
-    >>> try: t = Tokenizer(stream)
-    ... except TokenizerError: pass
 
     Indent detector
     >>> stream = ['A sequence : \\n', '  An indent expected here!\\n', '    nested indents\\n']
@@ -43,11 +38,16 @@ class Tokenizer(object):
     >>> t.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
 
-    # added support for not having to separate it by spaces:
+    Added support for not having to separate it by spaces:
     >>> stream = ['ASSUMPTION:[one,two,three only]\\n']
     >>> t=Tokenizer(stream)
     >>> t.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
+
+    >>> stream = open('../../samples/template.yml').readlines()
+    >>> t = Tokenizer(stream)
+    >>> t.tokens
+    [STMT, MAPPING_VALUE, INDENT, STMT, MAPPING_VALUE, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, STMT, INDENT, STMT, MAPPING_VALUE, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_CLOSE, STMT, MAPPING_VALUE, INDENT, STMT, MAPPING_VALUE, INDENT, INDENT, STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE, INDENT, INDENT, STMT, MAPPING_VALUE, SEQUENCE_OPEN, SEQUENCE_CLOSE, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, STMT, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, INDENT, STMT, STMT, MAPPING_VALUE, INDENT, INDENT, STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_CLOSE, INDENT, INDENT, STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, STMT, SEQUENCE_CLOSE, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, STMT, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, INDENT, INDENT, STMT, MAPPING_VALUE, STMT, STMT, STMT, STMT, MAPPING_VALUE, INDENT, STMT, MAPPING_VALUE, STMT, INDENT, STMT, MAPPING_VALUE, STMT, INDENT, STMT, MAPPING_VALUE, STMT]
     """
 
     def __init__(self, stream, indent_size=2):
