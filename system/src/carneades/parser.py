@@ -1,8 +1,17 @@
 from collections import deque
 from carneades.error import ParseError
+# -------------------------------------------------------------------------
+# :class: parser
+# :class: Node
+# :def: generateStruct
+# :def: find_chunks_depth
+# :def: find_STMT
+# :def: find_SEQUENCE
+# :def: infer_depth
+# -------------------------------------------------------------------------
 
 
-class parser(object):
+class Parser(object):
     """
     Checks the syntax of the file and strip off unnecessary tokens!
     The parser is very sensitive to indents!
@@ -10,14 +19,14 @@ class parser(object):
     -------
     DOCTEST:
     -------
-    >>> from tokenizer import *
-    >>> stream = open('../../samples/template.yml').readlines();
-    >>> t = tokenizer(stream);
-    >>> p = parser(t.tokens)
+    >>> from tokenizer import Tokenizer
+    >>> stream = open('../samples/template.yml').readlines();
+    >>> t = Tokenizer(stream);
+    >>> p = Parser(t.tokens)
     >>> p.proposition.children
     [first, second]
     >>> p.assumption.children
-    [['first', 'second']]
+    ['first', 'second']
     >>> p.argument.children
     [arg1, arg 2]
     >>> p.argument.find_child('arg 2')
@@ -28,9 +37,9 @@ class parser(object):
 
     If more than one HEADER found, throw ParseError:
     >>> stream=['    PROPOSITION\\n','PROPOSITION\\n']
-    >>> t = tokenizer(stream);
+    >>> t = Tokenizer(stream);
     >>> try:
-    ...     parser(t.tokens)
+    ...     Parser(t.tokens)
     ... except ParseError:
     ...     pass
 
@@ -70,19 +79,19 @@ class parser(object):
                     # call generateStruct to create nodes for each headers
                     if tok.c == 'PROPOSITION':
                         toks = self.tokens[idx: previous_idx]
-                        self.proposition = generateStruct(toks)
+                        self.proposition = self.generateStruct(toks)
 
                     elif tok.c == 'ASSUMPTION':
                         toks = self.tokens[idx: previous_idx]
-                        self.assumption = generateStruct(toks)
+                        self.assumption = self.generateStruct(toks)
 
                     elif tok.c == 'ARGUMENT':
                         toks = self.tokens[idx: previous_idx]
-                        self.argument = generateStruct(toks)
+                        self.argument = self.generateStruct(toks)
 
                     elif tok.c == 'PARAMETER':
                         toks = self.tokens[idx: previous_idx]
-                        self.parameter = generateStruct(toks)
+                        self.parameter = self.generateStruct(toks)
 
                     previous_idx = idx  # update the index so that the next header's indices will not include those of the previous header
                     found.add(tok.c)  # maintain a list of this that is found
@@ -96,117 +105,183 @@ class parser(object):
             raise ParseError(
                 'Expected labels are: {}. However, only {} fonud.'.format(headers, found))
 
+    def generateStruct(self, toks):
+        """
+        generateStruct generates the structure of the tokens in the `toks` stream. The two strcuture supported are 1) in-line lists/sequence, 2) dictionarys/maps
 
-def generateStruct(toks):
+        if there is a MAPPING_VALUE, and hence a map exists, a dict() is called and then it calls on generateStruct for the rest of the token streams.
+
+        if there is a SEQUENCE_OPEN, and hence a list/sequence exists, a list() is used to store the list/sequence elements. The SEQUENCE_CLOSE token indicates the end of the sequence. Each element is separated by the SEQEUNCE_SEPARATOR token.
+        """
+
+        toks = deque(toks)  # use as a queue
+        root = None
+
+        t = toks.popleft()
+        t_type = t.tok_type
+
+        # ------------------------------------------------------------------
+        #       A stream of tokens belonging to STMT will be followed
+        # ------------------------------------------------------------------
+
+        if t_type == 'STMT':
+            # find any more part of the STMT
+            toks.appendleft(t)
+            toks, longsentence = find_STMT(toks)  # find the string
+
+            if len(toks) == 0:
+                # no more tokens left to processed (e.g end of a sentence)
+                return longsentence
+
+            else:  # more tokens left to be processed:
+                t_next = toks.popleft()
+
+                # We will exepct a MAPPING_VALUE first:
+                if t_next.tok_type is 'MAPPING_VALUE':
+                    root = Node(longsentence)  # create the root node
+                else:
+                    raise ParseError('MAPPING_VALUE (:) is expected at line {} col {} `{}`. Instead, {} is found!'.format(
+                        t_next.lineIdx, t_next.colIdx, t.c, t_next.c))
+
+                # ----------------------------------------------------------
+                #       And find the children of the root:
+                #       - a map of stuffs
+                #       or ends with:
+                #           - a children is either a list/sequence
+                #           - or a sentence
+                # ----------------------------------------------------------
+                t_next = toks.popleft()
+                if t_next.tok_type == 'SEQUENCE_OPEN':
+                    # a sequence list is given
+                    toks.appendleft(t_next)
+                    toks, the_List = find_SEQUENCE(toks)
+                    root.add_child(the_List)  # node will create a child node
+                    return root
+
+                elif t_next.tok_type == 'STMT':
+                    toks.appendleft(t_next)
+                    toks, the_List = find_STMT(toks)
+                    root.add_child(the_List)  # node will create a child node
+                    return root
+
+                # ----------------------------------------------------------
+                #   When an indent is found, it suggests that there are sub items
+                #   in belonging to this node. using `find_args_depth`, we retrieve
+                #   a list of nodes belonging to this level.
+                #   Each nodes will end up as the children of the root node.
+                #
+                #   find_args_depth iterateively calls `generateStruct`
+                #   to create these nodes
+                # ----------------------------------------------------------
+                #
+                elif t_next.tok_type == 'INDENT':  # is an INDENT, add the value to the master
+                    toks.appendleft(t_next)
+                    depth = infer_depth(toks)
+                    # call find_args_depth to get the tokens that belongs to the
+                    # this key
+                    chunks = find_chunks_depth(toks, depth)
+                    for chunk in chunks:
+                        root.add_child(self.generateStruct(chunk))
+
+            # while len(toks):
+            #     print(toks.popleft())
+
+        return root
+
+# ---------------------------------------------------------------------------
+
+
+class Node(object):
     """
-    generateStruct generates the structure of the tokens in the `toks` stream. The two strcuture supported are 1) in-line lists/sequence, 2) dictionarys/maps
+    Nodes have children and contain data about itself, it uses `list()` to hold the multiple children
 
-    if there is a MAPPING_VALUE, and hence a map exists, a dict() is called and then it calls on generateStruct for the rest of the token streams.
+    >>> root = Node('ARGUMENT')
+    >>> root.add_child(['one','two','three'])
+    >>> root.children
+    ['one', 'two', 'three']
 
-    if there is a SEQUENCE_OPEN, and hence a list/sequence exists, a list() is used to store the list/sequence elements. The SEQUENCE_CLOSE token indicates the end of the sequence. Each element is separated by the SEQEUNCE_SEPARATOR token.
-
-    DOCTEST:
-    >>> from tokenizer import tokenizer
-
-    >>> stream = ['list : [ open , close ]\\n']
-    >>> t = tokenizer(stream);
-    >>> t.tokens
-    [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
-    >>> list = generateStruct(t.tokens)
-    >>> list.children
-    [['open', 'close']]
-
-    >>> stream = ['PROPOSITION : # a sequence of map (dictionary) mapping the key to the `text` field \\n', '  first : \\n', '    text : Includes everything within this line. The line can be V v v long!\\n', '  second :  # Another example \\n', '    text : Yes!\\n']
-    >>> t = tokenizer(stream)
-    >>> proposition = generateStruct(t.tokens)
-    >>> proposition.children
-    [first, second]
-    >>> proposition.children[0].children[0]
-    text
-
+    # An example of the PARAMETER header used in the source file.
+    >>> root = Node('PARAMETER')
+    >>> alpha = Node('alpha'); alpha.add_child(0.3)
+    >>> beta = Node('beta'); beta.add_child(0.2)
+    >>> gamma = Node('gamma'); beta.add_child(0.1)
+    >>> root.add_child(alpha)
+    >>> root.add_child(beta)
+    >>> root.add_child(gamma)
+    >>> root.children
+    [alpha, beta, gamma]
+    >>> root.find_child('beta')
+    beta
+    >>> try:
+    ...     root.find_child('hamma')
+    ... except ParseError:
+    ...     pass
     """
 
-    toks = deque(toks)  # use as a queue
-    root = None
+    def __init__(self, data):
+        self.data = data
+        self.children = []
 
-    t = toks.popleft()
-    t_type = t.tok_type
-
-    # ------------------------------------------------------------------
-    #       A stream of tokens belonging to STMT will be followed
-    # ------------------------------------------------------------------
-
-    if t_type == 'STMT':
-        # find any more part of the STMT
-        toks.appendleft(t)
-        toks, longsentence = find_STMT(toks)  # find the string
-
-        # try:
-        #     t_next = toks.popleft()  # get the next token
-        # except IndexError:
-        #     # end of the stream, this is the last value
-        #     raise ParseError(
-        #         '{} does not have any information!'.format_map(t.c))
-
-        if len(toks) == 0:
-            # no more tokens left to processed (e.g end of a sentence)
-            return longsentence
-
-        else:  # more tokens left to be processed:
-            t_next = toks.popleft()
-
-            # We will exepct a MAPPING_VALUE first:
-            if t_next.tok_type is 'MAPPING_VALUE':
-                root = Node(longsentence)  # create the root node
+    def add_child(self, child_data):
+        # create node for child: using child as data
+        if type(child_data) is Node:
+            self.children.append(child_data)
+        else:
+            if type(child_data) is list:  # if it is already a list, extend the list of children
+                self.children.extend(child_data)
             else:
-                raise ParseError('MAPPING_VALUE (:) is expected at line {} col {} `{}`. Instead, {} is found!'.format(
-                    t_next.lineIdx, t_next.colIdx, t.c, t_next.c))
+                # otherwise if is just a word/statement, add it to the list
+                child_node = Node(child_data)
+                self.children.append(child_node)
 
-            # ----------------------------------------------------------
-            #       And find the children of the root:
-            #       - a map of stuffs
-            #       or ends with:
-            #           - a children is either a list/sequence
-            #           - or a sentence
-            # ----------------------------------------------------------
-            t_next = toks.popleft()
-            if t_next.tok_type == 'SEQUENCE_OPEN':
-                # a sequence list is given
-                toks.appendleft(t_next)
-                toks, the_List = find_SEQUENCE(toks)
-                root.add_child(the_List)  # node will create a child node
-                return root
+    def find_child(self, value):
+        """
+        Given the data of the child, iteratively search the Node's children. Once found, return that node.
 
-            elif t_next.tok_type == 'STMT':
-                toks.appendleft(t_next)
-                toks, the_List = find_STMT(toks)
-                root.add_child(the_List)  # node will create a child node
-                return root
+        """
+        queue = deque(
+            self.children)  # add the list of children (nodes) into the queue
+        # visited = set()
 
-            # ----------------------------------------------------------
-            #   When an indent is found, it suggests that there are sub items
-            #   in belonging to this node. using `find_args_depth`, we retrieve
-            #   a list of nodes belonging to this level.
-            #   Each nodes will end up as the children of the root node.
-            #
-            #   find_args_depth iterateively calls `generateStruct`
-            #   to create these nodes
-            # ----------------------------------------------------------
-            #
-            elif t_next.tok_type == 'INDENT':  # is an INDENT, add the value to the master
-                toks.appendleft(t_next)
-                depth = infer_depth(toks)
-                # call find_args_depth to get the tokens that belongs to the
-                # this key
-                chunks = find_chunks_depth(toks, depth)
-                for chunk in chunks:
-                    root.add_child(generateStruct(chunk))
+        while len(queue) > 0:
+            this_node = queue.pop()
+            # if this_node in visited:
+            #     continue  # start from the next item in queue
 
-        while len(toks):
-            print(toks.popleft())
-    return root
+            # unique value:
+            # visited.add(child)
+            # if type(this_node.data) is list:
+            #     for ele in this_node.data:
+            #         if ele == value:
+            #             return this_node
+            # else:
+            if this_node.data == value:
+                return this_node
+
+            for child_node in this_node.children:  # breath first search
+                # if child_node not in visited:
+                queue.appendleft(child_node)
+
+        # throw error if not found
+        raise ParseError('{} not found in {}'.format(
+            value, self))
+
+    def __str__(self):
+        return str(self.data)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __eq__(self, other):
+        return self.__str__() == other
+
+    def __hash__(self):
+        return hash(self.data)
 
 
+# ---------------------------------------------------------------------------
+#       Helper functions
+# ---------------------------------------------------------------------------
 def find_chunks_depth(toks, expected_depth):
     """
     Given a certain :param: depth and a stream of :param: toks, find_chunks_depth returns a list of :class: Node at :param: depth
@@ -439,94 +514,6 @@ def find_STMT(toks):
     longsentence = ' '.join(longsentence)
     return toks, longsentence
 
-
-class Node(object):
-    """
-    Nodes have children and contain data about itself, it uses `list()` to hold the multiple children
-
-    >>> root = Node('ARGUMENT')
-    >>> root.add_child(['one','two','three'])
-    >>> root.children
-    [['one', 'two', 'three']]
-
-    # An example of the PARAMETER header used in the source file.
-    >>> root = Node('PARAMETER')
-    >>> alpha = Node('alpha'); alpha.add_child(0.3)
-    >>> beta = Node('beta'); beta.add_child(0.2)
-    >>> gamma = Node('gamma'); beta.add_child(0.1)
-    >>> root.add_child(alpha)
-    >>> root.add_child(beta)
-    >>> root.add_child(gamma)
-    >>> root.children
-    [alpha, beta, gamma]
-    >>> root.find_child('beta')
-    beta
-    >>> try:
-    ...     root.find_child('hamma')
-    ... except IndexError:
-    ...     pass
-    """
-
-    def __init__(self, data):
-        self.data = data
-        self.children = []
-
-    def add_child(self, child_data):
-        # create node for child: using child as data
-        if type(child_data) is Node:
-            self.children.append(child_data)
-        else:
-            if type(child_data) is list: # if it is already a list, extend the list of children
-                self.children.extend(child_data)
-            else:
-                # otherwise if is just a word/statement, add it to the list
-                child_node = Node(child_data)
-                self.children.append(child_node)
-
-    def find_child(self, value):
-        """
-        Given the data of the child, iteratively search the Node's children. Once found, return that node.
-
-        """
-        queue = deque(self.children) # add the list of children (nodes) into the queue
-        # visited = set()
-
-        while len(queue) > 0:
-            this_node = queue.pop()
-            # if this_node in visited:
-            #     continue  # start from the next item in queue
-
-            # unique value:
-            # visited.add(child)
-            # if type(this_node.data) is list:
-            #     for ele in this_node.data:
-            #         if ele == value:
-            #             return this_node
-            # else:
-            if this_node.data == value:
-                return this_node
-
-            for child_node in this_node.children:  # breath first search
-                # if child_node not in visited:
-                    queue.appendleft(child_node)
-
-        # throw error if not found
-        raise ParseError('{} not found in {}'.format(
-            value, self))
-
-    def __str__(self):
-        return str(self.data)
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __eq__(self, other):
-        return self.__str__() == other
-
-    def __hash__(self):
-        return hash(self.data)
-
-
 # ---------------------------------------------------------------------------
 # MAIN
 # ---------------------------------------------------------------------------
@@ -538,5 +525,4 @@ if __name__ == '__main__':
     """
     # if DOCTEST:
     import doctest
-    print('Starting doctest!')
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

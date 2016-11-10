@@ -2,43 +2,48 @@ import re
 from carneades.error import TokenizerError
 
 
-
-class tokenizer(object):
+# ---------------------------------------------------------------------------
+class Tokenizer(object):
     """
     Takes in a stream of character and tokenize them according to the rule
     ---
     DOCTEST:
     Every stream is just a list of one str for modularised testing
     >>> stream = ['Hello World# IGNORE MY COMMENT ! ##\\n', ':\\n', '\\n']
-    >>> t = tokenizer(stream)
+    >>> t = Tokenizer(stream)
     >>> t.tokens
     [STMT, STMT, MAPPING_VALUE]
 
     Ill form (no End of line)
     >>> stream = ['A sequence : ', '  - An indent expected here!']
-    >>> try:
-    ...     t = tokenizer(stream).tokenize()
-    ... except TokenizerError:
-    ...     pass
-
+    >>> try: t = Tokenizer(stream)
+    ... except TokenizerError: pass
 
     Indent detector
     >>> stream = ['A sequence : \\n', '  An indent expected here!\\n', '    nested indents\\n']
-    >>> t = tokenizer(stream)
+    >>> t = Tokenizer(stream) # use default indent_size = 2
     >>> t.tokens
     [STMT, STMT, MAPPING_VALUE, INDENT, STMT, STMT, STMT, STMT, INDENT, INDENT, STMT, STMT]
+    >>> stream = ['   Testing with 3 spaces as indent\\n']
+    >>> try : t = Tokenizer(stream)
+    ... except TokenizerError: pass
+    >>> t = Tokenizer(stream, 3)
+    >>> t.tokens
+    [INDENT, STMT, STMT, STMT, STMT, STMT, STMT]
 
     Sequence separator:
     >>> Stream = ["ASSUMPTION : [ ONE , TWO , THREE ]\\n"]
-    >>> t = tokenizer(Stream)
+    >>> t = Tokenizer(Stream)
     >>> t.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQEUNCE_SEPARATOR, STMT, SEQEUNCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
     """
 
-    def __init__(self, stream):
+    def __init__(self, stream, indent_size=2):
+        """
+        Initialise a tokenizer with a list of string. the :param:indent_size if not defined is 2
+        """
         self.stream = stream
-        # self.indent_size = indent_size
-        self.indent_stack = []
+        self.indent_size = indent_size
         self.colIdx = -1
         self.tokens = []
         self.tokenize()  # call tokenize function
@@ -53,9 +58,8 @@ class tokenizer(object):
         tokens = self.tokens
         stream = self.stream
 
-        for lineIdx in range(0, len(stream)):
-            # iterate through all the character until the end of the source
-            line = stream[lineIdx]
+        for lineIdx, line in enumerate(stream):
+            # iterate through each line of the file
             pointer = 0
             # print(line) # DEBUG
 
@@ -66,33 +70,47 @@ class tokenizer(object):
 
             # ---------------------------------------------------------------
             #   Find INDENNT:
+            #   ---
+            #   Example
+            #   """
+            #   >>> string = 'a line without any ident'
+            #   >>> indents = re.split(r'^  ', string')
+            #   ['a line without any indent']
+            #   >>> string = '    two indents in this line'
+            #   >>> len(re.split(r'^  ', string)) == 2
+            #   True
+            #   """
             # ---------------------------------------------------------------
-            indents = re.split(r'^  ', line)
+            indent_pattern = '^ {'+ str(self.indent_size) +'}' # use regex to find the indent based on the user defined indent_size
+            indents = re.split(indent_pattern, line)
             depth = -1
             while len(indents) > 1:
                 depth += 1
-                self.tokens.append(Token('  ', lineIdx, depth * 2, 'INDENT'))
-                line = line[2:]  # shorten the line
-                pointer += 2
-                indents = re.split(r'^  ', line)
+                self.tokens.append(
+                    Token('  ', lineIdx, depth * self.indent_size, 'INDENT'))
+                line = line[self.indent_size:]  # shorten the line by removing the indent
+                pointer += self.indent_size
+                indents = re.split(indent_pattern, line)
 
-            # print(line) # DEBUG
+            # if there are more things to be tokenised, check if whitespaces are well-defined
+            if len(line) and line[0] == ' ':
+                raise TokenizerError(lineIdx, pointer, 'The indent size is {}, but additional whitespaces are found'.format(self.indent_size))
+
 
             # ---------------------------------------------------------------
             #   COMMENT CHECKER:
-            #    Take the nearest # found and truncate the sentence by reducing #    the lineBoundary
+            #    Take the nearest # found and truncate the sentence by reducing #    the line
             # ---------------------------------------------------------------
             comment_idx = line.find('#')
             if comment_idx != -1:  # check if there's a comment in the line, return the first '#' found
-                # lineBoundary = comment_idx # and set the lineBoundary if
-                # there is
-                # remove trailing whitespace on the right too
+                # if there is a comment, shorten the line until the point where
+                # the comment starts
                 line = line[:comment_idx]
+            line = line.rstrip()  # remove trailing whitespaces at the back
 
             # ---------------------------------------------------------------
             #   TOKENIZE the rest of the stuff
             # ---------------------------------------------------------------
-            line = line.rstrip()
             split_bywhite = line.split(' ')
             for idx, toks in enumerate(split_bywhite):
 
@@ -118,6 +136,7 @@ class tokenizer(object):
                 pointer += len(toks) + 1
 
 
+# ---------------------------------------------------------------------------
 class Token(object):
     """
     A tokenizer convert the character into tokens. The :class: Token describes the attributes of each Token.
@@ -147,7 +166,7 @@ class Token(object):
         self.c = c
         self.lineIdx = lineIdx
         self.colIdx = colIdx
-        if tok_type in accepted_tokens: # check that i have input an allowed token type
+        if tok_type in accepted_tokens:  # check that i have input an allowed token type
             self.tok_type = tok_type
         else:
             TokenizerError(lineIdx, colIdx,
@@ -168,7 +187,9 @@ class Token(object):
         return self.__str__() == other
 
     def __hash__(self):
-        return hash(str(self.lineIdx)+str(self.colIdx)) # since the line and col indices are unique, we can use it as a hash code.
+        # since the line and col indices are unique, we can use it as a hash
+        # code.
+        return hash(str(self.lineIdx) + str(self.colIdx))
 
 
 # -----------------------------------------------------------------------
@@ -176,8 +197,6 @@ class Token(object):
 # -----------------------------------------------------------------------
 
 if __name__ == '__main__':
-    # do doctest here!
     import doctest
-    # import carneades
     print('Starting doctest!')
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

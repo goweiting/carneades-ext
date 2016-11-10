@@ -176,7 +176,6 @@ from carneades.tracecalls import TraceCalls
 # debug messages
 LOGLEVEL = logging.INFO
 
-
 logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
 

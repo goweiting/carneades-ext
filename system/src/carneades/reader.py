@@ -1,16 +1,19 @@
 # Reader class that encapsulated the scanner, lexer and parser.
-# It takes in a ``.yml`` file (may support more than one in future) and
-# generates the json file which can be used by the caes to create the
-# argumentation graph.
+# It takes in a ``.yml`` file containing the propositions and arguments
+# then, generates the argumentation graph using the CAES
+# ---------------------------------------------------------------------------
+import logging
 
-import os
-import sys
+from carneades.caes import *
+from carneades.tokenizer import Tokenizer
+from carneades.parser import Parser, Node
+from carneades.error import ReaderError
 
-import carneades.caes as caes
-import carneades.tokenizer as tokenizer
-import carneades.parser as parser
+LOGLEVEL = logging.INFO
+logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
 
+# ---------------------------------------------------------------------------
 class Reader(object):
     """
     Reader class encapsulates the processing of the file using the load function
@@ -23,9 +26,16 @@ class Reader(object):
     buffer_size = 4096  # default to 4086, unless user define otherwise
     # indent_size = 2
 
-    def __init__(self, buffer_size=4096):
-        self.buffer_size = buffer_size  # if defined, set buffer_size
-        # self.indent_size = indent_size
+    def __init__(self, buffer_size=4096, indent_size=2):
+        """
+        Initialise the Reader to read your source file with the user's settings
+        ----
+        PARAMETER:
+        :param:buffer_size, default to 4096
+        :param:indent_size, default to 2
+        """
+        self.buffer_size = buffer_size
+        self.indent_size = indent_size
 
     def load(self, path_to_file):
         """
@@ -37,48 +47,48 @@ class Reader(object):
         # ---------------------------------------------------------------
         #   Scanning and lexical analsys
         # ---------------------------------------------------------------
-        print('\tTokenizing file...')
+        logging.info('\tTokenizing file...')
         # read the file and store it as a list of lines!
         stream = open(path_to_file, 'r',
                       buffering=self.buffer_size).readlines()
         # call tokenizer will call tokenize() when initialised
-        t = tokenizer.tokenizer(stream)
+        t = Tokenizer(stream, self.indent_size)
         toks = t.tokens
         # print(stream_tokens) # DEBUG
-        print('\t\t\tdone')
+        logging.info('\t\t\tdone')
 
         # ---------------------------------------------------------------
         #   Parsing:
         # ---------------------------------------------------------------
-        print('\tParsing tokens...')
+        logging.info('\tParsing tokens...')
 
         # parse() will be initiated automatically once initialised
-        p = parser.parser(toks)
+        p = Parser(toks)
         # retrieve the nodes from parser:
         proposition = p.proposition
         argument = p.argument
         assumption = p.assumption
         parameter = p.parameter
 
-        print('\t\t\tdone')
+        logging.info('\t\t\tdone')
 
         # ---------------------------------------------------------------
         #   Translate it into data structure for CAES
         # ---------------------------------------------------------------
 
         # Processing proposition:
-        print('\tAdding propositions to CAES')
+        logging.info('\tAdding propositions to CAES')
         caes_propliteral = dict()
         for p in proposition.children:  # iterate through the list of children
             prop_id = p.data
             text = p.children[0].data
             # rename the PROP_ID in case of long names
             # here, added prop_id as a field in PropLierals!
-            caes_propliteral[prop_id] = caes.PropLierals(
+            caes_propliteral[prop_id] = PropLiteral(
                 text)  # True by defailt
 
         # -----------------------------------------------------------------
-        print('\tAdding assumptions to CAES')
+        logging.info('\tAdding assumptions to CAES')
         caes_assumption = set()
         tmp = assumption.children  # the list of assumptions
         assert type(tmp) is list
@@ -101,7 +111,7 @@ class Reader(object):
             caes_assumption.add(prop)
 
         # -----------------------------------------------------------------
-        print('\tAdding arguments to CAES')
+        logging.info('\tAdding arguments to CAES')
         # In caes: an argument consists of the following fields:
         # conclusion
         # premises
@@ -112,7 +122,7 @@ class Reader(object):
         caes_proofstandard = dict()
         for arg_id in argument.children:
             # iterating through the each node of argument
-            assert type(arg_id) is parser.Node  # typecheck
+            assert type(arg_id) is Node  # typecheck
 
             premise = set(arg_id.find_child('premise').children)
             exception = set(arg_id.find_child('exception').children)
@@ -132,19 +142,20 @@ class Reader(object):
                 check_prop(exception)
 
             if ok:
-                caes_arguments[arg_id] = caes.Argument(
+                caes_arguments[arg_id] = Argument(
                     conclusion=conclusion, premises=premise, exceptions=exception)
                 caes_proofstandard[arg_id] = proofstandard
             else:
-                raise ReaderError('{}\'s propositions are invalid'.format(arg_id))
-                
+                raise ReaderError(
+                    '{}\'s propositions are invalid'.format(arg_id))
+
         # -----------------------------------------------------------------
-        print('\tAdding parameter to CAES')
+        logging.info('\tAdding parameter to CAES')
         caes_alpha = 0
         caes_beta = 0
         caes_gamma = 0
         for p in parameter.children:
-            assert type(p) is parser.Node  # these are nodes!
+            assert type(p) is Node  # these are nodes!
 
             if p.data == 'alpha':
                 caes_alpha = p.children[0].data
@@ -166,6 +177,9 @@ class Reader(object):
                         'caes_gamma must be within the range of 0 and 1 inclusive. {} given'.format(caes_gamma))
 
 
+# -----------------------------------------------------------------------------
+#       Additional Functions to help check the propositions
+# -----------------------------------------------------------------------------
 def check_prop(caes_propliteral, prop_id):
     """
     given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
@@ -227,9 +241,10 @@ if __name__ == '__main__':
     """
     # if DOCTEST:
     import doctest
-    print('Starting doctest!')
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     # else:
+    # import os
+    # import sys
     #     filenames = sys.argv[1:]
     #     num_files = len(filenames)
     #
