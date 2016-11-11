@@ -39,7 +39,7 @@ class Tokenizer(object):
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
 
     Added support for not having to separate it by spaces:
-    >>> stream = ['ASSUMPTION:[one,two,three only]\\n']
+    >>> stream = ['ACCEPTABILITY:[one,two,three only]\\n']
     >>> t=Tokenizer(stream)
     >>> t.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
@@ -161,7 +161,7 @@ class Tokenizer(object):
 
                 else:  # word
                     # anything as long as it is not a character found above
-                    pattern = r'^[^,:\[\] ]+'
+                    pattern = r'^[^ ,:\[\]]+'
                     word = re.findall(pattern, line)[0]
                     self.tokens.append(Token(word, lineIdx, pointer, 'STMT'))
                     line = line[len(word):]

@@ -63,6 +63,8 @@ class Parser(object):
         self.assumption = None
         self.argument = None
         self.parameter = None
+        self.acceptability = None
+        self.proofstandard = None
         self.parse()
 
     def parse(self):
@@ -74,7 +76,7 @@ class Parser(object):
         - PARAMETER
         """
         found = set()  # set that contains the headers found
-        headers = ['PROPOSITION', 'ARGUMENT', 'ASSUMPTION', 'PARAMETER']
+        headers = ['PROPOSITION', 'ARGUMENT', 'ASSUMPTION', 'PARAMETER', 'ACCEPTABILITY', 'PROOFSTANDARD']
         previous_idx = len(self.tokens)  # starting from the back
         for idx, tok in reversed(list(enumerate(self.tokens))):
             # find tok_type = `STMT`, and check if it is one of the headers
@@ -96,6 +98,14 @@ class Parser(object):
                     elif tok.c == 'PARAMETER':
                         toks = self.tokens[idx: previous_idx]
                         self.parameter = self.generateStruct(toks)
+
+                    elif tok.c == 'ACCEPTABILITY':
+                        toks = self.tokens[idx: previous_idx]
+                        self.acceptability = self.generateStruct(toks)
+
+                    elif tok.c == 'PROOFSTANDARD':
+                        toks = self.tokens[idx: previous_idx]
+                        self.proofstandard = self.generateStruct(toks)
 
                     previous_idx = idx  # update the index so that the next header's indices will not include those of the previous header
                     found.add(tok.c)  # maintain a list of this that is found

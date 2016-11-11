@@ -169,15 +169,294 @@ from igraph import Graph, plot
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from carneades.tracecalls import TraceCalls
+from carneades.tokenizer import Tokenizer
+from carneades.parser import Parser, Node
+from carneades.error import ReaderError
 
-
-# LOGLEVEL = logging.DEBUG
 # Uncomment the following line to raise the logging level and thereby turn off
 # debug messages
+# LOGLEVEL = logging.DEBUG
 LOGLEVEL = logging.INFO
 
 logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
+
+# ========================================================================
+#           READER
+# ========================================================================
+class Reader(object):
+    """
+    Reader class encapsulates the processing of the file using the load function
+    ---
+    DOCTEST:
+    >>> reader = Reader(); # use default buffer_size
+    >>> reader.load('../../samples/example.yml')
+    >>>
+    """
+    buffer_size = 4096  # default to 4086, unless user define otherwise
+    # indent_size = 2
+
+    def __init__(self, buffer_size=4096, indent_size=2):
+        """
+        Initialise the Reader to read your source file with the user's settings
+        ----
+        PARAMETER:
+        :param:buffer_size, default to 4096
+        :param:indent_size, default to 2
+        """
+        self.buffer_size = buffer_size
+        self.indent_size = indent_size
+        # ---------------------------------------------------------------
+        #   Translate it into data structure for CAES
+        # ---------------------------------------------------------------
+        self.caes_propliteral = dict()
+        self.caes_assumption = set()
+        self.caes_argument = dict()
+        self.caes_proofstandard = list()
+        self.caes_weight = dict()
+        self.caes_alpha = float()
+        self.caes_beta = float()
+        self.caes_gamma = float()
+        self.caes_acceptability = set()
+        self.argset = ArgumentSet()
+
+    def load(self, path_to_file):
+        """
+        load the file of interest, tokenize and parse it. Using the information given by the user in the file(s), call CAES to evaluate the arguments
+        -----
+        :param path_to_file : the path to the file to be opened
+
+        """
+        # ---------------------------------------------------------------
+        #   Scanning and lexical analsys
+        # ---------------------------------------------------------------
+        logging.info('\tTokenizing file...')
+        # read the file and store it as a list of lines!
+        stream = open(path_to_file, 'r',
+                      buffering=self.buffer_size).readlines()
+        # call tokenizer will call tokenize() when initialised
+        t = Tokenizer(stream, self.indent_size)
+
+        # ---------------------------------------------------------------
+        #   Parsing:
+        # ---------------------------------------------------------------
+        logging.info('\tParsing tokens...')
+
+        # parse() will be initiated automatically once initialised
+        p = Parser(t.tokens)
+
+        # ---------------------------------------------------------------
+        #   Adding into CAES:
+        # ---------------------------------------------------------------
+        # Processing proposition:
+        logging.info('\tAdding propositions to CAES')
+        for proplit in p.proposition.children:  # iterate through the list of children
+            assert type(proplit) is Node
+            prop_id = proplit.data
+            text = proplit.children[0].data
+            if prop_id[0] == '-':
+                raise ReaderError(
+                    '- found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.format(p))
+            # rename the PROP_ID in case of long names
+            # here, added prop_id as a field in PropLierals!
+            # polarity is set to True by defailt
+            self.caes_propliteral[prop_id] = PropLiteral(text)
+
+        # -----------------------------------------------------------------
+        logging.info('\tAdding assumptions to CAES')
+
+        for prop in p.assumption.children:
+            # check that the assumptions are in the set of caes_propliteral
+            if check_prop(self.caes_propliteral, prop):
+                if prop[0] == '-':  # switch the polarity of the outcome!
+                    # find the PropLiteral in the dictionary
+                    prop = self.caes_propliteral[prop[1:]]
+                    prop = prop.negate()
+                else:
+                    prop = self.caes_propliteral[prop]
+
+            self.caes_assumption.add(prop)
+
+        # -----------------------------------------------------------------
+        logging.info('\tAdding arguments to CAES')
+        # In caes: an argument consists of the following fields:
+        # conclusion
+        # premises
+        # exceptions
+        # For proofstandards, it is a list of pairs consisting of proposition
+        # and proof standard
+        for arg_id in p.argument.children:
+            # iterating through the each node of argument
+            assert type(arg_id) is Node  # typecheck
+
+            premise = set(arg_id.find_child('premise').children)
+            exception = set(arg_id.find_child('exception').children)
+            weight = float(arg_id.find_child('weight').children[0].data)
+            conclusion = arg_id.find_child('conclusion').children[0].data
+
+            # check the weight
+            if weight < 0 or weight > 1:
+                raise ReaderError(
+                    'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
+            else:
+                self.caes_weight[arg_id] = weight  # store the weight
+
+            # check that the literals are valid:
+            ok_c, conclusion = check_prop(self.caes_propliteral, conclusion)
+            ok_e, exception = check_prop(self.caes_propliteral, exception)
+            ok_p, premise = check_prop(self.caes_propliteral, premise)
+
+            if ok_c and ok_e and ok_p:
+                self.caes_argument[arg_id] = Argument(conclusion=conclusion,
+                                                      premises=premise, exceptions=exception)
+                self.argset.add_argument(
+                    self.caes_argument[arg_id], arg_id=arg_id.data)  # add to argset
+        # -----------------------------------------------------------------
+        logging.info('\tAdding parameter to CAES')
+
+        for param in p.parameter.children:
+            if param.data == 'alpha':
+                self.caes_alpha = float(param.children[0].data)
+                # check that they are within range
+                if self.caes_alpha > 1 or self.caes_alpha < 0:
+                    raise SyntaxError(
+                        'alpha must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_alpha))
+
+            elif param.data == 'beta':
+                self.caes_beta = float(param.children[0].data)
+                if self.caes_beta > 1 or self.caes_beta < 0:
+                    raise SyntaxError(
+                        'beta must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_beta))
+
+            elif param.data == 'gamma':
+                self.caes_gamma = float(param.children[0].data)
+                if self.caes_gamma > 1 or self.caes_gamma < 0:
+                    raise SyntaxError(
+                        'gamma must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_gamma))
+        # -----------------------------------------------------------------
+        logging.info('\tAdding proofstandard to CAES')
+        for ps in p.proofstandard.children:
+            prop_id = ps.data
+            prop_ps = ps.children[0].data
+            # check validity of prop_id and prop_ps:
+            ok, prop_ps = check_proofstandard(prop_ps)
+            ok, prop_id = check_prop(self.caes_propliteral, prop_id)
+            self.caes_proofstandard.append((prop_id, prop_ps))
+
+        # -----------------------------------------------------------------
+        logging.info('\tAdding acceptability to CAES')
+        for acc in p.acceptability.children:
+            # check that the prop_id are in the set of caes_propliteral
+            if check_prop(self.caes_propliteral, acc):
+                if acc[0] == '-':  # switch the polarity of the propliteral
+                    # find the PropLiteral in the dictionary
+                    prop = self.caes_propliteral[acc[1:]]
+                    prop = prop.negate()
+                else:
+                    prop = self.caes_propliteral[acc]
+
+            self.caes_acceptability.add(prop)
+
+        # -----------------------------------------------------------------
+        # draw and check acceptability of conclusions listed by used in
+        # ACCEPTABILITY
+        self.initialise()
+
+    def initialise(self):
+
+        logging.info('\tInitialising CAES')
+        # call the initialise function:
+        logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
+            self.caes_alpha, self.caes_beta, self.caes_gamma))
+        logging.debug('propliterals: {} '.format(self.caes_propliteral))
+        logging.debug('arguments: {} '.format(self.caes_argument))
+        logging.debug('weights : {}'.format(self.caes_weight))
+        logging.debug('assumptions: {} '.format(self.caes_assumption))
+        logging.debug('acceptability: {} '.format(self.caes_acceptability))
+        logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
+
+        # -----------------------------------------------------------------
+        #       draw the argument graph:
+        # -----------------------------------------------------------------
+        self.argset.draw()
+        self.argset.write_to_graphviz()
+
+        caes = CAES(argset=self.argset,
+                    audience=Audience(
+                        self.caes_assumption, self.caes_weight),
+                    proofstandard=ProofStandard(self.caes_proofstandard),
+                    alpha=self.caes_alpha,
+                    beta=self.caes_beta,
+                    gamma=self.caes_gamma)
+
+        for acc in self.caes_acceptability:
+            caes.acceptable(acc)
+
+
+
+
+# ========================================================================
+#       Additional Functions to help check
+#      propositions and proofstandards from Reader
+# ========================================================================
+def check_prop(caes_propliteral, prop_id):
+    """
+    given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
+    If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
+
+    :rtype: bool - if the prop_id is in caes_propliteral
+    :rtype: prop - the PropLiteral of the given prop_id
+    """
+
+    if type(prop_id) is set:
+        props = list(prop_id)
+        checker = True
+        set_props = set()
+
+        for p in props:
+            yes, prop = check_prop(caes_propliteral, p)
+            checker = checker and yes  # if no, the function would already had raised an error
+            set_props.add(prop)
+
+        return checker, set_props
+
+    elif type(prop_id) is str:
+        negate = 0  # check for negation first
+        if prop_id[0] == '-':
+            prop_id = prop_id[1:]
+            negate = 1
+
+        if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
+            logging.exception(
+                '{} is not defined in PROPOSITION'.format(prop_id))
+            return False
+        else:
+            if negate:
+                return True, caes_propliteral[prop_id].negate()
+            else:
+                return True, caes_propliteral[prop_id]
+
+
+def check_proofstandard(query):
+    """
+    check if the proofstandard user input is a valid input.
+    Return the CAES's version of the similar proofstandard
+    """
+    standards = {'scintilla': "scintilla",
+                 'preponderance': "preponderance",
+                 'clear and convincing': "clear_and_convincing",
+                 'beyond reasonable doubt': "beyond_reasonable_doubt",
+                 'dialectical validitys': "dialectical_validity"}
+
+    if query in standards.keys():
+        return True, standards[query]
+    else:
+        logging.exception('Invalid proof standard {} found'.format(query))
+
+
+# ========================================================================
+#       CAES
+# ========================================================================
 
 class PropLiteral(object):
     """
@@ -232,6 +511,8 @@ class PropLiteral(object):
     def __lt__(self, other):
         return self.__str__() < other.__str__()
 
+# ========================================================================
+
 
 class Argument(object):
     """
@@ -276,6 +557,8 @@ class Argument(object):
         else:
             excepts = sorted(self.exceptions)
         return "{}, ~{} => {}".format(prems, excepts, self.conclusion)
+
+# ========================================================================
 
 
 class ArgumentSet(object):
@@ -334,8 +617,8 @@ class ArgumentSet(object):
                 # add the proposition as a vertex attribute, recovered via the
                 # key 'prop'
                 self.graph.add_vertex(prop=proposition)
-                logging.debug("Added proposition '{}' to graph".
-                              format(proposition))
+                logging.debug(
+                    "Added proposition '{}' to graph".format(proposition))
             return self.graph.vs.select(prop=proposition)[0]
 
         else:
@@ -486,6 +769,8 @@ class ArgumentSet(object):
         with open(fname, 'w') as f:
             print(result, file=f)
 
+# ========================================================================
+
 
 class ProofStandard(object):
     """
@@ -544,6 +829,8 @@ assigns weights to arguments.
 :param weights: An mapping from :class:`Argument`\ s to weights.
 :type weights: dict
 """
+
+# ========================================================================
 
 
 class CAES(object):
@@ -777,67 +1064,7 @@ class CAES(object):
         return self.max_weight_applicable(args)
 
 # -----------------------------------------------------------------------------
-#       Additional Functions to help check
-#      propositions and proofstandards from Reader
-# -----------------------------------------------------------------------------
-
-
-def check_prop(caes_propliteral, prop_id):
-    """
-    given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
-    If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
-
-    :rtype: bool - if the prop_id is in caes_propliteral
-    :rtype: prop - the PropLiteral of the given prop_id
-    """
-
-    if type(prop_id) is set:
-        props = list(prop_id)
-        checker = True
-        set_props = set()
-
-        for p in props:
-            yes, prop = check_prop(caes_propliteral, p)
-            checker = checker and yes  # if no, the function would already had raised an error
-            set_props.add(prop)
-
-        return checker, set_props
-
-    elif type(prop_id) is str:
-        negate = 0  # check for negation first
-        if prop_id[0] == '-':
-            prop_id = prop_id[1:]
-            negate = 1
-
-        if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
-            logging.exception(
-                '{} is not defined in PROPOSITION'.format(prop_id))
-            return False
-        else:
-            if negate:
-                return True, caes_propliteral[prop_id].negate()
-            else:
-                return True, caes_propliteral[prop_id]
-
-
-def check_proofstandard(query):
-    """
-    check if the proofstandard user input is a valid input.
-    Return the CAES's version of the similar proofstandard
-    """
-    standards = {'scintilla': "scintilla",
-                 'preponderance': "preponderance",
-                 'clear and convincing': "clear_and_convincing",
-                 'beyond reasonable doubt': "beyond_reasonable_doubt",
-                 'dialectical validitys': "dialectical_validity"}
-
-    if query in standards.keys():
-        return True, standards[query]
-    else:
-        logging.exception('Invalid proof standard {} found'.format(query))
-
-# -----------------------------------------------------------------------------
-#       EXAMPLE
+#       DENO
 # -----------------------------------------------------------------------------
 
 
