@@ -9,7 +9,7 @@ from tokenizer import Tokenizer
 from parser import Parser, Node
 from error import ReaderError
 
-LOGLEVEL = logging.DEBUG
+LOGLEVEL = logging.INFO
 logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
 
 
@@ -20,7 +20,7 @@ class Reader(object):
     ---
     DOCTEST:
     >>> reader = Reader(); # use default buffer_size
-    >>> reader.load('../../samples/template.yml')
+    >>> reader.load('../../samples/example.yml')
     >>>
     """
     buffer_size = 4096  # default to 4086, unless user define otherwise
@@ -68,11 +68,13 @@ class Reader(object):
         # ---------------------------------------------------------------
         caes_propliteral = dict()
         caes_assumption = set()
-        caes_arguments = dict()
+        caes_argument = dict()
         caes_proofstandard = dict()
+        caes_weight = dict()
         caes_alpha = float()
         caes_beta = float()
         caes_gamma = float()
+        argset = ArgumentSet()
 
         # Processing proposition:
         logging.info('\tAdding propositions to CAES')
@@ -119,14 +121,19 @@ class Reader(object):
 
             premise = set(arg_id.find_child('premise').children)
             exception = set(arg_id.find_child('exception').children)
-            proofstandard = arg_id.find_child('proofstandard').children[0].data
             weight = float(arg_id.find_child('weight').children[0].data)
             conclusion = arg_id.find_child('conclusion').children[0].data
+            try: # if proofstandard is not defined by used, use the defaul scintilla
+                proofstandard = arg_id.find_child('proofstandard').children[0].data
+            except AttributeError:
+                proofstandard = 'scintilla'
 
             # check the weight
             if weight < 0 or weight > 1:
                 raise ReaderError(
                     'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
+            else:
+                caes_weight[arg_id] = weight  # store the weight
 
             # check that the literals are valid:
             ok_c, conclusion = check_prop(caes_propliteral, conclusion)
@@ -136,8 +143,9 @@ class Reader(object):
 
             if ok_c and ok_e and ok_p and ok_ps:
                 caes_proofstandard[arg_id] = proofstandard
-                caes_arguments[arg_id] = Argument(conclusion=conclusion,
-                                                  premises=premise, exceptions=exception)
+                caes_argument[arg_id] = Argument(conclusion=conclusion,
+                                                 premises=premise, exceptions=exception)
+                argset.add_argument(caes_argument[arg_id])  # add to argset
         # -----------------------------------------------------------------
         logging.info('\tAdding parameter to CAES')
 
@@ -162,16 +170,25 @@ class Reader(object):
                         'caes_gamma must be within the range of 0 and 1 inclusive. {} given'.format(caes_gamma))
 
         logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
-        caes_alpha, caes_beta, caes_gamma))
+            caes_alpha, caes_beta, caes_gamma))
         logging.debug('propliterals: {} '.format(caes_propliteral))
-        logging.debug('arguments: {} '.format(caes_arguments))
+        logging.debug('arguments: {} '.format(caes_argument))
+        logging.debug('weights : {}'.format(caes_weight))
         logging.debug('assumptions: {} '.format(caes_assumption))
-        logging.debug('arguments {} :'.format(caes_arguments))
-
 
         # -----------------------------------------------------------------
         #       draw the argument graph:
         # -----------------------------------------------------------------
+        argset.draw()
+        argset.write_to_graphviz()
+
+        audience = Audience(caes_assumption, caes_weight)
+        caes = CAES(argset=argset,
+                    audience=audience,
+                    proofstandard=caes_proofstandard,
+                    alpha=caes_alpha,
+                    beta=caes_beta,
+                    gamma=caes_gamma)
 
 # ---------------------------------------------------------------------------
 # MAIN

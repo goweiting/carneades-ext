@@ -466,7 +466,7 @@ class ArgumentSet(object):
             elif prop_label:
                 dot_str = ('"{}"'.format(prop_label) +
                            ' [color="black", fillcolor="lightblue", '
-                           'fixedsize=false, width=1  shape="circle", '
+                           'fixedsize=false, width=1  shape="box", '
                            'style="filled"]; \n')
             result += dot_str
 
@@ -810,8 +810,8 @@ def check_prop(caes_propliteral, prop_id):
             negate = 1
 
         if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
-            raise ReaderError(
-                '{} is not defined in propositions'.format(prop_id))
+            logging.exception(
+                '{} is not defined in PROPOSITION'.format(prop_id))
             return False
         else:
             if negate:
@@ -834,7 +834,11 @@ def check_proofstandard(query):
     if query in standards.keys():
         return True, standards[query]
     else:
-        raise ReaderError('Invalid proof standard {} found'.format(query))
+        logging.exception('Invalid proof standard {} found'.format(query))
+
+# -----------------------------------------------------------------------------
+#       EXAMPLE
+# -----------------------------------------------------------------------------
 
 
 def arg_demo():
@@ -870,6 +874,9 @@ def arg_demo():
     caes.acceptable(murder)
     caes.acceptable(murder.negate())
 
+
+# -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 DOCTEST = True
 
