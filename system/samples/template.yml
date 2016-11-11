@@ -1,31 +1,37 @@
 PROPOSITION:
 # a sequence of map (dictionary) mapping the key to the `text` field
-  first: Includes everything within this line. The line can be V v v long!
-  second: Yes!     # here
-  third: yeas
+  first: first in the line
+  second: second in the line
+  third: thrid in the line
 
-ASSUMPTION: [first, second] # a list of assumptions
+ASSUMPTION: [first] # a list of assumptions
 
 ARGUMENT:
 # a sequence of map (dictionary) mapping the argument id to its fields - premise, exception, conclusion weight
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
 # available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  arg1:
-    premise: [-first,second] # - infront will denote the negation of the proposition above, if it exists
-    exception: []   # nothing!
+  not first means third unless is second:
+    premise: [-first] # - infront will denote the negation of the proposition above, if it exists
+    exception: [second] # unless the exception is true, the argument is valid
     conclusion: third # is not a list!
     weight: 0.01
-    proofstandard: preponderance
 
-  arg 2:
-    premise: [second]
+  not second means third unless is first:
+    premise: [-second]
     exception: [first]
     conclusion: third
     weight: 0.2
-    proofstandard: beyond reasonable doubt
 
-ACCEPTABILITY: [third, -thid] # ACCEPTABILITY calls the acceptability function in caes to check if the conlusion is acceptable.
+  not third means second unless not first:
+    premise: []
+    exception: [-first]
+    conclusion: second
+    weight : 0.9
+
+PROOFSTANDARD : [] # use scintilla for all
+
+ACCEPTABILITY: [third, -third] # ACCEPTABILITY calls the acceptability function in caes to check if the conlusion is acceptable.
 
 PARAMETER:
 # define the parameters use for the proofstandard

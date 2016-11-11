@@ -39,7 +39,7 @@ class ParseError(Error):
 
 
 # ------------------------------------------------
-#   Error for Parsing
+#   Error for Reader
 # ------------------------------------------------
 class ReaderError(Error):
     """

@@ -1,0 +1,66 @@
+INFO: 	Tokenizing file...
+INFO: 	Parsing tokens...
+INFO: 	Adding propositions to CAES
+INFO: 	Adding assumptions to CAES
+INFO: 	Adding arguments to CAES
+DEBUG: Added proposition 'thrid in the line' to graph
+DEBUG: Added proposition '-thrid in the line' to graph
+DEBUG: Added proposition '-first in the line' to graph
+DEBUG: Added proposition 'second in the line' to graph
+DEBUG: Proposition 'thrid in the line' is already in graph
+DEBUG: Proposition '-thrid in the line' is already in graph
+DEBUG: Added proposition '-second in the line' to graph
+DEBUG: Added proposition 'first in the line' to graph
+DEBUG: Proposition 'second in the line' is already in graph
+DEBUG: Proposition '-second in the line' is already in graph
+DEBUG: Proposition '-first in the line' is already in graph
+INFO: 	Adding parameter to CAES
+INFO: 	Adding proofstandard to CAES
+INFO: 	Adding acceptability to CAES
+INFO: 	Initialising CAES
+INFO: 
+
+Evaluating acceptability of : thrid in the line
+INFO: Calling acceptable(thrid in the line)
+DEBUG: Checking whether proposition 'thrid in the line'meets proof standard 'scintilla'.
+INFO:   Calling meets_proof_standard(thrid in the line, scintilla)
+INFO:     Calling applicable([-first in the line], ~[second in the line] => thrid in the line)
+DEBUG: Checking applicability of not first means third unless is second...
+DEBUG: Current assumptions: {first in the line}
+DEBUG: Current premises: {-first in the line}
+DEBUG: Current exception: {second in the line}
+INFO:       Calling acceptable(second in the line)
+DEBUG: Checking whether proposition 'second in the line'meets proof standard 'scintilla'.
+INFO:         Calling meets_proof_standard(second in the line, scintilla)
+INFO:           Calling applicable([], ~[-first in the line] => second in the line)
+DEBUG: Checking applicability of not third means second unless not first...
+DEBUG: Current assumptions: {first in the line}
+DEBUG: Current premises: set()
+DEBUG: Current exception: {-first in the line}
+INFO:           applicable([], ~[-first in the line] => second in the line)-->True
+INFO:         meets_proof_standard(second in the line, scintilla)-->True
+INFO:       acceptable(second in the line)-->True
+INFO:     applicable([-first in the line], ~[second in the line] => thrid in the line)-->False
+INFO:     Calling applicable([-second in the line], ~[first in the line] => thrid in the line)
+DEBUG: Checking applicability of not second means third unless is first...
+DEBUG: Current assumptions: {first in the line}
+DEBUG: Current premises: {-second in the line}
+INFO:       Calling acceptable(-second in the line)
+DEBUG: Checking whether proposition '-second in the line'meets proof standard 'scintilla'.
+INFO:         Calling meets_proof_standard(-second in the line, scintilla)
+INFO:         meets_proof_standard(-second in the line, scintilla)-->False
+INFO:       acceptable(-second in the line)-->False
+DEBUG: Current exception: {first in the line}
+INFO:     applicable([-second in the line], ~[first in the line] => thrid in the line)-->False
+INFO:   meets_proof_standard(thrid in the line, scintilla)-->False
+INFO: acceptable(thrid in the line)-->False
+INFO: >>> thrid in the line IS NOT acceptable
+INFO: 
+
+Evaluating acceptability of : -thrid in the line
+INFO: Calling acceptable(-thrid in the line)
+DEBUG: Checking whether proposition '-thrid in the line'meets proof standard 'scintilla'.
+INFO:   Calling meets_proof_standard(-thrid in the line, scintilla)
+INFO:   meets_proof_standard(-thrid in the line, scintilla)-->False
+INFO: acceptable(-thrid in the line)-->False
+INFO: >>> -thrid in the line IS NOT acceptable

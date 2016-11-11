@@ -68,6 +68,7 @@ class Tokenizer(object):
 
         for lineIdx, line in enumerate(stream):
             # iterate through each line of the file
+            lineIdx += 1 # starts from 1 instead of 0
             pointer = 0
             # print(line) # DEBUG
 

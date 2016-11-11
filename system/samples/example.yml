@@ -25,6 +25,7 @@ ARGUMENT:
     exception: [unreliable1]
     conclusion: intent
     weight: 0.3
+    proofstandard : beyond reasonable doubt
 
   is witness2 sufficient to proof intent?:
     premise: [witness2]
@@ -33,7 +34,8 @@ ARGUMENT:
     weight: 0.8
 
 PROOFSTANDARD :
-  intent : beyond reasonable doubt
+  intent : clear and convincing
+  murder : beyond reasonable doubt
 
 ASSUMPTION: [kill, witness1, witness2, unreliable2]
 

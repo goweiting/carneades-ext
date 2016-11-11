@@ -175,15 +175,14 @@ from carneades.error import ReaderError
 
 # Uncomment the following line to raise the logging level and thereby turn off
 # debug messages
-# LOGLEVEL = logging.DEBUG
-LOGLEVEL = logging.INFO
-
-logging.basicConfig(format='%(levelname)s: %(message)s', level=LOGLEVEL)
-
+LOGLEVEL = logging.DEBUG
+# LOGLEVEL = logging.INFO
 
 # ========================================================================
 #           READER
 # ========================================================================
+
+
 class Reader(object):
     """
     Reader class encapsulates the processing of the file using the load function
@@ -227,6 +226,10 @@ class Reader(object):
         :param path_to_file : the path to the file to be opened
 
         """
+        # define the filename for write_to_graphviz
+        dot_file = '../../dot/{}.dot'.format(path_to_file.split('/')[-1])
+        g_filename = '../../graph/{}.pdf'.format(path_to_file.split('/')[-1])
+
         # ---------------------------------------------------------------
         #   Scanning and lexical analsys
         # ---------------------------------------------------------------
@@ -308,9 +311,11 @@ class Reader(object):
 
             if ok_c and ok_e and ok_p:
                 self.caes_argument[arg_id] = Argument(conclusion=conclusion,
-                                                      premises=premise, exceptions=exception)
+                                                      premises=premise, exceptions=exception,
+                                                      weight=weight)
                 self.argset.add_argument(
                     self.caes_argument[arg_id], arg_id=arg_id.data)  # add to argset
+
         # -----------------------------------------------------------------
         logging.info('\tAdding parameter to CAES')
 
@@ -333,6 +338,7 @@ class Reader(object):
                 if self.caes_gamma > 1 or self.caes_gamma < 0:
                     raise SyntaxError(
                         'gamma must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_gamma))
+
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
         for ps in p.proofstandard.children:
@@ -358,28 +364,22 @@ class Reader(object):
             self.caes_acceptability.add(prop)
 
         # -----------------------------------------------------------------
-        # draw and check acceptability of conclusions listed by used in
-        # ACCEPTABILITY
-        self.initialise()
-
-    def initialise(self):
-
         logging.info('\tInitialising CAES')
         # call the initialise function:
-        logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
-            self.caes_alpha, self.caes_beta, self.caes_gamma))
-        logging.debug('propliterals: {} '.format(self.caes_propliteral))
-        logging.debug('arguments: {} '.format(self.caes_argument))
-        logging.debug('weights : {}'.format(self.caes_weight))
-        logging.debug('assumptions: {} '.format(self.caes_assumption))
-        logging.debug('acceptability: {} '.format(self.caes_acceptability))
-        logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
+        # logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
+        #     self.caes_alpha, self.caes_beta, self.caes_gamma))
+        # logging.debug('propliterals: {} '.format(self.caes_propliteral))
+        # logging.debug('arguments: {} '.format(self.caes_argument))
+        # logging.debug('weights : {}'.format(self.caes_weight))
+        # logging.debug('assumptions: {} '.format(self.caes_assumption))
+        # logging.debug('acceptability: {} '.format(self.caes_acceptability))
+        # logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
         # -----------------------------------------------------------------
         #       draw the argument graph:
         # -----------------------------------------------------------------
-        self.argset.draw()
-        self.argset.write_to_graphviz()
+        self.argset.draw(g_filename)
+        self.argset.write_to_graphviz(dot_file)
 
         caes = CAES(argset=self.argset,
                     audience=Audience(
@@ -390,15 +390,20 @@ class Reader(object):
                     gamma=self.caes_gamma)
 
         for acc in self.caes_acceptability:
-            caes.acceptable(acc)
-
-
-
+            print('\n\n')
+            logging.info('\n\nEvaluating acceptability of : {}'.format(acc))
+            acceptability = caes.acceptable(acc)
+            logging.info('>>> {} {} acceptable'.format(
+                acc, ['IS NOT', 'IS'][acceptability]))
+            print('\n>>> {} {} acceptable'.format(
+                acc, ['IS NOT', 'IS'][acceptability]))
 
 # ========================================================================
 #       Additional Functions to help check
 #      propositions and proofstandards from Reader
 # ========================================================================
+
+
 def check_prop(caes_propliteral, prop_id):
     """
     given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
@@ -524,7 +529,7 @@ class Argument(object):
     :class:`ArgumentSet`.
     """
 
-    def __init__(self, conclusion, premises=set(), exceptions=set()):
+    def __init__(self, conclusion, premises=set(), exceptions=set(), weight=0):
         """
         :param conclusion: The conclusion of the argument.
         :type conclusion: :class:`PropLiteral`
@@ -537,6 +542,7 @@ class Argument(object):
         self.conclusion = conclusion
         self.premises = premises
         self.exceptions = exceptions
+        self.weight = weight
         self.arg_id = None
 
     def __str__(self):
@@ -552,6 +558,7 @@ class Argument(object):
             prems = "[]"
         else:
             prems = sorted(self.premises)
+
         if len(self.exceptions) == 0:
             excepts = "[]"
         else:
@@ -611,8 +618,8 @@ class ArgumentSet(object):
         """
         if isinstance(proposition, PropLiteral):
             if proposition in self.propset():
-                logging.debug("Proposition '{}' is already in graph".
-                              format(proposition))
+                logging.debug(
+                    "Proposition '{}' is already in graph".format(proposition))
             else:
                 # add the proposition as a vertex attribute, recovered via the
                 # key 'prop'
@@ -638,22 +645,26 @@ class ArgumentSet(object):
         if arg_id is not None:
             argument.arg_id = arg_id
         else:
-            argument.arg_id = 'arg{}'.format(self.arg_count)
+            argument.arg_id = 'arg{}'.format(
+                self.arg_count)  # default arg_id if not given
         self.arg_count += 1
         self.arguments.append(argument)
 
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
         self.graph.add_vertex(arg=argument.arg_id)
+        # returns the vertex that goes to the argument
         arg_v = g.vs.select(arg=argument.arg_id)[0]
 
         # add proposition vertices to the graph
+        # conclusion:
         conclusion_v = self.add_proposition(argument.conclusion)
         self.add_proposition(argument.conclusion.negate())
-        premise_vs =\
-            [self.add_proposition(prop) for prop in sorted(argument.premises)]
-        exception_vs =\
-            [self.add_proposition(prop)
-             for prop in sorted(argument.exceptions)]
+        # premise
+        premise_vs = [self.add_proposition(prop)
+                      for prop in sorted(argument.premises)]
+        # exception:
+        exception_vs = [self.add_proposition(prop)
+                        for prop in sorted(argument.exceptions)]
         target_vs = premise_vs + exception_vs
 
         # add new edges to the graph
@@ -694,7 +705,7 @@ class ArgumentSet(object):
             raise ValueError("Proposition '{}' is not in the current graph".
                              format(proposition))
 
-    def draw(self, debug=False):
+    def draw(self, g_filename, debug=False):
         """
         Visualise an :class:`ArgumentSet` as a labeled graph.
 
@@ -714,7 +725,6 @@ class ArgumentSet(object):
             d_labels = []
             for (i, label) in enumerate(labels):
                 d_labels.append("{}\nv{}".format(label, g.vs[i].index))
-
             labels = d_labels
 
         g.vs['label'] = labels
@@ -724,27 +734,61 @@ class ArgumentSet(object):
         layout = g.layout_reingold_tilford(mode=ALL, root=roots)
 
         plot_style = {}
-        plot_style['vertex_color'] = \
-            ['lightblue' if x is None else 'pink' for x in g.vs['arg']]
-        plot_style['vertex_size'] = 60
-        plot_style['vertex_shape'] = \
-            ['circle' if x is None else 'rect' for x in g.vs['arg']]
-        plot_style['margin'] = 40
+        # for vertexes
+        # arguments : pink and rectangular
+        # propositions : blue and circle
+        plot_style['vertex_color'] = []
+        # plot_style['vertex_color'] = \
+        #     ['lightblue' if x is None else 'pink' for x in g.vs['arg']]
+        counter = 0
+        for x in g.vs['arg']:
+            if x is None:  # if it is an arguments
+                plot_style['vertex_color'].append('lightblue')
+            else:
+                # darker red = larger weight
+                how_red = [1, 1 - self.arguments[counter].weight, 0.5]
+                plot_style['vertex_color'].append(how_red)
+                counter += 1
+        plot_style['vertex_shape'] =\
+          ['circular' if x is None else 'rect' for x in g.vs['arg']]
+        plot_style['vertex_size'] = 30
+        plot_style['vertex_label_angle'] = 1.5 # rotation, 0 is right of the vertex
+        plot_style['vertex_label_dist'] = -2
+        # plot_style['vertex_label_size'] = 20
+        # General plot
+        plot_style['margin'] = (100,100,100,100) # pixels of border
+        plot_style['bbox'] = (800, 600) # change the size of the image
         plot_style['layout'] = layout
-        plot(g, **plot_style)
+        # execute the plot
+        plot(g, g_filename, autocurve=True, **plot_style)
+
 
     def write_to_graphviz(self, fname=None):
         g = self.graph
         result = "digraph G{ \n"
+        counter = 0
 
         for vertex in g.vs:
             arg_label = vertex.attributes()['arg']
             prop_label = vertex.attributes()['prop']
-
             if arg_label:
-                dot_str = (arg_label +
-                           ' [color="black", fillcolor="pink", width=.75, '
+                arg_weight = self.arguments[counter].weight
+                # higher weights = darker color
+                if arg_weight <= 0.2:
+                    color = 'coral'
+                elif arg_weight <= 0.4 and arg_weight > 0.2:
+                    color = 'coral1'
+                elif arg_weight <= 0.6 and arg_weight > 0.4:
+                    color = 'coral2'
+                elif arg_weight <= 0.8 and arg_weight > 0.6:
+                    color = 'coral3'
+                else:
+                    color = 'coral4'
+
+                dot_str = ('"' + arg_label + '"' +
+                           ' [color="black", fillcolor="{}", width=.75, '.format(color) +
                            'shape=box, style="filled"]; \n')
+                counter += 1
 
             elif prop_label:
                 dot_str = ('"{}"'.format(prop_label) +
@@ -817,6 +861,8 @@ class ProofStandard(object):
         """
         return self.config[proposition]
 
+
+# ========================================================================
 
 Audience = namedtuple('Audience', ['assumptions', 'weight'])
 """
@@ -1064,48 +1110,10 @@ class CAES(object):
         return self.max_weight_applicable(args)
 
 # -----------------------------------------------------------------------------
-#       DENO
+#       MAIN
 # -----------------------------------------------------------------------------
 
-
-def arg_demo():
-    """
-    Demo of how to initialise and call methods of a CAES.
-    """
-    kill = PropLiteral('kill')
-    intent = PropLiteral('intent')
-    neg_intent = intent.negate()
-    murder = PropLiteral('murder')
-    witness1 = PropLiteral('witness1')
-    unreliable1 = PropLiteral('unreliable1')
-    witness2 = PropLiteral('witness2')
-    unreliable2 = PropLiteral('unreliable2')
-
-    ps = ProofStandard([(intent, "beyond_reasonable_doubt")])
-
-    arg1 = Argument(murder, premises={kill, intent})
-    arg2 = Argument(intent, premises={witness1}, exceptions={unreliable1})
-    arg3 = Argument(neg_intent, premises={witness2}, exceptions={unreliable2})
-
-    argset = ArgumentSet()
-    argset.add_argument(arg1)
-    argset.add_argument(arg2)
-    argset.add_argument(arg3)
-    argset.draw()
-    argset.write_to_graphviz()
-
-    assumptions = {kill, witness1, witness2, unreliable2}
-    weights = {'arg1': 0.8, 'arg2': 0.3, 'arg3': 0.8}
-    audience = Audience(assumptions, weights)
-    caes = CAES(argset, audience, ps)
-    caes.acceptable(murder)
-    caes.acceptable(murder.negate())
-
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-
-DOCTEST = True
+DOCTEST = False
 
 if __name__ == '__main__':
 
@@ -1113,4 +1121,42 @@ if __name__ == '__main__':
         import doctest
         doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     else:
-        arg_demo()
+        # usage:
+        #   (ailp_env) $ python caes.py filename | [filename]+
+        #   (ailp_env) $ python caes.py '../samples/example.yml # run a single file
+        #
+        filenames = sys.argv[1:]
+        cwd = os.getcwd()
+
+        if os.path.isdir(filenames[0]):
+            logging.warning(
+                'NO FILE DETECTED\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
+
+        if filenames == []:  # no argument passed into the command line
+            logging.warning(
+                'NO FILE DETECTED\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
+
+        elif len(filenames) > 1:  # if user gave a list of filenames
+            # inform the number of files
+            print('{} files detected'.format(len(filenames)))
+            # Some logging settings
+
+            for filename in filenames:
+                logger_file = '../../log/{}.log'.format(filename.split('/')[-1])
+                logging.basicConfig(format='%(levelname)s: %(message)s',
+                                    level=LOGLEVEL,
+                                    filemode='w',
+                                    filename=logger_file)
+                assert os.path.isfile(filename), logging.exception('{} is not a file'.format(
+                    filename))  # check that the filename parsed are all files
+
+                print('\nProcessing {}'.format(filename))
+                Reader().load(filename)
+                logger = logging.getLogger()
+                logger.removeHandler(logger.handlers[0])
+
+        else:  # Support if user gives a directory instead of a list of filename
+            if os.path.isfile(filenames):
+                Reader().load(filenames)
+            else:
+                logging.error('Cannot find file {}'.format(filenames))

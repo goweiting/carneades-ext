@@ -164,7 +164,11 @@ class Parser(object):
                 #           - a children is either a list/sequence
                 #           - or a sentence
                 # ----------------------------------------------------------
-                t_next = toks.popleft()
+                try:
+                    t_next = toks.popleft()
+                except IndexError:
+                    raise ParseError("Incomplete syntax found at line {} col {}".format(t_next.lineIdx, t_next.colIdx))
+
                 if t_next.tok_type == 'SEQUENCE_OPEN':
                     # a sequence list is given
                     toks.appendleft(t_next)
