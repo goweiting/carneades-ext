@@ -193,7 +193,7 @@ class Reader(object):
     >>>
     """
     buffer_size = 4096  # default to 4086, unless user define otherwise
-    # indent_size = 2
+    indent_size = 2
 
     def __init__(self, buffer_size=4096, indent_size=2):
         """
@@ -750,18 +750,18 @@ class ArgumentSet(object):
                 plot_style['vertex_color'].append(how_red)
                 counter += 1
         plot_style['vertex_shape'] =\
-          ['circular' if x is None else 'rect' for x in g.vs['arg']]
+            ['circular' if x is None else 'rect' for x in g.vs['arg']]
         plot_style['vertex_size'] = 30
-        plot_style['vertex_label_angle'] = 1.5 # rotation, 0 is right of the vertex
+        # rotation, 0 is right of the vertex
+        plot_style['vertex_label_angle'] = 1.5
         plot_style['vertex_label_dist'] = -2
         # plot_style['vertex_label_size'] = 20
         # General plot
-        plot_style['margin'] = (100,100,100,100) # pixels of border
-        plot_style['bbox'] = (800, 600) # change the size of the image
+        plot_style['margin'] = (100, 100, 100, 100)  # pixels of border
+        plot_style['bbox'] = (800, 600)  # change the size of the image
         plot_style['layout'] = layout
         # execute the plot
         plot(g, g_filename, autocurve=True, **plot_style)
-
 
     def write_to_graphviz(self, fname=None):
         g = self.graph
@@ -1122,19 +1122,27 @@ if __name__ == '__main__':
         doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     else:
         # usage:
+        #   SYNTAX:
         #   (ailp_env) $ python caes.py filename | [filename]+
-        #   (ailp_env) $ python caes.py '../samples/example.yml # run a single file
+        #
+        #   run a single file
+        #   (ailp_env) $ python caes.py '../samples/example.yml'
         #
         filenames = sys.argv[1:]
         cwd = os.getcwd()
 
-        if os.path.isdir(filenames[0]):
-            logging.warning(
-                'NO FILE DETECTED\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
-
         if filenames == []:  # no argument passed into the command line
-            logging.warning(
+            print(
                 'NO FILE DETECTED\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
+            exit()
+
+        # Some argument is passed:
+        file_check = filenames[0]
+
+        if os.path.isdir(str(file_check)):
+            print(
+                'You have given a directory!\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
+            exit()
 
         elif len(filenames) > 1:  # if user gave a list of filenames
             # inform the number of files
@@ -1142,7 +1150,8 @@ if __name__ == '__main__':
             # Some logging settings
 
             for filename in filenames:
-                logger_file = '../../log/{}.log'.format(filename.split('/')[-1])
+                logger_file = '../../log/{}.log'.format(
+                    filename.split('/')[-1])
                 logging.basicConfig(format='%(levelname)s: %(message)s',
                                     level=LOGLEVEL,
                                     filemode='w',
@@ -1156,7 +1165,7 @@ if __name__ == '__main__':
                 logger.removeHandler(logger.handlers[0])
 
         else:  # Support if user gives a directory instead of a list of filename
-            if os.path.isfile(filenames):
-                Reader().load(filenames)
+            if os.path.isfile(file_check):
+                Reader().load(filenames[0])
             else:
                 logging.error('Cannot find file {}'.format(filenames))

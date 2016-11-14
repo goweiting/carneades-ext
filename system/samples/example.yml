@@ -15,7 +15,7 @@ ARGUMENT:
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
   is there an intent to murder?:
-    premise: [kill,intent]
+    premise: [kill, intent]
     exception : [] # no exception is okay!
     conclusion: murder
     weight:  0.8
@@ -25,7 +25,6 @@ ARGUMENT:
     exception: [unreliable1]
     conclusion: intent
     weight: 0.3
-    proofstandard : beyond reasonable doubt
 
   is witness2 sufficient to proof intent?:
     premise: [witness2]

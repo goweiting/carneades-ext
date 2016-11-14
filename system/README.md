@@ -6,7 +6,7 @@ Requirements for the second coursework for INFR09043 Artificial Intelligence Lar
 - [4.3](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
 - [4.4](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
 
-You can preview this markdown file using this [tool](https://jbt.github.io/markdown-editor/)
+You can preview this markdown file using this [tool](https://jbt.github.io/markdown-editor/), although not necessary.
 
 ## Getting around this file:
 Sections for this documentation includes:
@@ -16,11 +16,12 @@ Sections for this documentation includes:
 * [Instructions for testing the system](#demo)
 * [Syntax for `.yml` files](#syntax)
 * [Running regression test](#testing)
-
 -------
 
 Overview
 ======
+In this extension, a user approach
+
 The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
 
 A general workflow:
@@ -28,9 +29,9 @@ A general workflow:
 1. User creates file for arguments, e.g. `caes.yml`
 2. Setup virual environment - `ailp_env`
 3. Either:
-  * Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter))
-  * Run from the command line
-4. The file will go through lexical analysis to ensure [synatx](#syntax) is followed; it will be parsed before calling the Carneades Argument Evaluation System.
+  * Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter)), or
+  * Run from the command line (preferred method)
+4. The file (in step 1) will go through lexical analysis to ensure [synatx](#syntax) rules are obeyed before parsing it for the Carneades Argument Evaluation System.
 
 ## Directory
 The directory of the files is as such:
@@ -42,12 +43,12 @@ system
 |       |   caes.py
 |       |   tokenizer.py
 |       |   parser.py
-|       |   error.py
 |       |   ...
-|      
+|
 └───samples (all the test examples are here!)
 |   |
 |   |
+|      
 |
 └───dot
 |   ( contains all the .dot files generated from write_to_graphviz() function)
@@ -64,153 +65,100 @@ system
 ```
 ## Setup
 
-### `ailp_env` virtual environment
-Need to activate the `ailp_env` before running the code (assumed is done; commands are listed below for reference):
-```$
-[From the system folder]
-$ source ailp_env/bin/activate
-(ailp_env) $  # the environment name should appear on each line in terminal
-```
-User should refer to the assignemtn document for a more detailed documentation.
+### Activating `ailp_env` virtual environment
 
-## Demo
-
-### How to run
-There is a few mode supported for this running CAES:
-* Single file
-* Multiple files
-* All `.yml` files in a directory
-
-#### Single or multiple files
-Assuming your source files are in the `system/samples` folder:
+The `ailp_env` is not included (assumed is done; commands are listed below for reference), but can be set up according to [this](#https://github.com/ewan-klein/carneades#installing-the-libraries-for-the-carneades-sample-code-on-your-own-computer). On DICE machine, the virtual environment can be created using the following command:
 ```$
-(ailp_env) $
-(ailp_env) $
-(ailp_env) $
+$ pyvenv ailp_env
 ```
-#### Running CAES on an entire directory
+
+## Running CAES
+
+Two modes of running caes is supported:
+### 1) from the command line
+You can run CAES to evaluate single or multiple files. Assuming your source files are in the `system/samples` folder, and you are in the `system` folder
 ```$
-(ailp_env) $
-(ailp_env) $
-(ailp_env) $
+(ailp_env) $ cd src/carneades
+# to run a single file:
+(ailp_env) $ python caes.py '../../samples/example.yml'
+# to run multiple files:
+(ailp_env) $ python caes.py ''../../samples/example.yml' ''../../samples/example2.yml'
 ```
+
+### 2) from the interpreter
+```(python)
+from the system folder:
+(ailp_env) $ cd src/carneades
+(ailp_env) $ python # to start the python interpreter
+>>> import caes
+>>> reader = caes.Reader(buffer_size=4096, indent_size=2) # more about these parameters later
+>>> reader.load('../../samples/example.yml')
+```
+
 
 ## Syntax for `.yml` files
 The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. Syntax for caes illustrates the essential elements required for each caes.
 
-### Rules:
-1. Spaces and newlines are delimiters. Usage of tab will throw errors. (unless your editor converts them to 'soft tabs' - space)
-2. the standard indent size is `2`. Similar to python, indents determine the grouping of statements, which allowes us to compute the nesting of maps and sequences, if any.
-3. Special characters: `:`, `-`, `~` are not allowed as individual tokens, unless they are used to define sequence or map. They can be used after any `CHAR` as long as it is before a white space.
+### General Syntax Rules:
+1. Spaces and newlines are delimiters. Usage of tab will result in error as the program is sensitive to indents (unless your editor converts them to space automatically).
+2. Indents are represented using spaces, The standard indent size is `2` (i.e. two spaces - '  '). Similar to python, indents determine the grouping of statements. If you prefer a different indent-size, if must be changed when the `Reader` class is called, such as : `$ reader = Reader(indent_size = 3)` when using the python interpreter. Unfortunately, parsing using the command line will use the default indent size of 2
+3. Comment begins with `#`, similar to python
+4. the components of the syntax are:
+  * headers (PROPOSITION, ARGUMENT, PROOFSTANDARD, ASSUMPTION, ACCEPTABILITY, PARAMETER)
+  * compulsory fields for header
+  * `:` - is a mapping value used to indicate the 'belongs-to' membership of items before it and after
+  * `-`  - only used when representing a negated proposition under certain headers
+  * items :
+    * a series of character, such as: 'is witness2 sufficient to proof intent?'
+    * a list : starts with `[` and ends with `]`, using `,` to separate the items
 
-```
-INDENT = '  '
-SPECIAL_CHAR = ':' | '-' | '~'
-CHAR ::= [abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]
-STMT ::= ' 'CHAR[CHAR | SPECIAL_CHAR]*' '  # bounded by whitespace(' ')
-STMTS ::= SEQUENCES | MAPS | COMMENT
 
-COMMENT ::= '#'[CHAR]*  # Everything after '#' will be ignored
+### Syntax for CAES
 
-SEQUENCES ::= STMT[STMT]* ' : ' [SEQUENCE_ELEMENT | SEQUENCES]*
-SEQUENCE_ELEMENT ::= [INDENT]* '- ' STMTS   # each SEQUENCE_ELEMENT must start on a newline, if it a nested sequence, indents are used to infer group membership
+The syntax for CAES uses a natural language approach to represent propositions (also known as statements) in other literature, and arguments. Hence, the identifier for proposition and argument can be a long setence.
 
-MAPS ::= STMT[STMT]* ':' [MAP_ELEMENT | MAPS]*
-MAP_ELEMENT ::= INDENT[INDENT]* STMTS   # each MAP_ELEMENT must start on a new line, and must have an indent set the key (in previous line) to the elements
-```
-
-### Examples
-
-* Sequence
-A sequence is similar to `list()` in python.
-
-```
-# a simple sequence
-- kill # the indent level follows the location of the key (ASSUMPTION here)
-- witness1
-- witness2
-- unreliable1
-
-- Ground Level 1 :
-  - First level 11
-  - First level 12
-- Ground Level 2 : # once the indent level drops, inferred as a new sequence
-  - First level 21
-  - ...
-```
-
-* Maps
-A map is similar to `dict()` in python:
-
-```
-ASSUMPTION: # simple
-  kill
-
-ASSUMPTION: # mapping ASSUMPTION to a list
-  - kill
-  - witness1
-  - wintess2
-  - unreliable1
-
-PARAMETER: # PARAMETERS have a value with 3 maps
-  alpha :   # this is same as the simple map
-    0.4     # double indent to denote membership to 'alpha'
-  beta :
-    0.2
-  gamma :
-    0.10
-```
-
-###  Syntax for CAES
-These fields must be present in order for an argument graph to be presented
+A template of the syntax is attached at [system/samples/template.yml](samples/template.yml)
 
 * `PROPOSITION`
-..* Begin with 'PROPOSITION'
-..* A sequence of map; each map is a proposition uniquely identified by `PROP_ID`. the `polarity` is a compulsory field. The polarity indicates the falsehood of the proposition.
+  * Begin with 'PROPOSITION' header; each proposition is at indent level 1
+  * A proposition is uniquely identified by an identifier - `PROP_ID`. The polarity for all proposition is assumed to be true.
+
 ```
 PROPOSITION :
-  - <PROP_ID> :
-      text : <elaboration of proposition>
-      polarity : <True, False>
+  <PROP_ID> : <TEXT> # note the indent before each proposition is defined
+  <PROP_ID> : <TEXT>
+  <PROP_ID> : <TEXT>
 
-  # EXAMPLE:
-  - ID CAN HAVE SPACES :
-      text : this is an example
-      polarity : True
+Example:
+PROPOSITION:
+  murder: accused committed murder
 ```
 
 * `ASSUMPTION`
-..* Begin with 'ASSUMPTION'
-..* A sequence of `PROP_ID` defined in `PROPOSITION`
+  * Begin with 'ASSUMPTION' header, and is a list of `PROP_ID` defined above
 ```
-ASSUMPTION :
-  - <PROP_ID>
+ASSUMPTION : [ <PROP_ID>, <PROP_ID> ]
+ASSUMPTION : [] # no assumptions present in arguments
 
-  # EXAMPLE
-  - ID CAN HAVE SPACES
+Example:
+ASSUMPTION : [kill, witness1, witness2, unreliable2]
 ```
 
 * `ARGUMENT`
-..* Begins in with 'ARGUMENT'
-..* A sequence of map, with `ARG_ID` as key. Each map consist of the following maps: `premise`, `exception`, `conclusions`, `weight`
+  * Begins in with 'ARGUMENT' header; each argument consist of an `ARG_ID` at indent level 1; and fields at indent level 2
+  *  `ARG_ID` as key. Each map consist of the following maps: `premise`, `exception`, `conclusions`, `weight`
 ```
 ARGUMENT :
-  - <ARG_ID> :
-    premise :  # premise is a sequence
-      - <PROP_ID>
-    exception : # exception is a sequence
-      - <PROP_ID>
-    conclusion:
-      <PROP_ID> # only ONE conclusions
-    weight :
-      <Double between 0 and 1>
+  <ARG_ID> : # indent level = 1
+    premise :  [ <PROP_ID> ] # each field is at indent level = 2
+    exception : [ <PROP_ID> ]
+    conclusion: <PROP_ID>
+    weight : <Double between 0 and 1>
 
   # EXAMPLE:
-  - arg1 :
-    premise :
-      - kill
-      - intent
-    exception :
+  - is there an intent to murder?:
+    premise : [kill, intent]
+    exception : [] # empty list to represent no indent
     conclusion :
       murder
     weight :
@@ -240,10 +188,6 @@ PARAMETER :
   gamma : <Double between 0 and 1>
 ```
 
-### Template
-The template can also be found in [system/samples/template.yml](samples/template.yml)
-```
 
-```
 
 ## Tests
