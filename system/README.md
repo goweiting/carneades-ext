@@ -30,8 +30,7 @@ A general workflow:
 3. Either:
   * Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter))
   * Run from the command line
-4. The file will go through lexical analysis to ensure [synatx](#syntax) is correct and tokenize the files, then parsing it.
-5. The will be used as python arguments for `caes.py` program.
+4. The file will go through lexical analysis to ensure [synatx](#syntax) is followed; it will be parsed before calling the Carneades Argument Evaluation System.
 
 ## Directory
 The directory of the files is as such:
@@ -41,27 +40,32 @@ system
 └───src
 |   └───carneades
 |       |   caes.py
-|       |   reader.py
-|       |   generateTokens.py
+|       |   tokenizer.py
 |       |   parser.py
 |       |   error.py
-|       |   caes.doctest.py
-|       |   tracecalls.py
+|       |   ...
 |      
-└───samples
+└───samples (all the test examples are here!)
 |   |
 |   |
 |
+└───dot
+|   ( contains all the .dot files generated from write_to_graphviz() function)
+|
+└───graph
+|   ( argumentation graph generated using python-igraph and cairo)
+|
+└───log
+|   ( the logging information when the caes is run)
+|
 └───ailp_env
-    └───bin
-        |   activate
-        |   ...
+    ( files for the virual environment, assumed to be set up already by user)
 
 ```
 ## Setup
 
 ### `ailp_env` virtual environment
-Need to activate the `ailp_env` before running the code (assumed is done; commands are listed below):
+Need to activate the `ailp_env` before running the code (assumed is done; commands are listed below for reference):
 ```$
 [From the system folder]
 $ source ailp_env/bin/activate
