@@ -152,9 +152,6 @@ the conclusion `murder` is not acceptable, since
 False
 >>> caes.acceptable(murder.negate())
 False
-
-
-
 """
 
 
@@ -190,7 +187,11 @@ class Reader(object):
     DOCTEST:
     >>> reader = Reader(); # use default buffer_size
     >>> reader.load('../../samples/example.yml')
-    >>>
+    <BLANKLINE>
+    ------ accused committed murder IS NOT acceptable ------
+    <BLANKLINE>
+    ------ -accused committed murder IS NOT acceptable ------
+
     """
     buffer_size = 4096  # default to 4086, unless user define otherwise
     indent_size = 2
@@ -367,17 +368,17 @@ class Reader(object):
             self.caes_acceptability.add(prop)
 
         # -----------------------------------------------------------------
-        logging.info('\tInitialising CAES')
         # call the initialise function:
-        # logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
-        #     self.caes_alpha, self.caes_beta, self.caes_gamma))
-        # logging.debug('propliterals: {} '.format(self.caes_propliteral))
-        # logging.debug('arguments: {} '.format(self.caes_argument))
-        # logging.debug('weights : {}'.format(self.caes_weight))
-        # logging.debug('assumptions: {} '.format(self.caes_assumption))
-        # logging.debug('acceptability: {} '.format(self.caes_acceptability))
-        # logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
+        logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
+            self.caes_alpha, self.caes_beta, self.caes_gamma))
+        logging.debug('propliterals: {} '.format(self.caes_propliteral))
+        logging.debug('arguments: {} '.format(self.caes_argument))
+        logging.debug('weights : {}'.format(self.caes_weight))
+        logging.debug('assumptions: {} '.format(self.caes_assumption))
+        logging.debug('acceptability: {} '.format(self.caes_acceptability))
+        logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
+        logging.info('\tInitialising CAES')
         # -----------------------------------------------------------------
         #       draw the argument graph:
         # -----------------------------------------------------------------
@@ -393,12 +394,12 @@ class Reader(object):
                     gamma=self.caes_gamma)
 
         for acc in self.caes_acceptability:
-            print('\n\n')
+            # print('\n\n')
             logging.info('\n\nEvaluating acceptability of : {}'.format(acc))
             acceptability = caes.acceptable(acc)
-            logging.info('>>> {} {} acceptable'.format(
+            logging.info('------ {} {} acceptable ------'.format(
                 acc, ['IS NOT', 'IS'][acceptability]))
-            print('\n>>> {} {} acceptable'.format(
+            print('\n------ {} {} acceptable ------'.format(
                 acc, ['IS NOT', 'IS'][acceptability]))
 
 # ========================================================================
@@ -1169,6 +1170,16 @@ if __name__ == '__main__':
 
         else:  # Support if user gives a directory instead of a list of filename
             if os.path.isfile(file_check):
+                logger_file = '../../log/{}.log'.format(
+                    file_check.split('/')[-1])
+                logging.basicConfig(format='%(levelname)s: %(message)s',
+                                    level=LOGLEVEL,
+                                    filemode='w',
+                                    filename=logger_file)
+                assert os.path.isfile(file_check), logging.exception('{} is not a file'.format(
+                    filename))  # check that the filename parsed are all files
+
+                print('\nProcessing {}'.format(file_check))
                 Reader().load(filenames[0])
             else:
                 logging.error('Cannot find file {}'.format(filenames))

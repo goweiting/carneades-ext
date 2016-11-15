@@ -20,23 +20,25 @@ class Parser(object):
     DOCTEST:
     -------
     >>> from tokenizer import Tokenizer
-    >>> stream = open('../../samples/template.yml').readlines();
+    >>> stream = open('../../samples/example.yml').readlines();
     >>> t = Tokenizer(stream);
     >>> p = Parser(t.tokens)
     >>> p.proposition.children
-    [first, second, third]
+    [murder, kill, intent, witness1, witness2, unreliable1, unreliable2]
     >>> p.assumption.children
-    ['first', 'second']
+    ['kill', 'witness1', 'witness2', 'unreliable2']
     >>> p.argument.children
-    [arg1, arg 2]
-    >>> p.argument.find_child('arg 2')
-    arg 2
-    >>> p.argument.find_child('arg 2').children
-    [premise, exception, conclusion, weight, proofstandard]
-    >>> p.argument.find_child('arg 2').find_child('proofstandard').children[0].data
-    'beyond reasonable doubt'
+    [is there an intent to murder?, is witness1 sufficient to proof intent?, is witness2 sufficient to proof intent?]
+    >>> p.argument.find_child('is witness2 sufficient to proof intent?')
+    is witness2 sufficient to proof intent?
+    >>> p.argument.find_child('is witness2 sufficient to proof intent?').children
+    [premise, exception, conclusion, weight]
+    >>> p.argument.find_child('is witness2 sufficient to proof intent?').find_child('conclusion').children[0].data
+    '-intent'
     >>> p.parameter.children
     [alpha, beta, gamma]
+    >>> p.acceptability.children
+    ['murder', '-murder']
 
 
     If more than one HEADER found, throw ParseError:
@@ -46,7 +48,6 @@ class Parser(object):
     ...     Parser(t.tokens)
     ... except ParseError:
     ...     pass
-
 
     """
 

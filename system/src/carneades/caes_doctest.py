@@ -4,8 +4,6 @@ Tests for caes module.
 Propositions
 ------------
 
-
-
 Construct some proposition literals.
 
 >>> a = PropLiteral('a')
@@ -90,17 +88,15 @@ True
 Proof standard
 --------------
 
-
 >>> standards = [(intent, "beyond_reasonable_doubt")]
 >>> ps = ProofStandard(standards)
+
 
 CAES
 ----
 
 Applicable Arguments in a CAES
 ++++++++++++++++++++++++++++++
-
-
 
 >>> a = PropLiteral('a')
 >>> b = PropLiteral('b')
@@ -143,7 +139,7 @@ True
 
 if __name__ == '__main__':
     import os, sys
-    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))    
+    sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
     from carneades.caes import *
     from carneades.tracecalls import TraceCalls
     import doctest

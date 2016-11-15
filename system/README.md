@@ -1,11 +1,11 @@
-Requirements for the second coursework for INFR09043 Artificial Intelligence Large Practical ([AILP](http://www.inf.ed.ac.uk/teaching/courses/ailp/)) 2016/17 are:
+Requirements for the second coursework for INFR09043 Artificial Intelligence Large Practical ([AILP](#http://www.inf.ed.ac.uk/teaching/courses/ailp/)) 2016/17 are:
 
-- [4.1](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#4) Implementing file-reading capability
-- [4.2](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Devising a syntax
-- [4.3](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
-- [4.4](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
+- [4.1](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#4) Implementing file-reading capability
+- [4.2](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Devising a syntax
+- [4.3](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
+- [4.4](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
 
-You can preview this markdown file using this [tool](https://jbt.github.io/markdown-editor/), although not necessary.
+You can preview this markdown file using this [tool](#https://jbt.github.io/markdown-editor/), although not necessary.
 
 ## Getting around this file:
 Sections for this documentation includes:
@@ -38,9 +38,9 @@ The user will create a file to contain all the statements (propositions), argume
 1. User creates file for arguments, e.g. `caes.yml`
 2. Setup virual environment - `ailp_env`
 3. Either:
-  * Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter)), or
+  * Start the python interpreter and import `carneades` (see [running from the interpreter](#2-from-the-interpreter)), or
   * Run from the command line (preferred method)
-4. The file (in step 1) will go through lexical analysis to ensure [synatx](#syntax) rules are obeyed before parsing it for the Carneades Argument Evaluation System.
+4. The file (in step 1) will go through lexical analysis to ensure [synatx](#syntax-for-yml-files) rules are obeyed before parsing it for the Carneades Argument Evaluation System.
 5. Propositions are evaluated using CAES, and the result will be printed in the terminal as well as in the log file for reference. The log files are located in the `log` folder adjacent to the `src`.
 
 For example, if the user wants to find out if proposition: `murder` (i.e., the accused committed murder) is an acceptable argument, CAES will output:
@@ -58,22 +58,22 @@ system
 |       |   parser.py
 |       |   ...
 |
-└───samples (all the test examples are here!)
+└───samples ( all the test examples are here! )
 |   |
 |   |
 |      
 |
 └───dot
-|   ( contains all the .dot files generated from write_to_graphviz() function)
+|   ( contains all the .dot files generated from write_to_graphviz() function )
 |
 └───graph
-|   ( argumentation graph generated using python-igraph and cairo,, stored as .pdf)
+|   ( argumentation graph generated using python-igraph and cairo, stored as .pdf )
 |
 └───log
-|   ( the logging information when the caes is run)
+|   ( the logging information when the caes is run )
 |
 └───ailp_env
-    ( files for the virual environment, assumed to be set up already by user)
+    ( files for the virual environment, assumed to be set up already by user )
 
 ```
 ## Setup
@@ -105,6 +105,7 @@ from the system folder:
 >>> reader.load('../../samples/example.yml')
 ```
 
+## Demo
 
 ## Syntax for `.yml` files
 The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. A template with all the essential element is available in the `samples` folder.
@@ -233,7 +234,7 @@ ACCEPTABILITY : [murder, -murder]
 The pipeline for CAES:
 Users' file -> `Tokenizer` -> `Parser` -> `Reader` -> CAES
 
-A defensive programming method is used. For each component of the pipeline, DOCTEST are written to illustrate certain behaviour of the system. During runtime, `asserts`, and `exceptions` statements are used to throw exceptions should there be error in the syntax, or when a `PROP_ID` is used before it is declared in `PROPOSITION`.
+A defensive programming method is used. For each component of the pipeline, DOCTEST are written to illustrate certain behaviour of the system. During runtime, `asserts`, and `exceptions` statements are used to throw exceptions should there be error in the syntax, or when using CASE; for example when a `PROP_ID` is used before it is declared in `PROPOSITION`.
 
 To run the DOCTESTs:
 ```
@@ -245,16 +246,9 @@ To run the DOCTESTs:
 (ailp_env) $ python parser.py -v
 
 # for Reader/CAES:
+First, set the `DOCTEST = True`
 (ailp_env) $ python caes.py -v
 ```
-
-
-## Demo
-
-
-
-
-
 
 
 ## Proof Standards

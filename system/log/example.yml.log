@@ -18,6 +18,13 @@ DEBUG: Added proposition 'second witness is unreliable' to graph
 INFO: 	Adding parameter to CAES
 INFO: 	Adding proofstandard to CAES
 INFO: 	Adding acceptability to CAES
+DEBUG: alpha:0.4, beta:0.3, gamme:0.3
+DEBUG: propliterals: {'murder': accused committed murder, 'witness1': first witness, 'unreliable2': second witness is unreliable, 'kill': accused killed the victim, 'unreliable1': first witness is unreliable, 'witness2': second witness, 'intent': accused have the intent} 
+DEBUG: arguments: {is witness1 sufficient to proof intent?: <__main__.Argument object at 0x7ffad840e198>, is witness2 sufficient to proof intent?: <__main__.Argument object at 0x7ffad840e208>, is there an intent to murder?: <__main__.Argument object at 0x7ffad840e0b8>} 
+DEBUG: weights : {is witness1 sufficient to proof intent?: 0.3, is witness2 sufficient to proof intent?: 0.8, is there an intent to murder?: 0.8}
+DEBUG: assumptions: {accused killed the victim, second witness, second witness is unreliable, first witness} 
+DEBUG: acceptability: {accused committed murder, -accused committed murder} 
+DEBUG: proofstandard: [(accused have the intent, 'clear_and_convincing'), (accused committed murder, 'beyond_reasonable_doubt')]
 INFO: 	Initialising CAES
 INFO: 
 
@@ -28,14 +35,14 @@ INFO:   Calling meets_proof_standard(accused committed murder, beyond_reasonable
 INFO:     Calling meets_proof_standard(accused committed murder, clear_and_convincing)
 INFO:       Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
 DEBUG: Checking applicability of is there an intent to murder?...
-DEBUG: Current assumptions: {first witness, accused killed the victim, second witness, second witness is unreliable}
-DEBUG: Current premises: {accused have the intent, accused killed the victim}
+DEBUG: Current assumptions: {accused killed the victim, second witness, second witness is unreliable, first witness}
+DEBUG: Current premises: {accused killed the victim, accused have the intent}
 INFO:         Calling acceptable(accused have the intent)
 DEBUG: Checking whether proposition 'accused have the intent'meets proof standard 'clear_and_convincing'.
 INFO:           Calling meets_proof_standard(accused have the intent, clear_and_convincing)
 INFO:             Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
 DEBUG: Checking applicability of is witness1 sufficient to proof intent?...
-DEBUG: Current assumptions: {first witness, accused killed the victim, second witness, second witness is unreliable}
+DEBUG: Current assumptions: {accused killed the victim, second witness, second witness is unreliable, first witness}
 DEBUG: Current premises: {first witness}
 DEBUG: Current exception: {first witness is unreliable}
 INFO:               Calling acceptable(first witness is unreliable)
@@ -48,7 +55,7 @@ DEBUG: Checking applicability and weights of ['is witness1 sufficient to proof i
 DEBUG: Weights of ['is witness1 sufficient to proof intent?'] are [0.3]
 INFO:             Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
 DEBUG: Checking applicability of is witness2 sufficient to proof intent?...
-DEBUG: Current assumptions: {first witness, accused killed the victim, second witness, second witness is unreliable}
+DEBUG: Current assumptions: {accused killed the victim, second witness, second witness is unreliable, first witness}
 DEBUG: Current premises: {second witness}
 DEBUG: Current exception: {second witness is unreliable}
 INFO:             applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->False
@@ -56,7 +63,7 @@ DEBUG: No applicable arguments in ['is witness2 sufficient to proof intent?']
 DEBUG: max weight pro 'accused have the intent' is 0.3
 DEBUG: max weight con 'accused have the intent' is 0.0
 DEBUG: max weight pro '0.3' >  alpha '0.4': False
-DEBUG: diff between pro and con = 0.3 > gamma: True
+DEBUG: diff between pro and con = 0.3 > gamma: False
 INFO:           meets_proof_standard(accused have the intent, clear_and_convincing)-->False
 INFO:         acceptable(accused have the intent)-->False
 INFO:       applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->False
@@ -69,7 +76,7 @@ DEBUG: diff between pro and con = 0.0 > gamma: False
 INFO:     meets_proof_standard(accused committed murder, clear_and_convincing)-->False
 INFO:   meets_proof_standard(accused committed murder, beyond_reasonable_doubt)-->False
 INFO: acceptable(accused committed murder)-->False
-INFO: >>> accused committed murder IS NOT acceptable
+INFO: ------ accused committed murder IS NOT acceptable ------
 INFO: 
 
 Evaluating acceptability of : -accused committed murder
@@ -78,4 +85,4 @@ DEBUG: Checking whether proposition '-accused committed murder'meets proof stand
 INFO:   Calling meets_proof_standard(-accused committed murder, scintilla)
 INFO:   meets_proof_standard(-accused committed murder, scintilla)-->False
 INFO: acceptable(-accused committed murder)-->False
-INFO: >>> -accused committed murder IS NOT acceptable
+INFO: ------ -accused committed murder IS NOT acceptable ------
