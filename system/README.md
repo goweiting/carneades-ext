@@ -12,8 +12,8 @@ Sections for this documentation includes:
 
 * [Directory of folders](#directory)
 * [Setting up the `ailp_env` virtual environment](#setup)
+* [Syntax for `.yml` files](#syntax-for-yml-files)
 * [Instructions for testing the system](#demo)
-* [Syntax for `.yml` files](#syntax)
 * [Running regression test](#testing)
 
 -------
@@ -41,6 +41,10 @@ The user will create a file to contain all the statements (propositions), argume
   * Start the python interpreter and import `carneades` (see [running from the interpreter](#Interpreter)), or
   * Run from the command line (preferred method)
 4. The file (in step 1) will go through lexical analysis to ensure [synatx](#syntax) rules are obeyed before parsing it for the Carneades Argument Evaluation System.
+5. Propositions are evaluated using CAES, and the result will be printed in the terminal as well as in the log file for reference. The log files are located in the `log` folder adjacent to the `src`.
+
+For example, if the user wants to find out if proposition: `murder` (i.e., the accused committed murder) is an acceptable argument, CAES will output:
+`INFO: >>> accused committed murder IS NOT acceptable` if it is not acceptable.
 
 ## Directory
 The directory of the files is as such:
@@ -152,7 +156,7 @@ ASSUMPTION : [kill, witness1, witness2, unreliable2]
 ```
 
 * `ARGUMENT`
-  * Begins in with `ARGUMENT` header; each argument consist of an `ARG_ID` at indent level 1; and respective fields at indent level 2.
+  * Begins with `ARGUMENT` header; each argument consist of an `ARG_ID` at indent level 1; and respective fields at indent level 2.
   *  the compulsory fields are: `premise`, `exception`, `conclusions`, `weight`
 ```
 ARGUMENT :
@@ -215,6 +219,7 @@ PARAMETER:
 * `ACCEPTABILITY`
   * Begins with the `ACCEPTABILITY` header
   * A list of proposition that CAES should evaluate
+  * The acceptability of the proposition is based on the *pro* and *con* arguments made, as well as `PROOFSTANDARD` and `weight`s for the arguments
 
 ```
 ACCEPTABILITY : [ <PROP_ID> ]
@@ -224,6 +229,32 @@ ACCEPTABILITY : [murder, -murder]
 ```
 
 ## Tests
+
+The pipeline for CAES:
+Users' file -> `Tokenizer` -> `Parser` -> `Reader` -> CAES
+
+A defensive programming method is used. For each component of the pipeline, DOCTEST are written to illustrate certain behaviour of the system. During runtime, `asserts`, and `exceptions` statements are used to throw exceptions should there be error in the syntax, or when a `PROP_ID` is used before it is declared in `PROPOSITION`.
+
+To run the DOCTESTs:
+```
+# FOR TOKENIZER:
+(ailp_env) $ cd src/carneades
+(ailp_env) $ python tokenizer.py -v # or -V to show the errors only
+
+# FOR PARSER:
+(ailp_env) $ python parser.py -v
+
+# for Reader/CAES:
+(ailp_env) $ python caes.py -v
+```
+
+
+## Demo
+
+
+
+
+
 
 
 ## Proof Standards

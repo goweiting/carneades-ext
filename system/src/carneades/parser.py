@@ -533,6 +533,7 @@ DOCTEST = True
 
 if __name__ == '__main__':
     """
+    Run the doctest!
     """
     # if DOCTEST:
     import doctest
