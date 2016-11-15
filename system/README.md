@@ -1,19 +1,19 @@
 Requirements for the second coursework for INFR09043 Artificial Intelligence Large Practical ([AILP](#http://www.inf.ed.ac.uk/teaching/courses/ailp/)) 2016/17 are:
 
-- [4.1](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#4) Implementing file-reading capability
-- [4.2](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Devising a syntax
-- [4.3](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
-- [4.4](#http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
+- [4.1](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#4) Implementing file-reading capability
+- [4.2](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Devising a syntax
+- [4.3](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
+- [4.4](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
 
-You can preview this markdown file using this [tool](#https://jbt.github.io/markdown-editor/), although not necessary.
+You can preview this markdown file using this [tool](https://jbt.github.io/markdown-editor/), although not necessary.
 
 ## Getting around this file:
 Sections for this documentation includes:
 
 * [Directory of folders](#directory)
 * [Setting up the `ailp_env` virtual environment](#setup)
+* [Demo of the system](#demo)
 * [Syntax for `.yml` files](#syntax-for-yml-files)
-* [Instructions for testing the system](#demo)
 * [Running regression test](#testing)
 
 -------
@@ -28,18 +28,18 @@ The diagram that is produced from the native` draw()` and `write_to_graphviz()` 
 
 ![example graphvviz file](system/dot/example.yml.png)
 
-The preferred method to visualise the argumentation graph is to use Graphviz. This overcomes the issue of user not able to get `python-igraph` or `cairo` on their computer. In such cases, they should comment out the `draw()` function in the `Reader` class, and the import of `Graph, plot` in the `caes.py` file to prevent errors. The graphiz digraph can be interpreted using an [online viewer](#http://dreampuf.github.io/GraphvizOnline/) by copying the contents of the respective `.dot` file (found in the `dot` folder adjacent to `src`).
+The preferred method to visualise the argumentation graph is to use Graphviz. This overcomes the issue of user not able to get `python-igraph` or `cairo` on their computer. In such cases, they should comment out the `draw()` function in the `Reader` class, and the `import` of `Graph, plot` in the `caes.py` file to prevent errors. The graphviz digraph can be interpreted using an [online viewer](http://dreampuf.github.io/GraphvizOnline/) by copying the contents of the respective `.dot` file (found in the `dot` folder adjacent to `src`).
 
 
-A general workflow:
+### A general workflow:
 
 The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
 
 1. User creates file for arguments, e.g. `caes.yml`
 2. Setup virual environment - `ailp_env`
 3. Either:
-  * Start the python interpreter and import `carneades` (see [running from the interpreter](#2-from-the-interpreter)), or
-  * Run from the command line (preferred method)
+  * Run from the command line ([preferred method](#1-from-the-command-line)), **_or_**
+  * Start the python interpreter and import `caes` (see [running from the interpreter](#2-from-the-interpreter))
 4. The file (in step 1) will go through lexical analysis to ensure [synatx](#syntax-for-yml-files) rules are obeyed before parsing it for the Carneades Argument Evaluation System.
 5. Propositions are evaluated using CAES, and the result will be printed in the terminal as well as in the log file for reference. The log files are located in the `log` folder adjacent to the `src`.
 
@@ -57,12 +57,10 @@ system
 |       |   tokenizer.py
 |       |   parser.py
 |       |   ...
-|
 └───samples ( all the test examples are here! )
-|   |
-|   |
+|   |   example.yml
+|   |   template.yml
 |      
-|
 └───dot
 |   ( contains all the .dot files generated from write_to_graphviz() function )
 |
@@ -91,6 +89,7 @@ You can run CAES to evaluate single or multiple files. Assuming your source file
 (ailp_env) $ cd src/carneades
 # to run a single file:
 (ailp_env) $ python caes.py '../../samples/example.yml'
+
 # to run multiple files:
 (ailp_env) $ python caes.py '../../samples/example.yml' '../../samples/example2.yml'
 ```
@@ -104,6 +103,8 @@ from the system folder:
 >>> reader = caes.Reader(buffer_size=4096, indent_size=2) # more about these parameters later
 >>> reader.load('../../samples/example.yml')
 ```
+
+Running from the command line is *preferred*, as it allows graph,log and the dot files to be generated for future use. In comparison, using the interpreter provides an understanding on the working of the system.
 
 ## Demo
 
@@ -229,14 +230,13 @@ ACCEPTABILITY : [ <PROP_ID> ]
 ACCEPTABILITY : [murder, -murder]
 ```
 
-## Tests
-
-The pipeline for CAES:
+## Testing
+The pipeline is as such:<br>
 Users' file -> `Tokenizer` -> `Parser` -> `Reader` -> CAES
 
 A defensive programming method is used. For each component of the pipeline, DOCTEST are written to illustrate certain behaviour of the system. During runtime, `asserts`, and `exceptions` statements are used to throw exceptions should there be error in the syntax, or when using CASE; for example when a `PROP_ID` is used before it is declared in `PROPOSITION`.
 
-To run the DOCTESTs:
+To run the DOCTEST:
 ```
 # FOR TOKENIZER:
 (ailp_env) $ cd src/carneades
@@ -251,11 +251,11 @@ First, set the `DOCTEST = True`
 ```
 
 
-## Proof Standards
+## Proof standards
 The proof standards increases in strength. The weakest being `scintilla`, and the strongest being `dialetical validity`. The strength of a standard is use to the number of constraints it uses to determine if an argument is applicable.
 
 1. `Scintilla` of evidence
-> For a proposition p to satisfy the scintilla of evidence there should be at least one applicable argument pro p in CAES
+> For a proposition *p* to satisfy the scintilla of evidence there should be at least one applicable argument pro *p* in CAES
 
 2. `Preponderance` of the evidence
 > For a proposition p to satisfy preponderance, it must satisfy scintilla and the maximum weight of the applicable arguments prop p is greater than the maximum weight of the applicable arguments con p.
@@ -267,4 +267,6 @@ The proof standards increases in strength. The weakest being `scintilla`, and th
 > It must satisfy clear and convince evidence, and the strongest argument con p needs to be *less* than a given constant `gamma`, hence no reasonable doubt.
 
 5. `Dialectical validity `
-> This requires at elast one applicable argument prop p and no applicable aarguments con p.
+> This requires at least one applicable argument prop p and no applicable aarguments con p.
+
+Reference: Bas van Gijzel and Henrik Nilsson, [*Haskell Gets Argumentative*](http://www.cs.nott.ac.uk/~psxbv/Papers/tfp2012_abstract.pdf) in Trends in Functional Programming: 13th International Symposium, TFP 2012, St. Andrews, UK, June 12-14, 2012, Revised Selected Papers

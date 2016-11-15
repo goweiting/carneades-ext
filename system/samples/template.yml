@@ -1,41 +1,37 @@
 PROPOSITION:
-# a sequence of map (dictionary) mapping the key to the `text` field
-  first: first in the line
-  second: second in the line
-  third: thrid in the line
+# <PROP_ID> : <TEXT>
 
-ASSUMPTION: [first] # a list of assumptions
+ASSUMPTION: [ ]
+# [<PROP_ID> ]
 
 ARGUMENT:
 # a sequence of map (dictionary) mapping the argument id to its fields - premise, exception, conclusion weight
 # premise and exception are list while conclusion is a single propositions
 # the weights are double, ranging from 0 to 1
-# available standards are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
-  not first means third unless is second:
-    premise: [-first] # - infront will denote the negation of the proposition above, if it exists
-    exception: [second] # unless the exception is true, the argument is valid
-    conclusion: third # is not a list!
-    weight: 0.01
+# `-` infront of the PROP_ID will denote the negation of the proposition
+#
+#  <ARG_ID> : # indent level = 1
+#    premise :  [ <PROP_ID> ] # each field is at indent level = 2
+#    exception : [ <PROP_ID> ]
+#    conclusion: <PROP_ID>
+#    weight : <Double between 0 and 1>
 
-  not second means third unless is first:
-    premise: [-second]
-    exception: [first]
-    conclusion: third
-    weight: 0.2
+PROOFSTANDARD :
+# [] # use default proof standard - scintilla for all; OR
+# Acceptable PS are :
+# scintilla,
+# preponderance,
+# clear and convincing,
+# beyond reasonable doubt,
+# dialectical validity
+#
+#   <PROP_ID> : <PS> OR
 
-  not third means second unless not first:
-    premise: []
-    exception: [-first]
-    conclusion: second
-    weight : 0.9
-
-PROOFSTANDARD : [] # use scintilla for all
-
-ACCEPTABILITY: [third, -third] # ACCEPTABILITY calls the acceptability function in caes to check if the conlusion is acceptable.
+ACCEPTABILITY: [ ]
+# [<PROP_ID>]
 
 PARAMETER:
-# define the parameters use for the proofstandard
 # each parameter is in the range of 0 and 1
-  alpha: 0.3
-  beta: 0.2
-  gamma: 0.3
+# alpha: <Double between 0 and 1>
+# beta: <Double between 0 and 1>
+# gamma: <Double between 0 and 1>

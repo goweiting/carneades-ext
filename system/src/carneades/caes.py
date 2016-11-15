@@ -300,7 +300,7 @@ class Reader(object):
 
             # check the weight
             if weight < 0 or weight > 1:
-                raise ReaderError(
+                raise SyntaxError(
                     'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
             else:
                 self.caes_weight[arg_id] = weight  # store the weight
@@ -436,7 +436,7 @@ def check_prop(caes_propliteral, prop_id):
             negate = 1
 
         if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
-            logging.exception(
+            raise SyntaxError(
                 '{} is not defined in PROPOSITION'.format(prop_id))
             return False
         else:
@@ -460,7 +460,7 @@ def check_proofstandard(query):
     if query in standards.keys():
         return True, standards[query]
     else:
-        logging.exception('Invalid proof standard {} found'.format(query))
+        raise SyntaxError('Invalid proof standard {} found'.format(query))
 
 
 # ========================================================================
@@ -1183,3 +1183,4 @@ if __name__ == '__main__':
                 Reader().load(filenames[0])
             else:
                 logging.error('Cannot find file {}'.format(filenames))
+                exit()
