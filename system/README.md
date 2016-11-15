@@ -26,7 +26,7 @@ To infer the depth and nesting of maps (or dictionary in python terms) in the so
 
 The diagram that is produced from the native` draw()` and `write_to_graphviz()` functions are also modified to illustrate the weights of the arguments. The degree of 'red' for the boxes representing arguments highlight their respective weight.
 
-![example graphvviz file](#system/dot/example.yml.png)
+![example graphvviz file](system/dot/example.yml.png)
 
 The preferred method to visualise the argumentation graph is to use Graphviz. This overcomes the issue of user not able to get `python-igraph` or `cairo` on their computer. In such cases, they should comment out the `draw()` function in the `Reader` class, and the import of `Graph, plot` in the `caes.py` file to prevent errors. The graphiz digraph can be interpreted using an [online viewer](#http://dreampuf.github.io/GraphvizOnline/) by copying the contents of the respective `.dot` file (found in the `dot` folder adjacent to `src`).
 
@@ -76,10 +76,7 @@ system
 
 ### Activating `ailp_env` virtual environment
 
-The `ailp_env` is not included (assumed is done; commands are listed below for reference), but can be set up according to [this](#https://github.com/ewan-klein/carneades#installing-the-libraries-for-the-carneades-sample-code-on-your-own-computer). On DICE machine, the virtual environment can be created using the following command:
-```$
-$ pyvenv ailp_env
-```
+The `ailp_env` is not included (assumed is done; commands are listed below for reference), but can be set up according to [this](#https://github.com/ewan-klein/carneades#installing-the-libraries-for-the-carneades-sample-code-on-your-own-computer). On DICE machine, the virtual environment can be created using the following command:`$ pyvenv ailp_env`.
 
 ## Running CAES
 
@@ -91,7 +88,7 @@ You can run CAES to evaluate single or multiple files. Assuming your source file
 # to run a single file:
 (ailp_env) $ python caes.py '../../samples/example.yml'
 # to run multiple files:
-(ailp_env) $ python caes.py ''../../samples/example.yml' ''../../samples/example2.yml'
+(ailp_env) $ python caes.py '../../samples/example.yml' '../../samples/example2.yml'
 ```
 
 ### 2) from the interpreter
@@ -126,7 +123,7 @@ The syntax for the files are inspired from YAML, hence the extension name. YAML 
 
 The syntax for CAES uses a natural language approach to represent propositions (also known as statements) in other literature, and arguments. Hence, the identifier for proposition and argument can be a long setence.
 
-A template of the syntax is attached at [system/samples/template.yml](samples/template.yml)
+A template of the syntax is attached at [system/samples/template.yml](system/samples/template.yml)
 
 * `PROPOSITION`
   * Begin with `PROPOSITION` header; each proposition is at indent level 1
