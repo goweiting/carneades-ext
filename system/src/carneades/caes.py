@@ -341,13 +341,16 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
-        for ps in p.proofstandard.children:
-            prop_id = ps.data
-            prop_ps = ps.children[0].data
-            # check validity of prop_id and prop_ps:
-            ok, prop_ps = check_proofstandard(prop_ps)
-            ok, prop_id = check_prop(self.caes_propliteral, prop_id)
-            self.caes_proofstandard.append((prop_id, prop_ps))
+        if len(p.proofstandard.children) == 0: # empty list
+            pass
+        else:
+            for ps in p.proofstandard.children:
+                prop_id = ps.data
+                prop_ps = ps.children[0].data
+                # check validity of prop_id and prop_ps:
+                ok, prop_ps = check_proofstandard(prop_ps)
+                ok, prop_id = check_prop(self.caes_propliteral, prop_id)
+                self.caes_proofstandard.append((prop_id, prop_ps))
 
         # -----------------------------------------------------------------
         logging.info('\tAdding acceptability to CAES')

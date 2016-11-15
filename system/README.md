@@ -1,4 +1,3 @@
-# Carneades Argument Evaluation System (CAES) in Python
 Requirements for the second coursework for INFR09043 Artificial Intelligence Large Practical ([AILP](http://www.inf.ed.ac.uk/teaching/courses/ailp/)) 2016/17 are:
 
 - [4.1](www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#4) Implementing file-reading capability
@@ -16,15 +15,23 @@ Sections for this documentation includes:
 * [Instructions for testing the system](#demo)
 * [Syntax for `.yml` files](#syntax)
 * [Running regression test](#testing)
+
 -------
 
 Overview
 ======
-In this extension, a user approach
+In this extension of CAES, a syntax is created for users to input proposition (also known as statement in other literature), argument. This syntax is inspired by [YAML](#https://en.wikipedia.org/wiki/YAML) for its human-readibility, where the use of natural language to represent the argument titles, for instance, is welcomed. Also, the syntax is scalable, such that fields (such as adding a field to represent the `propnent` or `defendant` in for arguments) can be added by the user without much changes to the the tokenizing and parsing stages of the language.
 
-The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
+To infer the depth and nesting of maps (or dictionary in python terms) in the source code, a data structure `Node` is used to store the tokens that the parser recrusively extracts at each depth.
+
+The diagram that is produced from the native` draw()` and `write_to_graphviz()` functions are also modified to illustrate the weights of the arguments. The degree of 'red' for the boxes representing arguments highlight their respective weight.
+
+The preferred method to visualise the argumentation graph is to use Graphviz. This overcomes the issue of user not able to get `python-igraph` or `cairo` on their computer. In such cases, they should comment out the `draw()` function in the `Reader` class, and the import of `Graph, plot` in the `caes.py` file to prevent errors. The graphiz digraph can be interpreted using an [online viewer](#http://dreampuf.github.io/GraphvizOnline/) by copying the contents of the respective `.dot` file (found in the `dot` folder adjacent to `src`).
+
 
 A general workflow:
+
+The user will create a file to contain all the statements (propositions), arguments, proofstandard and parameters required for CAES. The extension for the file is `.yml`. It is recommended that the file is stored alongside the `src` folder, for instance in the `samples` folder.
 
 1. User creates file for arguments, e.g. `caes.yml`
 2. Setup virual environment - `ailp_env`
@@ -54,7 +61,7 @@ system
 |   ( contains all the .dot files generated from write_to_graphviz() function)
 |
 └───graph
-|   ( argumentation graph generated using python-igraph and cairo)
+|   ( argumentation graph generated using python-igraph and cairo,, stored as .pdf)
 |
 └───log
 |   ( the logging information when the caes is run)
@@ -97,20 +104,20 @@ from the system folder:
 
 
 ## Syntax for `.yml` files
-The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. Syntax for caes illustrates the essential elements required for each caes.
+The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. A template with all the essential element is available in the `samples` folder.
 
 ### General Syntax Rules:
-1. Spaces and newlines are delimiters. Usage of tab will result in error as the program is sensitive to indents (unless your editor converts them to space automatically).
+1. Spaces and newlines are delimiters. Usage of tab will result in error. The program is sensitive to indents, similar to python.
 2. Indents are represented using spaces, The standard indent size is `2` (i.e. two spaces - '  '). Similar to python, indents determine the grouping of statements. If you prefer a different indent-size, if must be changed when the `Reader` class is called, such as : `$ reader = Reader(indent_size = 3)` when using the python interpreter. Unfortunately, parsing using the command line will use the default indent size of 2
 3. Comment begins with `#`, similar to python
-4. the components of the syntax are:
-  * headers (PROPOSITION, ARGUMENT, PROOFSTANDARD, ASSUMPTION, ACCEPTABILITY, PARAMETER)
-  * compulsory fields for header
-  * `:` - is a mapping value used to indicate the 'belongs-to' membership of items before it and after
+4. The components of the syntax are:
+  * Basic data structure:
+    * String, a series of character, such as: `is witness2 sufficient to proof intent?`
+    * List : starts with `[` and ends with `]`, using `,` to separate the items
+    * Dictionary : to indicate membership
+  * Essential headers for CAES: `PROPOSITION`, `ARGUMENT`, `PROOFSTANDARD`, `ASSUMPTION`, `ACCEPTABILITY`, `PARAMETER`
+  * `:` - is a mapping value used to indicate the 'belongs-to' membership of items before and after it
   * `-`  - only used when representing a negated proposition under certain headers
-  * items :
-    * a series of character, such as: 'is witness2 sufficient to proof intent?'
-    * a list : starts with `[` and ends with `]`, using `,` to separate the items
 
 
 ### Syntax for CAES
@@ -120,8 +127,8 @@ The syntax for CAES uses a natural language approach to represent propositions (
 A template of the syntax is attached at [system/samples/template.yml](samples/template.yml)
 
 * `PROPOSITION`
-  * Begin with 'PROPOSITION' header; each proposition is at indent level 1
-  * A proposition is uniquely identified by an identifier - `PROP_ID`. The polarity for all proposition is assumed to be true.
+  * Begin with `PROPOSITION` header; each proposition is at indent level 1
+  * A proposition is uniquely identified by an identifier - `PROP_ID`. The polarity for all proposition is `True`. To switch the polarity of the proposition in the other Headers, `-` is used before the `PROP_ID`, e.g.  `-kill` is the negation of `kill`
 
 ```
 PROPOSITION :
@@ -135,18 +142,19 @@ PROPOSITION:
 ```
 
 * `ASSUMPTION`
-  * Begin with 'ASSUMPTION' header, and is a list of `PROP_ID` defined above
+  * Begin with `ASSUMPTION` header, and is a list of `PROP_ID` defined above
+  * As above, `-` is used to represent the negation of the proposition.
+  * If no assumption is given, usage of an empty list `ASSUMPTION : []` is necessary
 ```
 ASSUMPTION : [ <PROP_ID>, <PROP_ID> ]
-ASSUMPTION : [] # no assumptions present in arguments
 
 Example:
 ASSUMPTION : [kill, witness1, witness2, unreliable2]
 ```
 
 * `ARGUMENT`
-  * Begins in with 'ARGUMENT' header; each argument consist of an `ARG_ID` at indent level 1; and fields at indent level 2
-  *  `ARG_ID` as key. Each map consist of the following maps: `premise`, `exception`, `conclusions`, `weight`
+  * Begins in with `ARGUMENT` header; each argument consist of an `ARG_ID` at indent level 1; and respective fields at indent level 2.
+  *  the compulsory fields are: `premise`, `exception`, `conclusions`, `weight`
 ```
 ARGUMENT :
   <ARG_ID> : # indent level = 1
@@ -155,39 +163,84 @@ ARGUMENT :
     conclusion: <PROP_ID>
     weight : <Double between 0 and 1>
 
-  # EXAMPLE:
-  - is there an intent to murder?:
+# Examples:
+ARGUMENT:
+  is there an intent to murder?:
     premise : [kill, intent]
     exception : [] # empty list to represent no indent
-    conclusion :
-      murder
-    weight :
-      0.8
+    conclusion : murder
+    weight : 0.8
+
+  is witness1 sufficient to proof intent?:
+    premise: [witness1]
+    exception : [unreliable1]
+    conclusion : reliable1
+    weight: 0.2
 ```
 
 * `PROOFSTANDARD`
-..* Begins with 'PROOFSTANDARD'
-..* a sequence of map, each maps a `PROP_ID` to a `PROOFSTANDARD`
-..* accepted `PS` are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
+  * Begins with `PROOFSTANDARD` header
+  * For `PROP_ID`(s) that do not uses `scintilla` (the default proof standard), the `PROP_ID` is mapped to a `PS`
+  * The accepted `PS` are: `scintilla`, `preponderance`, `clear and convincing`, `beyond reasonable doubt`, and `dialectical validity`
+  * More about each standard [here](#proof-standards)
 ```
 PROOFSTANDARD :
-  - <PROP_ID> : <PS>
+  <PROP_ID> : <PS>
+  <PROP_ID> : <PS>
 
-  # Example
-  - intent : beyond reasonable doubt
+PROOFSTANDARD : [] # use `scintilla` for all propositions
+
+# Example
+PROOFSTANDARD:
+  intent : beyond reasonable doubt
 ```
 
 * `PARAMETER`
-..* Begins with 'PARAMETER'
-..* A map with 3 maps
-..* 3 compulsory fields: `alpha`, `beta`, `gamma`
+  * Begins with `PARAMETER` header
+  * 3 compulsory fields: `alpha`, `beta`, `gamma`
+  * See [proof standard](#proof-standards)
 ```
 PARAMETER :
   alpha : <Double between 0 and 1>
   beta : <Double between 0 and 1>
   gamma : <Double between 0 and 1>
+
+# Example:
+PARAMETER:
+  alpha : 0.8
+  beta : 0.2
+  gamma : 0.3
 ```
 
 
+* `ACCEPTABILITY`
+  * Begins with the `ACCEPTABILITY` header
+  * A list of proposition that CAES should evaluate
+
+```
+ACCEPTABILITY : [ <PROP_ID> ]
+
+# Example:
+ACCEPTABILITY : [murder, -murder]
+```
 
 ## Tests
+
+
+## Proof Standards
+The proof standards increases in strength. The weakest being `scintilla`, and the strongest being `dialetical validity`. The strength of a standard is use to the number of constraints it uses to determine if an argument is applicable.
+
+1. `Scintilla` of evidence
+> For a proposition p to satisfy the scintilla of evidence there should be at least one applicable argument pro p in CAES
+
+2. `Preponderance` of the evidence
+> For a proposition p to satisfy preponderance, it must satisfy scintilla and the maximum weight of the applicable arguments prop p is greater than the maximum weight of the applicable arguments con p.
+
+3. `Clear and convincing` evidence
+> For proposition p to satisfy this standard, it must satisfy preponderance of the evidence, and 1) the weight difference should be larger than a given constant `beta`, 2) there should be an applicable argument prop p that is stronger than a given constant `alpha`
+
+4. `Beyond reasonable doubt`
+> It must satisfy clear and convince evidence, and the strongest argument con p needs to be *less* than a given constant `gamma`, hence no reasonable doubt.
+
+5. `Dialectical validity `
+> This requires at elast one applicable argument prop p and no applicable aarguments con p.
