@@ -254,22 +254,12 @@ class Node(object):
         Given the data of the child, iteratively search the Node's children. Once found, return that node.
 
         """
-        queue = deque(
-            self.children)  # add the list of children (nodes) into the queue
-        # visited = set()
+        # add the list of children (nodes) into the queue
+        queue = deque(self.children)
 
         while len(queue) > 0:
             this_node = queue.pop()
-            # if this_node in visited:
-            #     continue  # start from the next item in queue
 
-            # unique value:
-            # visited.add(child)
-            # if type(this_node.data) is list:
-            #     for ele in this_node.data:
-            #         if ele == value:
-            #             return this_node
-            # else:
             if this_node.data == value:
                 return this_node
 
@@ -390,7 +380,7 @@ def find_SEQUENCE(toks):
     >>> from tokenizer import Token; from collections import deque
     >>> S_OPEN = Token('[', 0,0, 'SEQUENCE_OPEN' )
     >>> S_CLOSE = Token(']', 0,1, 'SEQUENCE_CLOSE')
-    >>> S_SEP = Token(',', 0,1, 'SEQUENCE_SEPARATOR')
+    >>> S_SEP = Token('|', 0,1, 'SEQUENCE_SEPARATOR')
     >>> STMT = Token('item', 0,1, 'STMT')
     >>> MAPPING_VALUE = Token(':', 0,1, 'MAPPING_VALUE')
 
@@ -509,7 +499,6 @@ def find_STMT(toks):
     Given a partial sentence, and toks, find the rest of STMT in the toks queue by iteratively calling popleft() and checking if the tok_type is STMT.
     If it is not (ie. the next tok in toks is "INDENT" or "MAPPING_VALUE"), then concatenate the sentence to form a longsentence and return it
     """
-    # print('find STMT')  # DEBUG
     sentence = []
     while len(toks):
         t = toks.popleft()

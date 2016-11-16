@@ -24,7 +24,7 @@ In this extension of CAES, a syntax is created for users to input proposition (a
 
 To infer the depth and nesting of maps (or dictionary in python terms) in the source code, a data structure `Node` is used to store the tokens that the parser recrusively extracts at each depth.
 
-The diagram that is produced from the native` draw()` and `write_to_graphviz()` functions are also modified to illustrate the weights of the arguments. The degree of 'red' for the boxes representing arguments highlight their respective weight.
+The diagram that is produced from the native` draw()` and `write_to_graphviz()` functions are also modified to illustrate the weights of the arguments. The degree of 'red' for the boxes representing arguments highlight their respective weight, i.e. a darker red denotes a higher weight for that argument.
 
 ![example graphvviz file](system/dot/example.yml.png)
 
@@ -44,7 +44,7 @@ The user will create a file to contain all the statements (propositions), argume
 5. Propositions are evaluated using CAES, and the result will be printed in the terminal as well as in the log file for reference. The log files are located in the `log` folder adjacent to the `src`.
 
 For example, if the user wants to find out if proposition: `murder` (i.e., the accused committed murder) is an acceptable argument, CAES will output:
-`INFO: >>> accused committed murder IS NOT acceptable` if it is not acceptable.
+`INFO: ------ accused committed murder IS NOT acceptable ------` if it is not acceptable.
 
 ## Directory
 The directory of the files is as such:
@@ -63,27 +63,27 @@ system
 |      
 └───dot
 |   ( contains all the .dot files generated from write_to_graphviz() function )
-|
 └───graph
 |   ( argumentation graph generated using python-igraph and cairo, stored as .pdf )
-|
 └───log
 |   ( the logging information when the caes is run )
-|
 └───ailp_env
     ( files for the virual environment, assumed to be set up already by user )
 
 ```
+
+-------
+
 ## Setup
 
 ### Activating `ailp_env` virtual environment
 
 The `ailp_env` is not included (assumed is done; commands are listed below for reference), but can be set up according to [this](#https://github.com/ewan-klein/carneades#installing-the-libraries-for-the-carneades-sample-code-on-your-own-computer). On DICE machine, the virtual environment can be created using the following command:`$ pyvenv ailp_env`.
 
-## Running CAES
+### Running CAES
 
 Two modes of running caes is supported:
-### 1) from the command line
+#### 1) from the command line
 You can run CAES to evaluate single or multiple files. Assuming your source files are in the `system/samples` folder, and you are in the `system` folder
 ```$
 (ailp_env) $ cd src/carneades
@@ -94,7 +94,7 @@ You can run CAES to evaluate single or multiple files. Assuming your source file
 (ailp_env) $ python caes.py '../../samples/example.yml' '../../samples/example2.yml'
 ```
 
-### 2) from the interpreter
+#### 2) from the interpreter
 ```(python)
 from the system folder:
 (ailp_env) $ cd src/carneades
@@ -107,6 +107,13 @@ from the system folder:
 Running from the command line is *preferred*, as it allows graph,log and the dot files to be generated for future use. In comparison, using the interpreter provides an understanding on the working of the system.
 
 ## Demo
+The three examples that I came up with are:
+*
+*
+*
+They are located in the `samples` folder. A graph and image from the Graphviz viewer is attached in the `dot` files.
+
+-----
 
 ## Syntax for `.yml` files
 The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. A template with all the essential element is available in the `samples` folder.
@@ -117,9 +124,10 @@ The syntax for the files are inspired from YAML, hence the extension name. YAML 
 3. Comment begins with `#`, similar to python
 4. The components of the syntax are:
   * Basic data structure:
-    * String, a series of character, such as: `is witness2 sufficient to proof intent?`
-    * List : starts with `[` and ends with `]`, using `,` to separate the items
-    * Dictionary : to indicate membership
+    * String, a series of character, such as: `is witness2 sufficient to proof intent?`. It must not include the following symbols: `|`, `:`, `[`, `]`, `#` and number of spaces that is specified in `indent_size` above.
+    e.g. NOT GOOD: `two   spaces`, `evidences such as : ...`
+    * List : starts with `[` and ends with `]`, using `|` to separate the items
+    * Dictionary : to indicate membership, uses `:`
   * Essential headers for CAES: `PROPOSITION`, `ARGUMENT`, `PROOFSTANDARD`, `ASSUMPTION`, `ACCEPTABILITY`, `PARAMETER`
   * `:` - is a mapping value used to indicate the 'belongs-to' membership of items before and after it
   * `-`  - only used when representing a negated proposition under certain headers
@@ -151,10 +159,10 @@ PROPOSITION:
   * As above, `-` is used to represent the negation of the proposition.
   * If no assumption is given, usage of an empty list `ASSUMPTION : []` is necessary
 ```
-ASSUMPTION : [ <PROP_ID>, <PROP_ID> ]
+ASSUMPTION : [ <PROP_ID> | <PROP_ID> ]
 
 Example:
-ASSUMPTION : [kill, witness1, witness2, unreliable2]
+ASSUMPTION : [kill | witness1 | witness2 | unreliable2]
 ```
 
 * `ARGUMENT`
@@ -171,7 +179,7 @@ ARGUMENT :
 # Examples:
 ARGUMENT:
   is there an intent to murder?:
-    premise : [kill, intent]
+    premise : [kill | intent]
     exception : [] # empty list to represent no indent
     conclusion : murder
     weight : 0.8
@@ -227,7 +235,7 @@ PARAMETER:
 ACCEPTABILITY : [ <PROP_ID> ]
 
 # Example:
-ACCEPTABILITY : [murder, -murder]
+ACCEPTABILITY : [murder | -murder]
 ```
 
 ## Testing
@@ -258,15 +266,18 @@ The proof standards increases in strength. The weakest being `scintilla`, and th
 > For a proposition *p* to satisfy the scintilla of evidence there should be at least one applicable argument pro *p* in CAES
 
 2. `Preponderance` of the evidence
-> For a proposition p to satisfy preponderance, it must satisfy scintilla and the maximum weight of the applicable arguments prop p is greater than the maximum weight of the applicable arguments con p.
+> For a proposition *p* to satisfy preponderance, it must satisfy scintilla and the maximum weight of the applicable arguments prop *p* is greater than the maximum weight of the applicable arguments con *p*.
 
 3. `Clear and convincing` evidence
-> For proposition p to satisfy this standard, it must satisfy preponderance of the evidence, and 1) the weight difference should be larger than a given constant `beta`, 2) there should be an applicable argument prop p that is stronger than a given constant `alpha`
+> For proposition *p* to satisfy this standard, it must satisfy preponderance of the evidence, and 1) the weight difference should be larger than a given constant `beta`, 2) there should be an applicable argument prop *p* that is stronger than a given constant `alpha`
 
 4. `Beyond reasonable doubt`
-> It must satisfy clear and convince evidence, and the strongest argument con p needs to be *less* than a given constant `gamma`, hence no reasonable doubt.
+> It must satisfy clear and convince evidence, and the strongest argument con *p* needs to be *less* than a given constant `gamma`, hence no reasonable doubt.
 
 5. `Dialectical validity `
-> This requires at least one applicable argument prop p and no applicable aarguments con p.
+> This requires at least one applicable argument prop *p* and no applicable aarguments con *p*.
 
 Reference: Bas van Gijzel and Henrik Nilsson, [*Haskell Gets Argumentative*](http://www.cs.nott.ac.uk/~psxbv/Papers/tfp2012_abstract.pdf) in Trends in Functional Programming: 13th International Symposium, TFP 2012, St. Andrews, UK, June 12-14, 2012, Revised Selected Papers
+
+
+*Side note: ',' was used as SEQUENCE_SEPARATOR at first, but changed to '|' instead. This design decision is due to the fact that ',' is widely prevalent in natural language, in comparison to '|', and should not be an exception in string*
