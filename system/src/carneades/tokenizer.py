@@ -16,10 +16,11 @@ class Tokenizer(object):
     [STMT, STMT, MAPPING_VALUE]
 
     Indent detector
-    >>> stream = ['A sequence : \\n', '  An indent expected here!\\n', '    nested indents\\n']
+    >>> stream = ['hey: you, are okayy? \\n', '  An indent expected here ,\\n', '    nested indents\\n']
     >>> t = Tokenizer(stream) # use default indent_size = 2
     >>> t.tokens
-    [STMT, STMT, MAPPING_VALUE, INDENT, STMT, STMT, STMT, STMT, INDENT, INDENT, STMT, STMT]
+    [STMT, MAPPING_VALUE, STMT, STMT, STMT, INDENT, STMT, STMT, STMT, STMT, STMT, INDENT, INDENT, STMT, STMT]
+
     >>> stream = ['   Testing with 3 spaces as indent\\n']
     >>> try : t = Tokenizer(stream)
     ... except TokenizerError: pass
@@ -28,18 +29,18 @@ class Tokenizer(object):
     [INDENT, STMT, STMT, STMT, STMT, STMT, STMT]
 
     Sequence separator:
-    >>> Stream = ["ASSUMPTION : [ ONE | TWO | THREE ]\\n"]
-    >>> t = Tokenizer(Stream)
-    >>> t.tokens
+    >>> Stream = ["ASSUMPTION:[ONE, TWO, THREE ]\\n"]
+    >>> T = Tokenizer(Stream)
+    >>> T.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_CLOSE]
 
-    >>> stream = ['ASSUMPTION : [ one| two| three only ]\\n']
-    >>> t = Tokenizer(stream)
-    >>> t.tokens
+    >>> stream = ['ASSUMPTION : [ one, two, three only ]\\n']
+    >>> T = Tokenizer(stream)
+    >>> T.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
 
     Added support for not having to separate it by spaces:
-    >>> stream = ['ACCEPTABILITY:[one|two|three only]\\n']
+    >>> stream = ['ACCEPTABILITY:[one,two,three only]\\n']
     >>> t=Tokenizer(stream)
     >>> t.tokens
     [STMT, MAPPING_VALUE, SEQUENCE_OPEN, STMT, SEQUENCE_SEPARATOR, STMT, SEQUENCE_SEPARATOR, STMT, STMT, SEQUENCE_CLOSE]
@@ -58,7 +59,7 @@ class Tokenizer(object):
 
     def tokenize(self):
         """
-        Iterate through all the characters in the file and find the boundaries
+        Iterate through all the characters in the file and find the tokens
         ---
         """
         colIdx = self.colIdx + 1
@@ -70,7 +71,6 @@ class Tokenizer(object):
             # iterate through each line of the file
             lineIdx += 1 # starts from 1 instead of 0
             pointer = 0
-            # print(line) # DEBUG
 
             if line[-1:] != '\n':
                 raise TokenizerError(lineIdx, '-1', 'No end of line found')
@@ -116,22 +116,20 @@ class Tokenizer(object):
             #    Take the nearest # found and truncate the sentence by reducing #    the line
             # ---------------------------------------------------------------
             comment_idx = line.find('#')
-            if comment_idx != -1:  # check if there's a comment in the line, return the first '#' found
+            if comment_idx != -1:
                 # if there is a comment, shorten the line until the point where
-                # the comment starts
+                # the comment starts, hence ignoring the comments
                 line = line[:comment_idx]
+
             line = line.rstrip()  # remove trailing whitespaces at the back
 
             # ---------------------------------------------------------------
             #   TOKENIZE the rest of the stuff
             # ---------------------------------------------------------------
             while len(line):
-                # add one for each whitespace stripped
                 pointer += 1
-
-                # if len(toks) == 0: # random white space found
-                #     raise TokenizerError(lineIdx, pointer, 'more than one white space used {}'.format(toks))
                 char = line[0]
+
                 if char == ':':
                     self.tokens.append(
                         Token(char, lineIdx, pointer, 'MAPPING_VALUE'))
@@ -139,21 +137,7 @@ class Tokenizer(object):
                     continue
 
                 elif char == '[':
-                    self.tokens.append(
-                        Token(char, lineIdx, pointer, 'SEQUENCE_OPEN'))
-                    line = line[1:]
-                    continue
-
-                elif char == ']':
-                    self.tokens.append(
-                        Token(char, lineIdx, pointer, 'SEQUENCE_CLOSE'))
-                    line = line[1:]
-                    continue
-
-                elif char == '|':
-                    self.tokens.append(
-                        Token(char, lineIdx, pointer, 'SEQUENCE_SEPARATOR'))
-                    line = line[1:]
+                    line, pointer = self.tokenize_seq(line, lineIdx, pointer-1) # trigger to find the sequnce
                     continue
 
                 elif char == ' ':
@@ -162,12 +146,60 @@ class Tokenizer(object):
 
                 else:  # word
                     # anything as long as it is not a character found above
-                    pattern = r'^[^ |:\[\]]+'
+                    pattern = r'^[^ :\[]+'
                     word = re.findall(pattern, line)[0]
                     self.tokens.append(Token(word, lineIdx, pointer, 'STMT'))
                     line = line[len(word):]
                     pointer += len(word) - 1
+                    continue
 
+    def tokenize_seq(self, line, lineIdx, pointer):
+        """
+        Given a line, find the remaining sequence and tokenize them
+        Also, check that the syntax for tokens is well-respected
+        With this, usage of commas is okay as long as it is not in the sequence separator
+        """
+        assert len(line) != 0
+        assert type(line) == str
+
+        while len(line):
+            pointer += 1
+            char = line[0]
+
+            if char == '[':
+                self.tokens.append(
+                    Token(char, lineIdx, pointer, 'SEQUENCE_OPEN'))
+                line = line[1:]
+                continue
+
+            elif char == ']':
+                self.tokens.append(
+                    Token(char, lineIdx, pointer, 'SEQUENCE_CLOSE'))
+                line = line[1:]
+                print(line)
+                return line, pointer # complete sequence, return to the caller
+
+            elif char == ',':
+                self.tokens.append(
+                    Token(char, lineIdx, pointer, 'SEQUENCE_SEPARATOR'))
+                line = line[1:]
+                continue
+
+            elif char == ' ':
+                line = line[1:] # ignore the white spaces
+                continue
+
+            else:
+                # anything as long as it is not a character found above
+                pattern = r'^[^ ,:\[\]]+'
+                word = re.findall(pattern, line)[0]
+                self.tokens.append(Token(word, lineIdx, pointer, 'STMT'))
+                line = line[len(word):]
+                pointer += len(word) - 1
+                continue
+
+        if len(line) == 0:
+            raise TokenizerError(lineIdx, pointer, '[ found but is not closed with ]')
 
 # ---------------------------------------------------------------------------
 class Token(object):

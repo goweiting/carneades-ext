@@ -124,9 +124,9 @@ The syntax for the files are inspired from YAML, hence the extension name. YAML 
 3. Comment begins with `#`, similar to python
 4. The components of the syntax are:
   * Basic data structure:
-    * String, a series of character, such as: `is witness2 sufficient to proof intent?`. It must not include the following symbols: `|`, `:`, `[`, `]`, `#` and number of spaces that is specified in `indent_size` above.
-    e.g. NOT GOOD: `two   spaces`, `evidences such as : ...`
-    * List : starts with `[` and ends with `]`, using `|` to separate the items
+    * String, a series of character, such as: `is witness2 sufficient to proof intent?`. It must not include the following symbols: :`, `[`, `#` and number of spaces specified in `indent_size` above.
+    e.g. NOT GOOD: `two   spaces will be interpreted as indent`, `using : such as : 1) .., 2),.., 3) is not okay`
+    * List : starts with `[` and ends with `]`, using `,` to separate the items
     * Dictionary : to indicate membership, uses `:`
   * Essential headers for CAES: `PROPOSITION`, `ARGUMENT`, `PROOFSTANDARD`, `ASSUMPTION`, `ACCEPTABILITY`, `PARAMETER`
   * `:` - is a mapping value used to indicate the 'belongs-to' membership of items before and after it
@@ -135,7 +135,7 @@ The syntax for the files are inspired from YAML, hence the extension name. YAML 
 
 ### Syntax for CAES
 
-The syntax for CAES uses a natural language approach to represent propositions (also known as statements) in other literature, and arguments. Hence, the identifier for proposition and argument can be a long setence.
+The syntax for CAES uses a natural language approach to represent propositions (also known as statements) in other literature, and arguments. Hence, the identifier for proposition and argument can be a long sentence.
 
 A template of the syntax is attached at [system/samples/template.yml](system/samples/template.yml)
 
@@ -159,10 +159,10 @@ PROPOSITION:
   * As above, `-` is used to represent the negation of the proposition.
   * If no assumption is given, usage of an empty list `ASSUMPTION : []` is necessary
 ```
-ASSUMPTION : [ <PROP_ID> | <PROP_ID> ]
+ASSUMPTION : [ <PROP_ID> , <PROP_ID> ]
 
 Example:
-ASSUMPTION : [kill | witness1 | witness2 | unreliable2]
+ASSUMPTION : [kill, witness1, witness2, unreliable2]
 ```
 
 * `ARGUMENT`
@@ -179,7 +179,7 @@ ARGUMENT :
 # Examples:
 ARGUMENT:
   is there an intent to murder?:
-    premise : [kill | intent]
+    premise : [kill , intent]
     exception : [] # empty list to represent no indent
     conclusion : murder
     weight : 0.8
@@ -235,7 +235,7 @@ PARAMETER:
 ACCEPTABILITY : [ <PROP_ID> ]
 
 # Example:
-ACCEPTABILITY : [murder | -murder]
+ACCEPTABILITY : [murder , -murder]
 ```
 
 ## Testing
@@ -278,6 +278,3 @@ The proof standards increases in strength. The weakest being `scintilla`, and th
 > This requires at least one applicable argument prop *p* and no applicable aarguments con *p*.
 
 Reference: Bas van Gijzel and Henrik Nilsson, [*Haskell Gets Argumentative*](http://www.cs.nott.ac.uk/~psxbv/Papers/tfp2012_abstract.pdf) in Trends in Functional Programming: 13th International Symposium, TFP 2012, St. Andrews, UK, June 12-14, 2012, Revised Selected Papers
-
-
-*Side note: ',' was used as SEQUENCE_SEPARATOR at first, but changed to '|' instead. This design decision is due to the fact that ',' is widely prevalent in natural language, in comparison to '|', and should not be an exception in string*

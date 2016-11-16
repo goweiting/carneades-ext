@@ -7,7 +7,7 @@ digraph G{
 "is witness1 sufficient to proof intent?" [color="black", fillcolor="coral1", width=.75, shape=box, style="filled"]; 
 "-accused have the intent" [color="black", fillcolor="lightblue", fixedsize=false, width=1  shape="box", style="filled"]; 
 "first witness" [color="black", fillcolor="lightblue", fixedsize=false, width=1  shape="box", style="filled"]; 
-"first witness is unreliable" [color="black", fillcolor="lightblue", fixedsize=false, width=1  shape="box", style="filled"]; 
+"first witness is unreliable, is it?" [color="black", fillcolor="lightblue", fixedsize=false, width=1  shape="box", style="filled"]; 
 "is witness2 sufficient to proof intent?" [color="black", fillcolor="coral3", width=.75, shape=box, style="filled"]; 
 "second witness" [color="black", fillcolor="lightblue", fixedsize=false, width=1  shape="box", style="filled"]; 
 "second witness is unreliable" [color="black", fillcolor="lightblue", fixedsize=false, width=1  shape="box", style="filled"]; 
@@ -16,7 +16,7 @@ digraph G{
 "is there an intent to murder?" -> "accused killed the victim" ; 
 "accused have the intent" -> "is witness1 sufficient to proof intent?" ; 
 "is witness1 sufficient to proof intent?" -> "first witness" ; 
-"is witness1 sufficient to proof intent?" -> "first witness is unreliable" ; 
+"is witness1 sufficient to proof intent?" -> "first witness is unreliable, is it?" ; 
 "-accused have the intent" -> "is witness2 sufficient to proof intent?" ; 
 "is witness2 sufficient to proof intent?" -> "second witness" ; 
 "is witness2 sufficient to proof intent?" -> "second witness is unreliable" ; 
