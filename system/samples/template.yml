@@ -35,3 +35,6 @@ PARAMETER:
 # alpha: <Double between 0 and 1>
 # beta: <Double between 0 and 1>
 # gamma: <Double between 0 and 1>
+  alpha:
+  beta:
+  gamma:

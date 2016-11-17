@@ -16,13 +16,13 @@ ARGUMENT:
 # the weights are double, ranging from 0 to 1
   is there an intent to murder?:
     premise: [kill, intent]
-    exception : [] # no exception is okay!
+    exception : []
     conclusion: murder
     weight:  0.8
 
   is witness1 sufficient to proof intent?:
     premise: [witness1]
-    exception: [unreliable1]
+    exception: [unreliable1] # unless the witness is unreliable
     conclusion: intent
     weight: 0.3
 

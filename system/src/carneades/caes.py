@@ -159,7 +159,7 @@ from collections import namedtuple, defaultdict
 import logging
 import os
 import sys
-
+from textwrap import wrap
 from igraph import Graph, plot
 
 # fix to ensure that package is loaded properly on system path
@@ -178,7 +178,6 @@ LOGLEVEL = logging.DEBUG
 # ========================================================================
 #           READER
 # ========================================================================
-
 
 class Reader(object):
     """
@@ -482,6 +481,7 @@ class PropLiteral(object):
         Propositions are either positive or negative atoms.
         """
         self.polarity = polarity
+        # self._string = "\\n".join(wrap(repr(string), 30))
         self._string = string
 
     def negate(self):
@@ -788,17 +788,18 @@ class ArgumentSet(object):
                     color = 'coral3'
                 else:
                     color = 'coral4'
-
-                dot_str = ('"' + arg_label + '"' +
-                           ' [color="black", fillcolor="{}", width=.75, '.format(color) +
-                           'shape=box, style="filled"]; \n')
+                arg_label = "\\n".join(wrap(repr(arg_label), 40)) # wrap at length
+                dot_str = ('"{}"'.format(arg_label) +
+                           ' [color="black", fillcolor="{}",'.format(color) +
+                           'fixedsize=false, shape=box, style="filled"]; \n')
                 counter += 1
 
             elif prop_label:
+                prop_label = "\\n".join(wrap(repr(prop_label), 40))
                 dot_str = ('"{}"'.format(prop_label) +
                            ' [color="black", fillcolor="lightblue", '
-                           'fixedsize=false, width=1  shape="box", '
-                           'style="filled"]; \n')
+                           'fixedsize=false,  shape="box", '
+                           'style="rounded,filled"]; \n')
             result += dot_str
 
         for edge in g.es:
@@ -806,6 +807,8 @@ class ArgumentSet(object):
                 g.vs[edge.source]['prop'] else g.vs[edge.source]['arg']
             target_label = g.vs[edge.target]['prop'] if\
                 g.vs[edge.target]['prop'] else g.vs[edge.target]['arg']
+            source_label = "\\n".join(wrap(repr(source_label), 40))
+            target_label = "\\n".join(wrap(repr(target_label), 40))
             result += '"{}" -> "{}"'.format(source_label, target_label)
             dot_str = " ; \n"
             result += dot_str

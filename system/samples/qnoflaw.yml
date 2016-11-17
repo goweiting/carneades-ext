@@ -2,17 +2,57 @@
 # for 'If the Government is entitled to prerogrative powers and without reference to the parliment'. This is a question of law and procedure, rather than the case of brexit
 
 PROPOSITION :
+  invoke: Government can invoke Article 50 with Crown prerogative powers # i.e. ministerial power exercised without parlimentary authority
+  TEU is international treaty: TEU is an International Treaty
+  TEU affects domestic law: TEU have effect on UK domestic law
+  making and unmaking: Making and unmaking a treaty requires the same procedures
+  fundamental constitutional law: Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme
+  parliment power: Parliment must pass the necessary legislation if there are changes to domestic law
+  bill of rights 1688: Bill of Rights 1688 - making and unmaking of treaties is a Crown prerogative act because a treaty cannot alter domestic law; prerogative powers can only be exercised on the international plane
+  ECA1972: The Parliment had enacted European Communities Act 1972 for the accession of the UK to the European Communities
+  s2(1): ECA1972 Section 2(1) applies EU Law - rights, powers, liabilities, obligations and restrictions to the UK
+  art 50: Article 50 of the Treaty of European Union will initiate an irreversible process of leaving the EU
 
-
-ASSUMPTION :
+ASSUMPTION : [ECA1972, s2(1), art 50, making and unmaking, parliment power, fundamental constitutional law, bill of rights 1688, TEU is international treaty ]
 
 ARGUMENT :
+  the Government argues that entering and leaving the treaties fall under the crowns prerogative; hence have the power to invoke :
+    premise: [making and unmaking]
+    exception: [-TEU is international treaty]
+    conclusion: invoke
+    weight: 0.6
+
+  the ECA and s2(1) have effect on domestic law, unless it is removed (such as using art 50):
+    premise: [ECA1972, s2(1), TEU is international treaty]
+    exception: [art 50]
+    conclusion: TEU affects domestic law
+    weight: 0.8
+
+  because TEU affects domesitc law, hence parliment is required to approve it:
+    premise: [TEU affects domestic law]
+    exception: []
+    conclusion: parliment power
+    weight: 1.0
+
+  because parliment approves it, it is supreme:
+    premise: [parliment power, fundamental constitutional law]
+    exception: []
+    conclusion: -invoke
+    weight: .9
+
+  if making and unmkaing law uses the same procedures, then procedure for ECA1972 should be used (Government bites on itself):
+    premise: [making and unmaking, ECA1972, fundamental constitutional law]
+    exception: []
+    conclusion: -invoke
+    weight: .6
+
 
 PROOFSTANDARD :
+  invoke: beyond reasonable doubt
 
-ACCEPTABILITY :
+ACCEPTABILITY : [invoke, -invoke]
 
 PARAMETER :
-  alpha :
-  beta :
-  gamma :
+  alpha : 0.5
+  beta : 0.4
+  gamma : 0.3
