@@ -7,123 +7,69 @@
 # Trade practices – Misleading or deceptive conduct – Search engine operator displayed "sponsored links" on search results page – Sponsored links created by or at direction of advertisers – Sponsored links comprised advertising text which directed users to web sites of advertisers' choosing – Whether search engine operator engaged in misleading or deceptive conduct by publishing or displaying sponsored links which contained misleading representations made by advertisers – Whether search engine operator adopted or endorsed misleading representations.
 
 PROPOSITION:
-  # Cases and principles referred to
-  s52 : Section 52(1) of Trade Practice Act - "A corporation shall not, in trade or commerce, engage in conduct that is misleading or deceptive or is likely to mislead or deceive."
-
-
-
-
-
-  consumers are misled: "the 'ordinary' or 'reasonable' members of that class" are misled or deceived
-  # confusion: conduct causing confusion and wonderment is not necessarily co-extensive with misleading or deceptive conduct
-
-  # about the user:
+  misleading: Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links
+  s52 : Google contravene Section 52(1) of Trade Practice Act
+  principle1: It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived
   internet user: An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google
-  understanding search: It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates.
-
-  # about google
-  organic results: Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user, and order of appearance of resuts is determined by its algorithm
-  sponsored links: Sponsored links only appear when the user's searcg term matches one of the advertiser's
-  display separately: Organic results and sponsored links are labelled and displayed separately
-  distinguishable: Sponsored links are displayed separately from organic results hence distinguishable
-  adwords: Advertises uses AdWords to create and purchase advertisements. Sponsored link is created by, or at the direction of, an advertiser who typically pats Google each time a user of the Google search engine clicks on the sponsored links.
-  # AdWords program, not the organic search algorithm, determines if 1) sponsored links are displayed, 2) the order and position of sponsored links
-
-
+  understanding search: It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates
+  organic results: Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user
+  sponsored links: Sponsored links only appear when the user's search term matches one of the advertisers'
+  display separately: organic results and sponsored links are displayed at different location and labelled
+  distinguishable: Sponsored links are displayed separately from organic results
   trigger sponsored links: Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser
-  control over user's search term: Google controls search terms entered by users of its search engine, or material available on the web
+  control over user search term: Google controls search terms entered by users of its search engine, or material available on the web
   control over advert keywords: Google controls advertiser's choice of keywords
   control over advertisers: Google have control over the production of sponsored links given a user's search request
-
-
-  # Past cases considered
-  Yorke: In Yorke vs Lucas - It does not mean that a corporation which purports to do no more than pass on information supplied by another must nevertheless be engaging in misleading or deceptive conduct if the information turns out to be false.
-  Guthrie: In Universal Telecasters (Qld) Ltd v Guthrie - It is difficult to distinguish the case where,..., a statement - express words of adoption or exclusion, was made for or on behalf of another
-  Gardam: In Gardam v George Wills & Co Ltd - A carrier is considered as a conduit and does not have representation; unless relevant section of the public regards the carrier as adopting it.
-  Butcher: In Butcher - The agent in question should be analyse according to the nature of the parties (the vendor and the agent), the character of the transaction and the content of the advertisement
-
-  misleading : Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links
   adoption and representation: Google adopts and endorse the advertisements created by advertisers
-
-
-  # Evidence and arguments by ACCC
-  intermediaries: Google and Google search engine do not operate analogously to other intermediaries or agents # (such as newspaper and broadcasters)
-  misleading advertisements: It has been proven that the sponsored links conveyed misleading and deceptive representations  # concluded in the Full Court of the Federel Court, and the High Court agrees
+  evidence: the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court
   publishing is representation : By publishing sponsored links that are misleading, Google represents the advertisers
 
-  publisher status: Google is a corporation that publishes, communicates or passes on the misleading representation of another party.
-
-
-ASSUMPTION: [valid evidence, Yorke, Guthrie, Gardam, Butcher, understanding search, internet user, organic results, sponsored links, display separately, adwords]
+ASSUMPTION: [understanding search, internet user, organic results, sponsored links, display separately, evidence, trigger sponsored links, -control over advert keywords, -control over user search term]
 
 ARGUMENT:
 
-  did Google engaged in misleading and deceptive conduct?:
-    premise: [s52]
-    exception: [s85]
+  arg1: # the claim by ACCC is that google contravene s52 by publishing sponsored links that are misleading
+    premise: [s52, principle1, evidence, publishing is representation]
+    exception: []
     conclusion: misleading
-    weight:
+    weight: .8
 
-  is s52 applicable?:
-    # the claim by ACCC is that google contravene s52 by publishing sponsored links that are misleading
-    premise: [consumers are misled, ]
-    exception: []
-    conclusion: s52
-    weight: 1.0
-
-  Does Google represents the sponsored links?:
-    premise: [Butcher , Guthrie, valid evidence]icable?:
-    premise: []
-    exception: []
-    conclusion:
-    weight:
+  arg2:
+    premise: [-adoption and representation]
+    exception: [s52, principle1]
+    conclusion: -misleading
+    weight: 1
 
   is relevant class of consumers affected?: #ok
-    premise: [internet users, understanding search, display separately]
-    exception: [users's interpretation]
-    conclusion: -consumers are misled
-    weight:
-
-  # ACCC First claim
-  is Google's response to user's request distinguishable?: #ok
-    premise: [organic results, sponsored links]
-    exception: [-displayed separately]
-    conclusion: distinguishable
-    weight:
-
-  misleading advertisements from advertisers:
-    premise: [evidence1, evidence2, evidence3, evidence4]
-    exception: [sponsored links]
-    conclusion: misleading advertisements
-    weight:
-
-  is Google different from other intermediaries?:
-    premise: [-control over advertisers]
+    premise: [internet user, understanding search, distinguishable]
     exception: []
-    conclusion: intermediaries
-    weight:
+    conclusion: -s52
+    weight: .8
 
-  did Google produce the sponsored links?:
-    premise: [-control over advert keywords, -control over user's search term, trigger sponsored links]
+  is Google response to users request distinguishable?: #ok
+    premise: [organic results, sponsored links, display separately]
+    exception: []
+    conclusion: distinguishable
+    weight: .3
+
+  did Google produce the sponsored links?: # google does not in any ways control the advert and advertisers. It merely
+    premise: [-control over advert keywords, -control over user search term, trigger sponsored links]
     exception: []
     conclusion: -control over advertisers
-    weight:
+    weight: .8
 
-  is Google in control over advert keywords?:
-    premise: [evidence1, evidence2]
-    exception:
-    conclusion: control over advert keywords
-    weight: 0.01 # it never rose so high to prove Google personnel had chosen relevant keywords
-
+  control of adverts determines representation: # if you have control over the conditions of an advertisements, you represents the advert
+    premise: [-control over advertisers]
+    exception: [publishing is representation]
+    conclusion: -adoption and representation
+    weight: .8
 
 PROOFSTANDARD:
-  :
-  :
+  s52: clear and convincing
 
-
-ACCEPTABILITY: []
+ACCEPTABILITY: [-misleading]
 
 PARAMETER:
-  alpha:
-  beta:
-  gamma:
+  alpha: .2
+  beta: .4
+  gamma: .3

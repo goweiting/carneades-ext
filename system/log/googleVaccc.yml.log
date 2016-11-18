@@ -1,0 +1,89 @@
+INFO: 	Tokenizing file...
+INFO: 	Parsing tokens...
+INFO: 	Adding propositions to CAES
+INFO: 	Adding assumptions to CAES
+INFO: 	Adding arguments to CAES
+DEBUG: Added proposition 'Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links' to graph
+DEBUG: Added proposition '-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links' to graph
+DEBUG: Added proposition 'Section 52(1) of Trade Practice Act applicable' to graph
+DEBUG: Proposition 'Section 52(1) of Trade Practice Act applicable' is already in graph
+DEBUG: Added proposition '-Section 52(1) of Trade Practice Act applicable' to graph
+DEBUG: Added proposition 'By publishing sponsored links that are misleading, Google represents the advertisers' to graph
+DEBUG: Added proposition 'It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived' to graph
+DEBUG: Added proposition 'the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court' to graph
+DEBUG: Proposition '-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links' is already in graph
+DEBUG: Proposition 'Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links' is already in graph
+DEBUG: Added proposition '-Google adopts and endorse the advertisements created by advertisers' to graph
+DEBUG: Proposition 'It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived' is already in graph
+DEBUG: Proposition 'Section 52(1) of Trade Practice Act applicable' is already in graph
+DEBUG: Proposition '-Section 52(1) of Trade Practice Act applicable' is already in graph
+DEBUG: Proposition 'Section 52(1) of Trade Practice Act applicable' is already in graph
+DEBUG: Added proposition 'An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google' to graph
+DEBUG: Added proposition 'It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates' to graph
+DEBUG: Added proposition 'Sponsored links are displayed separately from organic results' to graph
+DEBUG: Proposition 'Sponsored links are displayed separately from organic results' is already in graph
+DEBUG: Added proposition '-Sponsored links are displayed separately from organic results' to graph
+DEBUG: Added proposition 'Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user' to graph
+DEBUG: Added proposition 'Sponsored links only appear when the user's search term matches one of the advertisers'' to graph
+DEBUG: Added proposition 'organic results and sponsored links are displayed at different location and labelled' to graph
+DEBUG: Added proposition '-Google have control over the production of sponsored links given a user's search request' to graph
+DEBUG: Added proposition 'Google have control over the production of sponsored links given a user's search request' to graph
+DEBUG: Added proposition '-Google controls advertiser's choice of keywords' to graph
+DEBUG: Added proposition '-Google controls search terms entered by users of its search engine, or material available on the web' to graph
+DEBUG: Added proposition 'Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser' to graph
+DEBUG: Proposition '-Google adopts and endorse the advertisements created by advertisers' is already in graph
+DEBUG: Added proposition 'Google adopts and endorse the advertisements created by advertisers' to graph
+DEBUG: Proposition '-Google have control over the production of sponsored links given a user's search request' is already in graph
+DEBUG: Proposition 'By publishing sponsored links that are misleading, Google represents the advertisers' is already in graph
+INFO: 	Adding parameter to CAES
+INFO: 	Adding proofstandard to CAES
+INFO: 	Adding acceptability to CAES
+DEBUG: alpha:0.2, beta:0.4, gamme:0.3
+DEBUG: propliterals: {'control over advertisers': Google have control over the production of sponsored links given a user's search request, 'display separately': organic results and sponsored links are displayed at different location and labelled, 'control over advert keywords': Google controls advertiser's choice of keywords, 'understanding search': It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates, 'evidence': the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court, 'publishing is representation': By publishing sponsored links that are misleading, Google represents the advertisers, 'sponsored links': Sponsored links only appear when the user's search term matches one of the advertisers', 'distinguishable': Sponsored links are displayed separately from organic results, 's52': Section 52(1) of Trade Practice Act applicable, 'internet user': An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google, 'misleading': Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links, 'trigger sponsored links': Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser, 'adoption and representation': Google adopts and endorse the advertisements created by advertisers, 'organic results': Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user, 'principle1': It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, 'control over user search term': Google controls search terms entered by users of its search engine, or material available on the web} 
+DEBUG: arguments: {arg1: <__main__.Argument object at 0x7f5d1241b278>, is relevant class of consumers affected?: <__main__.Argument object at 0x7f5d1241b240>, control of adverts determines representation: <__main__.Argument object at 0x7f5d1241b5c0>, is Google response to users request distinguishable?: <__main__.Argument object at 0x7f5d1241b390>, establishing s52 implies misleading consumers: <__main__.Argument object at 0x7f5d1241b198>, arg2: <__main__.Argument object at 0x7f5d1241b320>, did Google produce the sponsored links?: <__main__.Argument object at 0x7f5d1241b4a8>} 
+DEBUG: weights : {arg1: 0.8, is relevant class of consumers affected?: 0.8, control of adverts determines representation: 0.8, is Google response to users request distinguishable?: 0.3, establishing s52 implies misleading consumers: 1.0, arg2: 1.0, did Google produce the sponsored links?: 0.8}
+DEBUG: assumptions: {organic results and sponsored links are displayed at different location and labelled, -Google controls search terms entered by users of its search engine, or material available on the web, An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google, Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user, the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court, It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, -Google controls advertiser's choice of keywords, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser, Sponsored links only appear when the user's search term matches one of the advertisers', It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates} 
+DEBUG: acceptability: {-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links} 
+DEBUG: proofstandard: [(Section 52(1) of Trade Practice Act applicable, 'clear_and_convincing')]
+INFO: 	Initialising CAES
+INFO: 
+
+Evaluating acceptability of : -Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links
+INFO: Calling acceptable(-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links)
+DEBUG: Checking whether proposition '-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links'meets proof standard 'scintilla'.
+INFO:   Calling meets_proof_standard(-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links, scintilla)
+INFO:     Calling applicable([-Google adopts and endorse the advertisements created by advertisers], ~[It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, Section 52(1) of Trade Practice Act applicable] => -Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links)
+DEBUG: Checking applicability of arg2...
+DEBUG: Current assumptions: {organic results and sponsored links are displayed at different location and labelled, -Google controls search terms entered by users of its search engine, or material available on the web, An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google, Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user, the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court, It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, -Google controls advertiser's choice of keywords, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser, Sponsored links only appear when the user's search term matches one of the advertisers', It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates}
+DEBUG: Current premises: {-Google adopts and endorse the advertisements created by advertisers}
+INFO:       Calling acceptable(-Google adopts and endorse the advertisements created by advertisers)
+DEBUG: Checking whether proposition '-Google adopts and endorse the advertisements created by advertisers'meets proof standard 'scintilla'.
+INFO:         Calling meets_proof_standard(-Google adopts and endorse the advertisements created by advertisers, scintilla)
+INFO:           Calling applicable([-Google have control over the production of sponsored links given a user's search request], ~[By publishing sponsored links that are misleading, Google represents the advertisers] => -Google adopts and endorse the advertisements created by advertisers)
+DEBUG: Checking applicability of control of adverts determines representation...
+DEBUG: Current assumptions: {organic results and sponsored links are displayed at different location and labelled, -Google controls search terms entered by users of its search engine, or material available on the web, An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google, Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user, the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court, It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, -Google controls advertiser's choice of keywords, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser, Sponsored links only appear when the user's search term matches one of the advertisers', It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates}
+DEBUG: Current premises: {-Google have control over the production of sponsored links given a user's search request}
+INFO:             Calling acceptable(-Google have control over the production of sponsored links given a user's search request)
+DEBUG: Checking whether proposition '-Google have control over the production of sponsored links given a user's search request'meets proof standard 'scintilla'.
+INFO:               Calling meets_proof_standard(-Google have control over the production of sponsored links given a user's search request, scintilla)
+INFO:                 Calling applicable([-Google controls advertiser's choice of keywords, -Google controls search terms entered by users of its search engine, or material available on the web, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser], ~[] => -Google have control over the production of sponsored links given a user's search request)
+DEBUG: Checking applicability of did Google produce the sponsored links?...
+DEBUG: Current assumptions: {organic results and sponsored links are displayed at different location and labelled, -Google controls search terms entered by users of its search engine, or material available on the web, An internet user who wishes to access a webpage is likely to use an internet search engine, such as Google, Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user, the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court, It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, -Google controls advertiser's choice of keywords, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser, Sponsored links only appear when the user's search term matches one of the advertisers', It is not possible for Internet users to use a search engine without any meaningful way without knowing something about how it operates}
+DEBUG: Current premises: {-Google controls advertiser's choice of keywords, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser, -Google controls search terms entered by users of its search engine, or material available on the web}
+INFO:                 applicable([-Google controls advertiser's choice of keywords, -Google controls search terms entered by users of its search engine, or material available on the web, Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser], ~[] => -Google have control over the production of sponsored links given a user's search request)-->True
+INFO:               meets_proof_standard(-Google have control over the production of sponsored links given a user's search request, scintilla)-->True
+INFO:             acceptable(-Google have control over the production of sponsored links given a user's search request)-->True
+DEBUG: Current exception: {By publishing sponsored links that are misleading, Google represents the advertisers}
+INFO:             Calling acceptable(By publishing sponsored links that are misleading, Google represents the advertisers)
+DEBUG: Checking whether proposition 'By publishing sponsored links that are misleading, Google represents the advertisers'meets proof standard 'scintilla'.
+INFO:               Calling meets_proof_standard(By publishing sponsored links that are misleading, Google represents the advertisers, scintilla)
+INFO:               meets_proof_standard(By publishing sponsored links that are misleading, Google represents the advertisers, scintilla)-->False
+INFO:             acceptable(By publishing sponsored links that are misleading, Google represents the advertisers)-->False
+INFO:           applicable([-Google have control over the production of sponsored links given a user's search request], ~[By publishing sponsored links that are misleading, Google represents the advertisers] => -Google adopts and endorse the advertisements created by advertisers)-->True
+INFO:         meets_proof_standard(-Google adopts and endorse the advertisements created by advertisers, scintilla)-->True
+INFO:       acceptable(-Google adopts and endorse the advertisements created by advertisers)-->True
+DEBUG: Current exception: {It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, Section 52(1) of Trade Practice Act applicable}
+INFO:     applicable([-Google adopts and endorse the advertisements created by advertisers], ~[It is established that Google conduct leads to the ordinary or reasonable members of that class are misled or deceived, Section 52(1) of Trade Practice Act applicable] => -Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links)-->False
+INFO:   meets_proof_standard(-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links, scintilla)-->False
+INFO: acceptable(-Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links)-->False
+INFO: ------ -Google has engaged in misleading and deceptive conduct by publishing or displaying the sponsored links IS NOT acceptable ------

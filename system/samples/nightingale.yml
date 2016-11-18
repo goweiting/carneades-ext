@@ -1,0 +1,28 @@
+# This is a case law for R v Sgt Danny Nightingale
+# it is based on: https://www.judiciary.gov.uk/wp-content/uploads/JCO/Documents/Judgments/130725-nightingale-sentencing-remarks.pdf
+#
+PROPOSITION:
+  deterence: Severe sentence are designed to act as a deterrent
+  possession of firearm: The unlawfully possession of prohibited firearm results in sentenced to a minimum of 5 yrs imprisonment
+  intent: criminal intent
+  guilty: guilty
+  confabulation: Suspect confabulated account
+  gift: the Glock is a gift
+  suspect claim 1: did not know that he possess the Glock and large cache of ammunition
+
+
+
+
+
+ASSUMPTION: []
+
+ARGUMENT:
+
+PROOFSTANDARD:
+
+ACCEPTABILITY: []
+
+PARAMETERS:
+  alpha: .5
+  beta: .4
+  gamma: .3
