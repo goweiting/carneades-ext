@@ -14,7 +14,7 @@
 Propositions
 ============
 
-First, let's create some propositions using the :class:`PropLiteral`
+    First, let's create some propositions using the :class:`PropLiteral`
 constructor. All propositions are atomic, that is, either positive or
 negative literals.
 

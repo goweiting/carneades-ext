@@ -15,61 +15,71 @@ PROPOSITION:
   organic results: Organic search results are links to webpages ranked in order of relevance to the search terms entered by the user
   sponsored links: Sponsored links only appear when the user's search term matches one of the advertisers'
   display separately: organic results and sponsored links are displayed at different location and labelled
-  distinguishable: Sponsored links are displayed separately from organic results
+  distinguishable: User of Google will be able to tell apart organic results and sponsored links
   trigger sponsored links: Google outputs the sponsored links that are triggered by search terms corresponding to the keywords chosen by advertiser
   control over user search term: Google controls search terms entered by users of its search engine, or material available on the web
-  control over advert keywords: Google controls advertiser's choice of keywords
-  control over advertisers: Google have control over the production of sponsored links given a user's search request
-  adoption and representation: Google adopts and endorse the advertisements created by advertisers
-  evidence: the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court
+  control over advert keyword: Google controls advertiser's choice of keywords
+  control over advertiser: Google have control over the production of sponsored links given a user's search request
   publishing is representation : By publishing sponsored links that are misleading, Google represents the advertisers
+  evidence: the 4 evidence of sponsored links from the ACCC are deemed misleading by the high court and full court
 
-ASSUMPTION: [understanding search, internet user, organic results, sponsored links, display separately, evidence, trigger sponsored links, -control over advert keywords, -control over user search term]
+ASSUMPTION: [understanding search, internet user, organic results, sponsored links, display separately, evidence, trigger sponsored links, -control over advert keyword, -control over user search term, -publishing is representation]
 
 ARGUMENT:
 
-  arg1: # the claim by ACCC is that google contravene s52 by publishing sponsored links that are misleading
-    premise: [s52, principle1, evidence, publishing is representation]
-    exception: []
-    conclusion: misleading
-    weight: .8
-
-  arg2:
-    premise: [-adoption and representation]
-    exception: [s52, principle1]
+  did google contravene s52?: # guilty unless proven
+    premise: [-s52]
+    exception: [s52] # unless it is proven?????
     conclusion: -misleading
     weight: 1
 
-  is relevant class of consumers affected?: #ok
+  proof for s52? 1: # ACCC's basis for s52 on Google
+    premise: [evidence]
+    exception: [-publishing is representation]
+    conclusion: s52
+    weight: 0.2
+
+# should be sufficient to throw away case that publishing is representation
+  argument against representation: # if you have control over the conditions of an advertisements, you represents the advert
+    premise: [-control over advertiser]
+    exception: []
+    conclusion: -publishing is representation
+    weight: 0.8
+
+  did Google produce the sponsored links?: # google does not in any ways control the advert and advertisers.
+    premise: [-control over advert keyword, -control over user search term, trigger sponsored links]
+    exception: []
+    conclusion: -control over advertiser
+    weight: 1
+
+  proof for s52? 2: # Also, to establish s52, there is a need to prove that consumers could be (or were) misled; guilty until proven
+    premise: [-principle1]
+    exception: [principle1]
+    conclusion: -s52
+    weight: 0.8
+
+  is relevant class of consumers affected?:
     premise: [internet user, understanding search, distinguishable]
     exception: []
-    conclusion: -s52
-    weight: .8
+    conclusion: -principle1
+    weight: 0.8
 
-  is Google response to users request distinguishable?: #ok
+  is Google response to users request distinguishable?:
     premise: [organic results, sponsored links, display separately]
     exception: []
     conclusion: distinguishable
     weight: .3
 
-  did Google produce the sponsored links?: # google does not in any ways control the advert and advertisers. It merely
-    premise: [-control over advert keywords, -control over user search term, trigger sponsored links]
-    exception: []
-    conclusion: -control over advertisers
-    weight: .8
 
-  control of adverts determines representation: # if you have control over the conditions of an advertisements, you represents the advert
-    premise: [-control over advertisers]
-    exception: [publishing is representation]
-    conclusion: -adoption and representation
-    weight: .8
 
 PROOFSTANDARD:
-  s52: clear and convincing
+  s52: beyond reasonable doubt
+  principle1: clear and convincing
+  publishing is representation: clear and convincing
 
-ACCEPTABILITY: [-misleading]
+ACCEPTABILITY: [-misleading, misleading]
 
 PARAMETER:
-  alpha: .2
-  beta: .4
-  gamma: .3
+  alpha: .5
+  beta: 0
+  gamma: 0
