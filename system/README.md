@@ -108,11 +108,10 @@ Running from the command line is *preferred*, as it allows graph,log and the dot
 
 ## Demo
 The three examples that I came up with are:
-*
-*
-*
+* [Google V Australian Competition and Consumer Commission (ACCC)](system/samples/googleVaccc.yml)
+* [Can the government use prerogative power to invoke article 50](system/samples/qnoflaw.yml)
+* [Singapore Parlimentary debate on building of Integrated Resorts](system/samples/casino.yml)
 They are located in the `samples` folder. A graph and image from the Graphviz viewer is attached in the `dot` files.
-
 -----
 
 ## Syntax for `.yml` files

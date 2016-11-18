@@ -436,7 +436,7 @@ def check_prop(caes_propliteral, prop_id):
 
         if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
             raise SyntaxError(
-                '{} is not defined in PROPOSITION'.format(prop_id))
+                '"{}" is not defined in PROPOSITION'.format(prop_id))
             return False
         else:
             if negate:
@@ -459,7 +459,7 @@ def check_proofstandard(query):
     if query in standards.keys():
         return True, standards[query]
     else:
-        raise SyntaxError('Invalid proof standard {} found'.format(query))
+        raise SyntaxError('Invalid proof standard "{}" found'.format(query))
 
 
 # ========================================================================

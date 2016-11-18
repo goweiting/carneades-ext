@@ -70,8 +70,6 @@ ARGUMENT:
     conclusion: distinguishable
     weight: .3
 
-
-
 PROOFSTANDARD:
   s52: beyond reasonable doubt
   principle1: clear and convincing
@@ -81,5 +79,5 @@ ACCEPTABILITY: [-misleading, misleading]
 
 PARAMETER:
   alpha: .5
-  beta: 0
-  gamma: 0
+  beta: .3
+  gamma: .4

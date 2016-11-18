@@ -1,0 +1,104 @@
+# Parlimentary debate for building of Integrate Resort (Casino)
+#
+# Summary:
+# The main debate is on the weight of building an IR so as to stimulate the economy
+# or to prevent additional social harm from the building of IR
+# During the debate for economic benefits, the impending recession and increase competitiveness in the tourism sector (which accounts for a large part of the GDP) is main focus
+# The arguments for damage to the society was deemed iffy due to the
+# already available gambling options in nearby countries, and ease of gambling from remote gambling.
+# Also, it is largely believed that the additional measures for locals will be
+# effective to reduce the additional ill-effects from gambling, if any.
+# 
+# However, now, on hindsight that the social discontent (largely due to huge
+# increase in population and constraint in infrastructure) from
+# hiring of foreign labours for the IRs, it is obvious that the social harm
+# will outweight the economic benefit.
+# This is modelled in the argument "Support will be provided for to prevent
+# additional social harm due to IR" where if "foreign workers impact" is
+# considered in the exception, then the decision to "build" the IRs will be unacceptable
+#
+# Nevertheless, this is an effect that was unforseeable during the parlimentary debate (hence not taken into consideration).
+
+PROPOSITION:
+  build: IR (casino) should be built
+
+  impending recession: impending technical recession
+  slumbering tourism: Slumbering Singapore tourism sector due to competition from neighbouring countries
+  economic stimulus needed: ecnonomic stimulus needed
+  economic benefit: IR will boost tourism, construction and employment
+  tourism: stimulus for tourism sector
+  employment: more locals will be employed
+  construction: stimulus for construction sector
+
+  social harm: aggregate social ill-effects from IR
+  ill-effect of gambling: IR will cost human, family and social well-being
+  convenience: Having an IR in Singapore will provide convenient solution for gamblers
+  already convenient: There exists means for Singaporeans to gamble conveniently: casino in neighbouring countries and on cruise ships; remote gambling (such as online) and Singapore pools lottery.
+  social harm mitigated: social harm can and will be mitigated
+  workforce constraint: Insufficient labour for construction sector due to hiring constraints for foreign labour
+  foreign workers impact: it is possible that the sudden surge in Singapore population will put constraint on housing and transportation
+  control for Singaporeans: Levy for Singaporeans to reduce participation in IR
+  help groups: Social help groups to support family and individuals in distress
+  bar bankrupts: Singaporean who had declared bankrupt will be barred
+
+ASSUMPTION: [impending recession, slumbering tourism, tourism, employment, construction, bar bankrupts, help groups, control for Singaporeans, already convenient, ill-effect of gambling, workforce constraint] # if add assumption on
+
+ARGUMENT:
+  should singapore build the IR (casino)?: # the topic on debate
+    premise: [economic benefit]
+    exception: [social harm]
+    conclusion:  build
+    weight: 1
+
+  economic stimulus argument:
+    premise: [slumbering tourism, impending recession]
+    exception: []
+    conclusion: economic stimulus needed
+    weight: 0.8
+
+  economic benefit outweights:
+    premise: [economic stimulus needed, tourism, employment, construction]
+    exception: []
+    conclusion: economic benefit
+    weight: 0.6
+
+  social harm argument: # unless the social harm is mitigated, the effects of gambling and workforce constraint cause more harm
+    premise: [ill-effect of gambling, workforce constraint]
+    exception: [social harm mitigated]
+    conclusion: social harm
+    weight: 0.9
+
+  convenience argument: # Argument is invalid because there are already other means to for gamblers
+    premise: [convenience]
+    exception: [already convenient]
+    conclusion: -social harm mitigated
+    weight: 0.3 # little weight as the coclusion is iffy
+
+  Support will be provided to prevent additional social harm due to IR:
+    premise: [bar bankrupts, help groups, control for Singaporeans]
+    exception: [] # if "foreign workers impact" is an exception, then social harm from foreign workers do more harm than the social measures such that the mitigation fails
+    conclusion: social harm mitigated
+    weight: 0.6 # these will work
+
+  additional forseeable effect from building: # chained argument
+    premise: [workforce constraint]
+    exception: []
+    conclusion: foreign workers impact
+    weight: 0.5
+
+  additional social harm from building that is not mitigated:
+    premise: [foreign workers impact]
+    exception: []
+    conclusion: -social harm mitigated
+    weight: 0.5
+
+PROOFSTANDARD:
+  social harm: beyond reasonable doubt
+  economic benefit: beyond reasonable doubt
+
+ACCEPTABILITY: [build, -build]
+
+PARAMETER:
+  alpha: .5
+  beta: .3
+  gamma: .3

@@ -118,7 +118,7 @@ class Parser(object):
 
         if len(found) != len(headers):
             raise ParseError(
-                'Expected labels are: {}. However, only {} fonud.'.format(headers, found))
+                'Expected labels are: {}. However, only {} found.'.format(headers, found))
 
     def generateStruct(self, toks):
         """
