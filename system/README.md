@@ -111,11 +111,22 @@ The three examples that I came up with are:
 * [Google V Australian Competition and Consumer Commission (ACCC)](system/samples/googleVaccc.yml)
 * [Can the government use prerogative power to invoke article 50](system/samples/qnoflaw.yml)
 * [Singapore Parlimentary debate on building of Integrated Resorts](system/samples/casino.yml)
+<br>
 They are located in the `samples` folder. A graph and image from the Graphviz viewer is attached in the `dot` files.
+
+To run the demo from the command line:
+```$
+(ailp_env) $ cd src/carneades
+(ailp_env) $ python caes.py '../../samples/<file name>'
+
+example for running all simultaneously:
+(ailp_env) $ python caes.py '../../samples/googleVaccc.yml' '../../samples/qnoflaw.yml' '../../samples/casino.yml'
+```
+
 -----
 
 ## Syntax for `.yml` files
-The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. A template with all the essential element is available in the `samples` folder.
+The syntax for the files are inspired from YAML, hence the extension name. YAML is a user friendly markdown language which does not have too many hierachical elements (such as brackets). The syntax rules are strict, and will throw up any error if it is not well followed. A [template](system/samples/template.yml) with all the essential element is available in the `samples` folder.
 
 ### General Syntax Rules:
 1. Spaces and newlines are delimiters. Usage of tab will result in error. The program is sensitive to indents, similar to python.
