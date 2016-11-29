@@ -16,8 +16,8 @@ digraph G{
 "'is there an intent to murder?'" -> "accused killed the victim" ; 
 "accused have the intent" -> "'is witness1 sufficient to proof\nintent?'" ; 
 "'is witness1 sufficient to proof\nintent?'" -> "first witness" ; 
-"'is witness1 sufficient to proof\nintent?'" -> "first witness is unreliable" ; 
+"'is witness1 sufficient to proof\nintent?'" -> "first witness is unreliable" [arrowhead=dot] ; 
 "-accused have the intent" -> "'is witness2 sufficient to proof\nintent?'" ; 
 "'is witness2 sufficient to proof\nintent?'" -> "second witness" ; 
-"'is witness2 sufficient to proof\nintent?'" -> "second witness is unreliable" ; 
+"'is witness2 sufficient to proof\nintent?'" -> "second witness is unreliable" [arrowhead=dot] ; 
 }

@@ -179,6 +179,7 @@ LOGLEVEL = logging.DEBUG
 #           READER
 # ========================================================================
 
+
 class Reader(object):
     """
     Reader class encapsulates the processing of the file using the load function
@@ -341,7 +342,7 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
-        if len(p.proofstandard.children) == 0: # empty list
+        if len(p.proofstandard.children) == 0:  # empty list
             pass
         else:
             for ps in p.proofstandard.children:
@@ -589,7 +590,7 @@ class ArgumentSet(object):
 
     def __init__(self):
         self.graph = Graph()
-        self.graph.to_directed()
+        self.graph.to_directed()  # set up as a directed graph
         self.arg_count = 1
         self.arguments = []
 
@@ -630,6 +631,7 @@ class ArgumentSet(object):
                 self.graph.add_vertex(prop=proposition)
                 logging.debug(
                     "Added proposition '{}' to graph".format(proposition))
+            # return the vertex
             return self.graph.vs.select(prop=proposition)[0]
 
         else:
@@ -639,6 +641,7 @@ class ArgumentSet(object):
     def add_argument(self, argument, arg_id=None):
         """
         Add an argument to the graph.
+        All vertex in the graph have either the 'arg' or 'prop' attribute
 
         :parameter argument: The argument to be added to the graph.
         :type argument: :class:`Argument`
@@ -652,7 +655,7 @@ class ArgumentSet(object):
             argument.arg_id = 'arg{}'.format(
                 self.arg_count)  # default arg_id if not given
         self.arg_count += 1
-        self.arguments.append(argument)
+        self.arguments.append(argument)  # store a list of arguments
 
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
         self.graph.add_vertex(arg=argument.arg_id)
@@ -662,6 +665,7 @@ class ArgumentSet(object):
         # add proposition vertices to the graph
         # conclusion:
         conclusion_v = self.add_proposition(argument.conclusion)
+        # suppress to not have so many nodes
         self.add_proposition(argument.conclusion.negate())
         # premise
         premise_vs = [self.add_proposition(prop)
@@ -669,12 +673,15 @@ class ArgumentSet(object):
         # exception:
         exception_vs = [self.add_proposition(prop)
                         for prop in sorted(argument.exceptions)]
-        target_vs = premise_vs + exception_vs
 
         # add new edges to the graph
-        edge_to_arg = [(conclusion_v.index, arg_v.index)]
-        edges_from_arg = [(arg_v.index, target.index) for target in target_vs]
-        g.add_edges(edge_to_arg + edges_from_arg)
+        # Add conclusion to argument
+        g.add_edge(conclusion_v.index, arg_v.index, is_exception=False)
+        # add edges from argument to the premise and exceptions
+        for target in premise_vs:
+            g.add_edge(arg_v.index, target.index, is_exception=False)
+        for target in exception_vs:
+            g.add_edge(arg_v.index, target.index, is_exception=True)
 
     def get_arguments(self, proposition):
         """
@@ -712,6 +719,7 @@ class ArgumentSet(object):
     def draw(self, g_filename, debug=False):
         """
         Visualise an :class:`ArgumentSet` as a labeled graph.
+        This uses the pycairo and python-igraph module.
 
         :parameter debug: If :class:`True`, add the vertex index to the label.
         """
@@ -753,9 +761,12 @@ class ArgumentSet(object):
                 how_red = [1, 1 - self.arguments[counter].weight, 0.5]
                 plot_style['vertex_color'].append(how_red)
                 counter += 1
-        plot_style['vertex_shape'] =\
+        plot_style['vertex_shape'] = \
             ['circular' if x is None else 'rect' for x in g.vs['arg']]
         plot_style['vertex_size'] = 30
+        # use thicker lines if the node is an exception of the argument
+        plot_style["edge_width"] = [
+            1 + 2 * int(is_exception) for is_exception in g.es["is_exception"]]
         # rotation, 0 is right of the vertex
         plot_style['vertex_label_angle'] = 1.5
         plot_style['vertex_label_dist'] = -2
@@ -775,6 +786,8 @@ class ArgumentSet(object):
         for vertex in g.vs:
             arg_label = vertex.attributes()['arg']
             prop_label = vertex.attributes()['prop']
+
+            # If the vertex is an argument
             if arg_label:
                 arg_weight = self.arguments[counter].weight
                 # higher weights = darker color
@@ -788,12 +801,14 @@ class ArgumentSet(object):
                     color = 'coral3'
                 else:
                     color = 'coral4'
-                arg_label = "\\n".join(wrap(repr(arg_label), 40)) # wrap at length
+                arg_label = "\\n".join(
+                    wrap(repr(arg_label), 40))  # wrap at length
                 dot_str = ('"{}"'.format(arg_label) +
                            ' [color="black", fillcolor="{}",'.format(color) +
                            'fixedsize=false, shape=box, style="filled"]; \n')
                 counter += 1
 
+            # if the vertex is a proposition
             elif prop_label:
                 prop_label = "\\n".join(wrap(repr(prop_label), 40))
                 dot_str = ('"{}"'.format(prop_label) +
@@ -809,12 +824,18 @@ class ArgumentSet(object):
                 g.vs[edge.target]['prop'] else g.vs[edge.target]['arg']
             source_label = "\\n".join(wrap(repr(source_label), 40))
             target_label = "\\n".join(wrap(repr(target_label), 40))
-            result += '"{}" -> "{}"'.format(source_label, target_label)
+            # if edge is an exception, use a dot instead of arrow
+            if edge.attributes()['is_exception']:
+                result += '"{}" -> "{}" [arrowhead=dot]'.format(
+                    source_label, target_label)
+            else:
+                result += '"{}" -> "{}"'.format(source_label, target_label)
             dot_str = " ; \n"
             result += dot_str
 
         result += "}"
 
+        # Write to file
         if fname is None:
             fname = 'graph.dot'
         with open(fname, 'w') as f:
@@ -970,10 +991,14 @@ class CAES(object):
             'Checking applicability of {}...'.format(argument.arg_id))
         logging.debug('Current assumptions: {}'.format(self.assumptions))
         logging.debug('Current premises: {}'.format(argument.premises))
+
+        # Checking the applicablility of the premises
+        #
         b1 = all(p in self.assumptions or
                  (p.negate() not in self.assumptions and
                   _acceptable(p)) for p in argument.premises)
 
+        #  Checking applicablility of exceptions
         if argument.exceptions:
             logging.debug('Current exception: {}'.format(argument.exceptions))
         b2 = all(e not in self.assumptions and
@@ -1119,7 +1144,7 @@ class CAES(object):
 # -----------------------------------------------------------------------------
 #       MAIN
 # -----------------------------------------------------------------------------
-
+# Set the DOCTEST to True, if want to run doctests
 DOCTEST = False
 
 if __name__ == '__main__':

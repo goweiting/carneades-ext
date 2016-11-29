@@ -1,0 +1,66 @@
+# An example from the Gorden et al (2007) paper, borrowing an example from Prakken and Sartor about a murder trial
+# Using the Scheme for arguments from legal rules:
+#   - The validity of a legal rule is assumed and supported with evidence only if questioned
+#   - being excluded by some other (legal) rule is an exception
+PROPOSITION:
+  murder: the defendant murdered the victim
+  malice : evidence for malice (intent of murder)
+  killing: evidence for killing
+  s187 valid: Section 187 - murder is unlawful killing, is valid
+  s187 excluded: s187 is excluded
+  self-defense: an act of self-defense
+  s197 valid: Section 197 - An act of self-defense, is valid
+  s197 excluded: s197 is excluded
+  w1: Witness1 testified 'attack'
+  w1-credible: Witness1 is credible
+  w1-liar: Witness1 lied in court (contempt of court)
+  w2: Witness2 saw testified 'time to run away'
+  w2-credible: Witness2 is credible
+
+ASSUMPTION: [] # legal rules are assumed to be valid, unless questioned
+
+ARGUMENT:
+  arg1 :
+    premise: [killing, malice] # these ordinary premises are assumed to be supported
+    exception: [s187 excluded]
+    conclusion: murder
+    weight: 0.5
+
+# The prosecution has met its burden of production
+# Next, the defense put forward its self-defense argument:
+  arg2:
+    premise: [self-defense]
+    exception: [s197 excluded]
+    conclusion: s187 excluded # !!! this will cause the s187-valid to be removed from the audience's assumption
+    weight: .5
+
+  arg3 : # simplified scheme for arguments from testimony
+# Since the testimony is made in court, the argument is accepted in court.
+    premise: [w1]
+    exception: [-w1-credible] # unless w1 is not credible
+    conclusion: self-defense
+    weight: 0.5
+
+# The prosecution called a second witness to testify that the defendant had enough time to run away
+  arg4:
+    premise: [w2]
+    exception: [-w2-credible]
+    conclusion: -self-defense
+    weight: 0.5
+
+  arg5: # trying to attach the credibility of w1
+    premise: [w1-liar]
+    exception: []
+    conclusion: -w1-credible
+    weight: 0.9
+
+
+PROOFSTANDARD:
+  murder: scintilla
+
+ACCEPTABILITY: [murder]
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

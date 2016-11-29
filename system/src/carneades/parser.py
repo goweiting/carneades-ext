@@ -476,8 +476,7 @@ def infer_depth(toks):
     >>> infer_depth(toks)
     3
     """
-    # print('check depth')  # DEBUG
-    depth = 0  # starts with 1 to include the one that already been pop-ed
+    depth = 0 
     i = 0
     while len(toks):
         try:

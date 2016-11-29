@@ -103,7 +103,7 @@ class Tokenizer(object):
                 # shorten the line by removing the indent
                 line = line[self.indent_size:]
                 pointer += self.indent_size
-                indents = re.split(indent_pattern, line)
+                indents = re.split(indent_pattern, line) # get the next indent
 
             # if there are more things to be tokenised, check if whitespaces
             # are well-defined
