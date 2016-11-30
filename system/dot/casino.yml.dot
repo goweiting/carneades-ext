@@ -33,7 +33,7 @@ digraph G{
 "'additional social harm from building\nthat is not mitigated'" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
 "IR (casino) should be built" -> "'should singapore build the IR\n(casino)?'" ; 
 "'should singapore build the IR\n(casino)?'" -> "IR will boost tourism, construction and\nemployment" ; 
-"'should singapore build the IR\n(casino)?'" -> "aggregate social ill-effects from IR" ; 
+"'should singapore build the IR\n(casino)?'" -> "aggregate social ill-effects from IR" [arrowhead=dot] ; 
 "ecnonomic stimulus needed" -> "'economic stimulus argument'" ; 
 "'economic stimulus argument'" -> "Slumbering Singapore tourism sector due\nto competition from neighbouring\ncountries" ; 
 "'economic stimulus argument'" -> "impending technical recession" ; 
@@ -45,10 +45,10 @@ digraph G{
 "aggregate social ill-effects from IR" -> "'social harm argument'" ; 
 "'social harm argument'" -> "IR will cost human, family and social\nwell-being" ; 
 "'social harm argument'" -> "Insufficient labour for construction\nsector due to hiring constraints for\nforeign labour" ; 
-"'social harm argument'" -> "social harm can and will be mitigated" ; 
+"'social harm argument'" -> "social harm can and will be mitigated" [arrowhead=dot] ; 
 "-social harm can and will be mitigated" -> "'convenience argument'" ; 
 "'convenience argument'" -> "Having an IR in Singapore will provide\nconvenient solution for gamblers" ; 
-"'convenience argument'" -> "There exists means for Singaporeans to\ngamble conveniently" ; 
+"'convenience argument'" -> "There exists means for Singaporeans to\ngamble conveniently" [arrowhead=dot] ; 
 "social harm can and will be mitigated" -> "'Support will be provided to prevent\nadditional social harm due to IR'" ; 
 "'Support will be provided to prevent\nadditional social harm due to IR'" -> "Levy for Singaporeans to reduce\nparticipation in IR" ; 
 "'Support will be provided to prevent\nadditional social harm due to IR'" -> "Singaporean who had declared bankrupt\nwill be barred" ; 
