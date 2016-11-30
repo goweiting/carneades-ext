@@ -16,8 +16,8 @@
 - c : if p is c then argument is PRO p; if p is complement of c then argument is CON p
 
 ### Dialogue
-- <O,A,C> - are Opening, Argumentation, Closing stage
-- Each stage is a tuple <arguments, status>
+- `<O,A,C>` - are the Opening, Argumentation, Closing stage
+- Each stage is a tuple `<arguments, status>`
 - *arguments* is a set of arguments
 - status is a function mapping conclusions of the arguments in *arguments* to their dialectical status in the stage
   - dialectical status are either : CLAIMED or QUESTIONED
@@ -46,7 +46,7 @@
 #### Acceptability
 A literal p is acceptable in an argument evaluation structure <stage, audience, standard> iff standard(p, stage, audience) is true
 
-### Applicability
+#### Applicability
 An argument `<P,E,c>` is applicable in this AES iff
 - The argument is a member of the arguments of the stage
 - Every proposition p in the **Premises** is an assumption of the audience OR

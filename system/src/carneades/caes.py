@@ -271,7 +271,7 @@ class Reader(object):
 
         for prop in p.assumption.children:
             # check that the assumptions are in the set of caes_propliteral
-            if check_prop(self.caes_propliteral, prop):
+            if self.check_prop(self.caes_propliteral, prop):
                 if prop[0] == '-':  # switch the polarity of the outcome!
                     # find the PropLiteral in the dictionary
                     prop = self.caes_propliteral[prop[1:]]
@@ -284,9 +284,9 @@ class Reader(object):
         # -----------------------------------------------------------------
         logging.info('\tAdding arguments to CAES')
         # In caes: an argument consists of the following fields:
-        # conclusion
         # premises
         # exceptions
+        # conclusion
         # For proofstandards, it is a list of pairs consisting of proposition
         # and proof standard
         for arg_id in p.argument.children:
@@ -306,9 +306,9 @@ class Reader(object):
                 self.caes_weight[arg_id] = weight  # store the weight
 
             # check that the literals are valid:
-            ok_c, conclusion = check_prop(self.caes_propliteral, conclusion)
-            ok_e, exception = check_prop(self.caes_propliteral, exception)
-            ok_p, premise = check_prop(self.caes_propliteral, premise)
+            ok_c, conclusion = self.check_prop(self.caes_propliteral, conclusion)
+            ok_e, exception = self.check_prop(self.caes_propliteral, exception)
+            ok_p, premise = self.check_prop(self.caes_propliteral, premise)
 
             if ok_c and ok_e and ok_p:
                 self.caes_argument[arg_id] = Argument(conclusion=conclusion,
@@ -349,15 +349,15 @@ class Reader(object):
                 prop_id = ps.data
                 prop_ps = ps.children[0].data
                 # check validity of prop_id and prop_ps:
-                ok, prop_ps = check_proofstandard(prop_ps)
-                ok, prop_id = check_prop(self.caes_propliteral, prop_id)
+                ok, prop_ps = self.check_proofstandard(prop_ps)
+                ok, prop_id = self.check_prop(self.caes_propliteral, prop_id)
                 self.caes_proofstandard.append((prop_id, prop_ps))
 
         # -----------------------------------------------------------------
         logging.info('\tAdding acceptability to CAES')
         for acc in p.acceptability.children:
             # check that the prop_id are in the set of caes_propliteral
-            if check_prop(self.caes_propliteral, acc):
+            if self.check_prop(self.caes_propliteral, acc):
                 if acc[0] == '-':  # switch the polarity of the propliteral
                     # find the PropLiteral in the dictionary
                     prop = self.caes_propliteral[acc[1:]]
@@ -378,6 +378,8 @@ class Reader(object):
         logging.debug('acceptability: {} '.format(self.caes_acceptability))
         logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
+        # ===================================================================
+        #  KICK START THE DIALOGUE HERE!
         logging.info('\tInitialising CAES')
         # -----------------------------------------------------------------
         #       draw the argument graph:
@@ -401,66 +403,66 @@ class Reader(object):
                 acc, ['IS NOT', 'IS'][acceptability]))
             print('\n------ {} {} acceptable ------'.format(
                 acc, ['IS NOT', 'IS'][acceptability]))
+        # ===================================================================
 
-# ========================================================================
-#       Additional Functions to help check
-#      propositions and proofstandards from Reader
-# ========================================================================
+    # ========================================================================
+    #       Additional Functions to help check
+    #      propositions and proofstandards from Reader
+    # ========================================================================
 
+    def check_prop(self, caes_propliteral, prop_id):
+        """
+        given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
+        If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
 
-def check_prop(caes_propliteral, prop_id):
-    """
-    given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
-    If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
+        :rtype: bool - if the prop_id is in caes_propliteral
+        :rtype: prop - the PropLiteral of the given prop_id
+        """
 
-    :rtype: bool - if the prop_id is in caes_propliteral
-    :rtype: prop - the PropLiteral of the given prop_id
-    """
+        if type(prop_id) is set:
+            props = list(prop_id)
+            checker = True
+            set_props = set()
 
-    if type(prop_id) is set:
-        props = list(prop_id)
-        checker = True
-        set_props = set()
+            for p in props:
+                yes, prop = self.check_prop(caes_propliteral, p)
+                checker = checker and yes  # if no, the function would already had raised an error
+                set_props.add(prop)
 
-        for p in props:
-            yes, prop = check_prop(caes_propliteral, p)
-            checker = checker and yes  # if no, the function would already had raised an error
-            set_props.add(prop)
+            return checker, set_props
 
-        return checker, set_props
+        elif type(prop_id) is str:
+            negate = 0  # check for negation first
+            if prop_id[0] == '-':
+                prop_id = prop_id[1:]
+                negate = 1
 
-    elif type(prop_id) is str:
-        negate = 0  # check for negation first
-        if prop_id[0] == '-':
-            prop_id = prop_id[1:]
-            negate = 1
-
-        if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
-            raise SyntaxError(
-                '"{}" is not defined in PROPOSITION'.format(prop_id))
-            return False
-        else:
-            if negate:
-                return True, caes_propliteral[prop_id].negate()
+            if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
+                raise SyntaxError(
+                    '"{}" is not defined in PROPOSITION'.format(prop_id))
+                return False
             else:
-                return True, caes_propliteral[prop_id]
+                if negate:
+                    return True, caes_propliteral[prop_id].negate()
+                else:
+                    return True, caes_propliteral[prop_id]
 
 
-def check_proofstandard(query):
-    """
-    check if the proofstandard user input is a valid input.
-    Return the CAES's version of the similar proofstandard
-    """
-    standards = {'scintilla': "scintilla",
-                 'preponderance': "preponderance",
-                 'clear and convincing': "clear_and_convincing",
-                 'beyond reasonable doubt': "beyond_reasonable_doubt",
-                 'dialectical validitys': "dialectical_validity"}
+    def check_proofstandard(self, query):
+        """
+        check if the proofstandard user input is a valid input.
+        Return the CAES's version of the similar proofstandard
+        """
+        standards = {'scintilla': "scintilla",
+                     'preponderance': "preponderance",
+                     'clear and convincing': "clear_and_convincing",
+                     'beyond reasonable doubt': "beyond_reasonable_doubt",
+                     'dialectical validitys': "dialectical_validity"}
 
-    if query in standards.keys():
-        return True, standards[query]
-    else:
-        raise SyntaxError('Invalid proof standard "{}" found'.format(query))
+        if query in standards.keys():
+            return True, standards[query]
+        else:
+            raise SyntaxError('Invalid proof standard "{}" found'.format(query))
 
 
 # ========================================================================
@@ -838,6 +840,7 @@ class ArgumentSet(object):
         # Write to file
         if fname is None:
             fname = 'graph.dot'
+
         with open(fname, 'w') as f:
             print(result, file=f)
 

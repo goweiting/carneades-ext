@@ -39,7 +39,7 @@ Expresses reasoning policies dependednt on the norms of the community
 - Argumentation schemes comes with a set of critical questions
 - Critical questions enumerate ways of chaallenging arguments created using the scheme.
 - Critical questions differ in impact on BOP - i.e. some CQ can shift the BOP to other party, some CQ causes the Burden of answering to be given to the party who raised the CQ; difference between CQs on how strongly or weakly they produce a shift
-- **Each CQ can be modelled as `assumptions` an `exceptions` in Carneades**. Hence, its usage can use to model where the BOP lies
+- **Each CQ can be modelled as `assumptions` and `exceptions` in Carneades**. Hence, its usage can use to model where the BOP lies
 
 ### How are BOP shifted when CQs are asked:
 1. Theory 1 - Shifting burden Theory
