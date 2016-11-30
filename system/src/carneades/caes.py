@@ -193,8 +193,6 @@ class Reader(object):
     ------ -accused committed murder IS NOT acceptable ------
 
     """
-    buffer_size = 4096  # default to 4086, unless user define otherwise
-    indent_size = 2
 
     def __init__(self, buffer_size=4096, indent_size=2):
         """
@@ -302,7 +300,7 @@ class Reader(object):
 
             # check the weight
             if weight < 0 or weight > 1:
-                raise SyntaxError(
+                raise ValueError(
                     'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
             else:
                 self.caes_weight[arg_id] = weight  # store the weight
@@ -328,24 +326,24 @@ class Reader(object):
                 self.caes_alpha = float(param.children[0].data)
                 # check that they are within range
                 if self.caes_alpha > 1 or self.caes_alpha < 0:
-                    raise SyntaxError(
+                    raise ValueError(
                         'alpha must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_alpha))
 
             elif param.data == 'beta':
                 self.caes_beta = float(param.children[0].data)
                 if self.caes_beta > 1 or self.caes_beta < 0:
-                    raise SyntaxError(
+                    raise ValueError(
                         'beta must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_beta))
 
             elif param.data == 'gamma':
                 self.caes_gamma = float(param.children[0].data)
                 if self.caes_gamma > 1 or self.caes_gamma < 0:
-                    raise SyntaxError(
+                    raise ValueError(
                         'gamma must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_gamma))
 
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
-        if len(p.proofstandard.children) == 0:  # empty list
+        if len(p.proofstandard.children) == 0:  # use an empty list hence default PS for all the proposition
             pass
         else:
             for ps in p.proofstandard.children:
@@ -448,7 +446,7 @@ class Reader(object):
                 negate = 1
 
             if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
-                raise SyntaxError(
+                raise ValueError(
                     '"{}" is not defined in PROPOSITION'.format(prop_id))
                 return False
             else:
@@ -471,7 +469,7 @@ class Reader(object):
         if query in standards.keys():
             return True, standards[query]
         else:
-            raise SyntaxError(
+            raise ValueError(
                 'Invalid proof standard "{}" found'.format(query))
 
 
@@ -603,7 +601,7 @@ class ArgumentSet(object):
     def __init__(self):
         self.graph = Graph()
         self.graph.to_directed()  # set up as a directed graph
-        self.arg_count = 1
+        self.arg_count = 0
         self.arguments = []
 
     def propset(self):
@@ -665,8 +663,7 @@ class ArgumentSet(object):
             argument.arg_id = arg_id
         else:
             argument.arg_id = 'arg{}'.format(
-                self.arg_count)  # default arg_id if not given
-        self.arg_count += 1
+                self.arg_count+1)  # default arg_id if not given
         self.arguments.append(argument)  # store a list of arguments
 
         # add the arg_id as a vertex attribute, recovered via the 'arg' key

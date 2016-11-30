@@ -20,7 +20,7 @@
 - Each stage is a tuple `<arguments, status>`
 - *arguments* is a set of arguments
 - status is a function mapping conclusions of the arguments in *arguments* to their dialectical status in the stage
-  - dialectical status are either : CLAIMED or QUESTIONED
+  - dialectical status are either : `CLAIMED` or `QUESTIONED`
 - the arguments must be acyclic
 
 ### Audience
