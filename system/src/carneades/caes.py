@@ -220,13 +220,15 @@ class Reader(object):
         self.caes_acceptability = set()
         self.argset = ArgumentSet()
 
-    def load(self, path_to_file):
+    def load(self, path_to_file, dialogue=True):
         """
         load the file of interest, tokenize and parse it. Using the information given by the user in the file(s), call CAES to evaluate the arguments
         -----
         :param path_to_file : the path to the file to be opened
-
+        :param dialogue : If `dialogue = False`, the acceptability check be shown. Otherwise, if `dialogue = True`, a dialogue version of the arguments will be shown. The class:dialogue illustrates the shifting BOP between the
+        proponent and opponent at each class:stage. At each stage, the best argument is put forth so as to attack the claim by the based on the party with the burden of proof.
         """
+
         # define the filename for write_to_graphviz
         dot_file = '../../dot/{}.dot'.format(path_to_file.split('/')[-1])
         g_filename = '../../graph/{}.pdf'.format(path_to_file.split('/')[-1])
@@ -306,7 +308,8 @@ class Reader(object):
                 self.caes_weight[arg_id] = weight  # store the weight
 
             # check that the literals are valid:
-            ok_c, conclusion = self.check_prop(self.caes_propliteral, conclusion)
+            ok_c, conclusion = self.check_prop(
+                self.caes_propliteral, conclusion)
             ok_e, exception = self.check_prop(self.caes_propliteral, exception)
             ok_p, premise = self.check_prop(self.caes_propliteral, premise)
 
@@ -378,37 +381,44 @@ class Reader(object):
         logging.debug('acceptability: {} '.format(self.caes_acceptability))
         logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
-        # ===================================================================
-        #  KICK START THE DIALOGUE HERE!
-        logging.info('\tInitialising CAES')
-        # -----------------------------------------------------------------
-        #       draw the argument graph:
-        # -----------------------------------------------------------------
-        self.argset.draw(g_filename)
-        self.argset.write_to_graphviz(dot_file)
+        if not dialogue:  # dialogue == 0
+            # ============================================================
+            logging.info('\tInitialising CAES')
+            # ------------------------------------------------------------
+            #       draw the argument graph:
+            # ------------------------------------------------------------
+            self.argset.draw(g_filename)
+            self.argset.write_to_graphviz(dot_file)
 
-        caes = CAES(argset=self.argset,
-                    audience=Audience(
-                        self.caes_assumption, self.caes_weight),
-                    proofstandard=ProofStandard(self.caes_proofstandard),
-                    alpha=self.caes_alpha,
-                    beta=self.caes_beta,
-                    gamma=self.caes_gamma)
+            caes = CAES(argset=self.argset,
+                        audience=Audience(
+                            self.caes_assumption, self.caes_weight),
+                        proofstandard=ProofStandard(self.caes_proofstandard),
+                        alpha=self.caes_alpha,
+                        beta=self.caes_beta,
+                        gamma=self.caes_gamma)
 
-        for acc in self.caes_acceptability:
-            # print('\n\n')
-            logging.info('\n\nEvaluating acceptability of : {}'.format(acc))
-            acceptability = caes.acceptable(acc)
-            logging.info('------ {} {} acceptable ------'.format(
-                acc, ['IS NOT', 'IS'][acceptability]))
-            print('\n------ {} {} acceptable ------'.format(
-                acc, ['IS NOT', 'IS'][acceptability]))
-        # ===================================================================
+            for acc in self.caes_acceptability:
+                # print('\n\n')
+                logging.info(
+                    '\n\nEvaluating acceptability of : {}'.format(acc))
+                acceptability = caes.acceptable(acc)
+                logging.info('------ {} {} acceptable ------'.format(
+                    acc, ['IS NOT', 'IS'][acceptability]))
+                print('\n------ {} {} acceptable ------'.format(
+                    acc, ['IS NOT', 'IS'][acceptability]))
+            # ===========================================================
 
-    # ========================================================================
+        elif dialogue:  # do the dialogue thing here!
+            # ===========================================================
+            # DO THE DIALOGUE THING HERE!
+            print('dialogue mode on')
+            pass
+
+    # ====================================================================
     #       Additional Functions to help check
     #      propositions and proofstandards from Reader
-    # ========================================================================
+    # ====================================================================
 
     def check_prop(self, caes_propliteral, prop_id):
         """
@@ -447,7 +457,6 @@ class Reader(object):
                 else:
                     return True, caes_propliteral[prop_id]
 
-
     def check_proofstandard(self, query):
         """
         check if the proofstandard user input is a valid input.
@@ -462,7 +471,8 @@ class Reader(object):
         if query in standards.keys():
             return True, standards[query]
         else:
-            raise SyntaxError('Invalid proof standard "{}" found'.format(query))
+            raise SyntaxError(
+                'Invalid proof standard "{}" found'.format(query))
 
 
 # ========================================================================
@@ -1156,27 +1166,45 @@ if __name__ == '__main__':
         import doctest
         doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     else:
-        # usage:
-        #   SYNTAX:
-        #   (ailp_env) $ python caes.py filename | [filename]+
-        #
-        #   run a single file
-        #   (ailp_env) $ python caes.py '../samples/example.yml'
-        #
-        filenames = sys.argv[1:]
-        cwd = os.getcwd()
+        import argparse
+        argparser = argparse.ArgumentParser(description="Welcome to Carneades Argument Evaluation System.\n")
+        argparser.add_argument('pathname',
+                               nargs='+',
+                               default='"../../samples/example.yml"',
+                               help='path to each of your .yml file(s). At least one must be given (example: %(default)s)')
+        argparser.add_argument('-d', '--dialogue',
+                               dest='dialogue',
+                               help='shows the shifting burden of proof while the arguments are evaluated in CAES. If the flag is used, dialogue mode will be used for all the files',
+                               action='store_true')
+        argparser.add_argument('-buffer', '--buffer_size',
+                               dest='buffer_size',
+                               help='set the buffer size of the reader (default: %(default)s)',
+                               required=False,
+                               action='store',
+                               nargs=1,
+                               default=4096,
+                               type=int)
+        argparser.add_argument('-indent', '--indent_size',
+                               dest='indent_size',
+                               help='set the indent_size used in the .yml files (default: %(default)s)',
+                               action='store',
+                               nargs=1,
+                               default=2,
+                               type=int)
+        args = argparser.parse_args()
+        print('indent size = {}'.format(args.indent_size))
+        print('buffer size = {}'.format(args.buffer_size))
 
-        if filenames == []:  # no argument passed into the command line
-            print(
-                'NO FILE DETECTED\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
-            exit()
+        filenames = args.pathname
+        indent_size = args.indent_size
+        buffer_size = args.buffer_size
 
         # Some argument is passed:
         file_check = filenames[0]
 
         if os.path.isdir(str(file_check)):
             print(
-                'You have given a directory!\nUsage: $ python caes.py path_to_file | directory | [path_to_file]+')
+                'You have given a directory!\nUsage: $ python caes.py path_to_file | [path_to_file]+')
             exit()
 
         elif len(filenames) > 1:  # if user gave a list of filenames
@@ -1195,7 +1223,8 @@ if __name__ == '__main__':
                     filename))  # check that the filename parsed are all files
 
                 print('\nProcessing {}'.format(filename))
-                Reader().load(filename)
+                Reader(buffer_size=args.buffer_size, indent_size=args.indent_size).load(
+                    filename, dialogue=args.dialogue)
                 logger = logging.getLogger()
                 logger.removeHandler(logger.handlers[0])
 
@@ -1211,7 +1240,8 @@ if __name__ == '__main__':
                     filename))  # check that the filename parsed are all files
 
                 print('\nProcessing {}'.format(file_check))
-                Reader().load(filenames[0])
+                Reader(buffer_size=args.buffer_size, indent_size=args.indent_size).load(
+                    file_check, dialogue=args.dialogue)
             else:
                 logging.error('Cannot find file {}'.format(filenames))
                 exit()

@@ -12,8 +12,8 @@
 
 ## Definitions
 ### Arguments
-- <P,E,c> - are all proposition literals - atomic proposition or negated atomic proposition
-- c : if p is c then argument is PRO p; if p is complement of c then argument is CON p
+- `<P,E,c>` - are all proposition literals - atomic proposition or negated atomic proposition
+- `c` : if p is c then argument is PRO p; if p is complement of c then argument is CON p
 
 ### Dialogue
 - `<O,A,C>` - are the Opening, Argumentation, Closing stage

@@ -27,9 +27,9 @@ INFO: 	Adding parameter to CAES
 INFO: 	Adding proofstandard to CAES
 INFO: 	Adding acceptability to CAES
 DEBUG: alpha:0.4, beta:0.3, gamme:0.3
-DEBUG: propliterals: {'killing': evidence for killing, 's197 valid': Section 197 - An act of self-defense, is valid, 'w2-credible': Witness2 is credible, 'w1-credible': Witness1 is credible, 'murder': the defendant murdered the victim, 's187 valid': Section 187 - murder is unlawful killing, is valid, 'w1': Witness1 testified 'attack', 's197 excluded': s197 is excluded, 's187 excluded': s187 is excluded, 'self-defense': an act of self-defense, 'malice': evidence for malice (intent of murder), 'w1-liar': Witness1 lied in court (contempt of court), 'w2': Witness2 saw testified 'time to run away'} 
-DEBUG: arguments: {arg3: <__main__.Argument object at 0x7fa06c9fa908>, arg2: <__main__.Argument object at 0x7fa06c9fa898>, arg5: <__main__.Argument object at 0x7fa06c9faa90>, arg1: <__main__.Argument object at 0x7fa06c9fa7b8>, arg4: <__main__.Argument object at 0x7fa06c9fa978>} 
-DEBUG: weights : {arg3: 0.5, arg2: 0.5, arg5: 0.9, arg1: 0.5, arg4: 0.5}
+DEBUG: propliterals: {'killing': evidence for killing, 'murder': the defendant murdered the victim, 's197 excluded': s197 is excluded, 'w2-credible': Witness2 is credible, 's187 valid': Section 187 - murder is unlawful killing, is valid, 'w2': Witness2 saw testified 'time to run away', 'malice': evidence for malice (intent of murder), 'w1-liar': Witness1 lied in court (contempt of court), 's197 valid': Section 197 - An act of self-defense, is valid, 's187 excluded': s187 is excluded, 'self-defense': an act of self-defense, 'w1-credible': Witness1 is credible, 'w1': Witness1 testified 'attack'} 
+DEBUG: arguments: {arg1: <__main__.Argument object at 0x7fb49639fdd8>, arg4: <__main__.Argument object at 0x7fb49639ff98>, arg5: <__main__.Argument object at 0x7fb4963a40f0>, arg3: <__main__.Argument object at 0x7fb49639ff28>, arg2: <__main__.Argument object at 0x7fb49639feb8>} 
+DEBUG: weights : {arg1: 0.5, arg4: 0.5, arg5: 0.9, arg3: 0.5, arg2: 0.5}
 DEBUG: assumptions: set() 
 DEBUG: acceptability: {the defendant murdered the victim} 
 DEBUG: proofstandard: [(the defendant murdered the victim, 'scintilla')]
