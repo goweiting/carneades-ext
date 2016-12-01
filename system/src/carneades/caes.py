@@ -194,8 +194,8 @@ class Reader(object):
         Initialise the Reader to read your source file with the user's settings
         ----
         PARAMETER:
-        :param:buffer_size, default to 4096
-        :param:indent_size, default to 2
+        :param buffer_size: defaults to 4096
+        :param indent_size: defaults to 2
         """
         self.buffer_size = buffer_size
         self.indent_size = indent_size
@@ -256,7 +256,6 @@ class Reader(object):
             if prop_id[0] == '-':
                 raise ReaderError(
                     '- found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.format(p))
-            # rename the PROP_ID in case of long names
             # here, added prop_id as a field in PropLierals!
             # polarity is set to True by defailt
             self.caes_propliteral[prop_id] = PropLiteral(text)
@@ -298,20 +297,25 @@ class Reader(object):
                 raise ValueError(
                     'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
             else:
-                self.caes_weight[arg_id] = weight  # store the weight
+                # store the weight in the dictionary for CAES
+                self.caes_weight[arg_id] = weight
 
-            # check that the literals are valid:
+            # check that the literals are in the PROPOSITION.
+            # the checker returns the PropLiteral, so there's no need to
+            # convert it again
             ok_c, conclusion = self.check_prop(
                 self.caes_propliteral, conclusion)
             ok_e, exception = self.check_prop(self.caes_propliteral, exception)
             ok_p, premise = self.check_prop(self.caes_propliteral, premise)
 
             if ok_c and ok_e and ok_p:
+                # store the arguments
                 self.caes_argument[arg_id] = Argument(conclusion=conclusion,
                                                       premises=premise, exceptions=exception,
                                                       weight=weight)
+                # add to argset
                 self.argset.add_argument(
-                    self.caes_argument[arg_id], arg_id=arg_id.data)  # add to argset
+                    self.caes_argument[arg_id], arg_id=arg_id.data)
 
         # -----------------------------------------------------------------
         logging.info('\tAdding parameter to CAES')
@@ -338,8 +342,8 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
-        # use an empty list hence default PS for all the proposition
         if len(p.proofstandard.children) == 0:
+            # use an empty list hence default PS for all the proposition
             pass
         else:
             for ps in p.proofstandard.children:
@@ -348,10 +352,12 @@ class Reader(object):
                 # check validity of prop_id and prop_ps:
                 ok, prop_ps = self.check_proofstandard(prop_ps)
                 ok, prop_id = self.check_prop(self.caes_propliteral, prop_id)
+                # here, create and append the tuple that is used to
+                # defined the proofstandard
                 self.caes_proofstandard.append((prop_id, prop_ps))
 
         # -----------------------------------------------------------------
-        logging.info('\tAdding acceptability to CAES')
+        logging.info('\tAdding issues to CAES')
         for acc in p.issue.children:
             # check that the prop_id are in the set of caes_propliteral
             if self.check_prop(self.caes_propliteral, acc):
@@ -365,7 +371,6 @@ class Reader(object):
             self.caes_issue.add(prop)
 
         # -----------------------------------------------------------------
-        # call the initialise function:
         logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
             self.caes_alpha, self.caes_beta, self.caes_gamma))
         logging.debug('propliterals: {} '.format(self.caes_propliteral))
@@ -375,15 +380,18 @@ class Reader(object):
         logging.debug('acceptability: {} '.format(self.caes_issue))
         logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
-        if not dialogue:  # dialogue == 0
+        if not dialogue:  # dialogue == False
             # ============================================================
             logging.info('\tInitialising CAES')
             # ------------------------------------------------------------
-            #       draw the argument graph:
+            #       draw the argument graphs:
             # ------------------------------------------------------------
             self.argset.draw(g_filename)
             self.argset.write_to_graphviz(dot_file)
 
+            # ------------------------------------------------------------
+            #       Evaluate the issues using CAES
+            # ------------------------------------------------------------
             caes = CAES(argset=self.argset,
                         audience=Audience(
                             self.caes_assumption, self.caes_weight),
@@ -402,7 +410,7 @@ class Reader(object):
                     acc, ['IS NOT', 'IS'][acceptability]))
             # ===========================================================
 
-        elif dialogue:  # do the dialogue thing here!
+        elif dialogue:
             # ===========================================================
             # DO THE DIALOGUE THING HERE!
             print('dialogue mode on')
@@ -418,8 +426,8 @@ class Reader(object):
         given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
         If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
 
-        :rtype: bool - if the prop_id is in caes_propliteral
-        :rtype: prop - the PropLiteral of the given prop_id
+        :rtype: bool - return True if the prop_id is in caes_propliteral
+        :rtype: prop - the PropLiteral of the given prop_id; if a set of prop_id is given, then prop will be a set of PropLiteral
         """
 
         if type(prop_id) is set:
@@ -526,6 +534,7 @@ class PropLiteral(object):
     def __lt__(self, other):
         return self.__str__() < other.__str__()
 
+
 # ========================================================================
 
 
@@ -574,6 +583,7 @@ class Argument(object):
         else:
             excepts = sorted(self.exceptions)
         return "{}, ~{} => {}".format(prems, excepts, self.conclusion)
+
 
 # ========================================================================
 
@@ -846,6 +856,7 @@ class ArgumentSet(object):
         with open(fname, 'w') as f:
             print(result, file=f)
 
+
 # ========================================================================
 
 
@@ -908,6 +919,23 @@ assigns weights to arguments.
 :param weights: An mapping from :class:`Argument`\ s to weights.
 :type weights: dict
 """
+
+# ========================================================================
+
+class State(object):
+    """
+    the state defines the arguments that are being considred at the moment and their status. If the argument should be considred, the status will be either {claimed or questioned} else, of None type, indicating that it is NOT used for applicability test
+
+    :param arguments: The arguments in CAES
+    :param status: the dialetical status of the argument
+    """
+
+    def __init__(self):
+        self.state = dict()
+
+    def add_args(self, argument, status):
+        state[argument] = status
+
 
 # ========================================================================
 
@@ -1171,7 +1199,7 @@ if __name__ == '__main__':
                                action='store_true')
         argparser.add_argument('-logger',
                                dest='logger',
-                               help='verbosity of the logger.(default: %(default)s)',
+                               help='logging level (default: %(default)s)',
                                choices=['DEBUG', 'INFO'],
                                default='DEBUG',
                                type=str,
@@ -1207,7 +1235,6 @@ if __name__ == '__main__':
         elif len(filenames) > 1:  # if user gave a list of filenames
             # inform the number of files
             print('{} files detected'.format(len(filenames)))
-            # Some logging settings
 
             for filename in filenames:
                 logger_file = '../../log/{}.log'.format(
@@ -1216,13 +1243,14 @@ if __name__ == '__main__':
                                     level=args['logger'],
                                     filemode='w',
                                     filename=logger_file)
-                assert os.path.isfile(filename), logging.exception('{} is not a file'.format(
-                    filename))  # check that the filename parsed are all files
 
+                # check that the filename parsed are all files
+                assert os.path.isfile(filename), logging.exception(
+                    '{} is not a file'.format(filename))
                 print('\nProcessing {}'.format(filename))
 
                 Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(
-                filename, dialogue=args['dialogue'])
+                    filename, dialogue=args['dialogue'])
 
                 logger = logging.getLogger()
                 logger.removeHandler(logger.handlers[0])
@@ -1235,12 +1263,14 @@ if __name__ == '__main__':
                                     level=args['logger'],
                                     filemode='w',
                                     filename=logger_file)
-                assert os.path.isfile(file_check), logging.exception('{} is not a file'.format(
-                    filename))  # check that the filename parsed are all files
 
+                # check that the filename parsed are all files
+                assert os.path.isfile(file_check), logging.exception('{} is not a file'.format(filename))
                 print('\nProcessing {}'.format(file_check))
+
                 Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(
                     file_check, dialogue=args['dialogue'])
+
             else:
                 logging.error('Cannot find file {}'.format(filenames))
                 exit()
