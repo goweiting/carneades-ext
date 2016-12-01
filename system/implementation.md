@@ -28,7 +28,7 @@ the respondent have the burden of prouction for the exception
 ```
 Iteration...
 - 0 :
-  - Since the opponent attacked the claim, she have the burden of production for the **exception** OR producing a con argument
+  - Since the opponent attacked the claim, she have the burden of production for the **exception** OR **producing a con argument**
   - find this, and set the status of that argument to be `claimed` (an argument that attacks the exception or the con argument)
   - check using CAES:
     - argset = current arguments

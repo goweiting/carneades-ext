@@ -50,7 +50,7 @@ ARGUMENT :
 PROOFSTANDARD :
   invoke: beyond reasonable doubt
 
-ACCEPTABILITY : [invoke, -invoke]
+ISSUE : [invoke, -invoke]
 
 PARAMETER :
   alpha : 0.5

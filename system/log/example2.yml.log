@@ -34,12 +34,12 @@ INFO: 	Adding parameter to CAES
 INFO: 	Adding proofstandard to CAES
 INFO: 	Adding acceptability to CAES
 DEBUG: alpha:0.4, beta:0.3, gamme:0.3
-DEBUG: propliterals: {'murder': the defendant murdered the victim, 'w1': Witness1 testified 'attack', 'ev2': evidence 2 to support malice, 'w2-credible': Witness2 is credible, 'ev1': evidence 1 to support killing, 's197 excluded': s197 is excluded, 'ev1 tampered': tampering of evidence 1, 's187 valid': Section 187 - murder is unlawful killing, is valid, 'w2': Witness2 saw testified 'time to run away', 'malice': evidence for malice (intent of murder), 'w1-credible': Witness1 is credible, 'self-defense': an act of self-defense, 's197 valid': Section 197 - An act of self-defense, is valid, 'killing': evidence for killing, 'ev2 tampered': tampering of evidence 2, 'w1-liar': Witness1 lied in court (contempt of court), 's187 excluded': s187 is excluded} 
-DEBUG: arguments: {arg02: <__main__.Argument object at 0x7f221f337be0>, arg3: <__main__.Argument object at 0x7f221f337d30>, arg1: <__main__.Argument object at 0x7f221f337c50>, arg2: <__main__.Argument object at 0x7f221f337cc0>, arg01: <__main__.Argument object at 0x7f221f337b00>, arg4: <__main__.Argument object at 0x7f221f337da0>} 
-DEBUG: weights : {arg02: 0.2, arg3: 0.5, arg1: 0.2, arg2: 0.5, arg01: 0.2, arg4: 1.0}
-DEBUG: assumptions: {Witness1 testified 'attack', evidence 1 to support killing, Section 197 - An act of self-defense, is valid, Section 187 - murder is unlawful killing, is valid, evidence 2 to support malice, Witness2 saw testified 'time to run away'} 
+DEBUG: propliterals: {'w1-liar': Witness1 lied in court (contempt of court), 's187 valid': Section 187 - murder is unlawful killing, is valid, 'w2': Witness2 saw testified 'time to run away', 'malice': evidence for malice (intent of murder), 'ev2': evidence 2 to support malice, 'w1-credible': Witness1 is credible, 'self-defense': an act of self-defense, 'ev1': evidence 1 to support killing, 's187 excluded': s187 is excluded, 'ev1 tampered': tampering of evidence 1, 's197 valid': Section 197 - An act of self-defense, is valid, 'killing': evidence for killing, 'w2-credible': Witness2 is credible, 'w1': Witness1 testified 'attack', 's197 excluded': s197 is excluded, 'murder': the defendant murdered the victim, 'ev2 tampered': tampering of evidence 2} 
+DEBUG: arguments: {arg01: <__main__.Argument object at 0x7fd1394fbc50>, arg3: <__main__.Argument object at 0x7fd1394fbe80>, arg02: <__main__.Argument object at 0x7fd1394fbd30>, arg2: <__main__.Argument object at 0x7fd1394fbe10>, arg4: <__main__.Argument object at 0x7fd1394fbef0>, arg1: <__main__.Argument object at 0x7fd1394fbda0>} 
+DEBUG: weights : {arg01: 0.2, arg3: 0.5, arg02: 0.2, arg2: 0.5, arg4: 1.0, arg1: 0.2}
+DEBUG: assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid} 
 DEBUG: acceptability: {the defendant murdered the victim} 
-DEBUG: proofstandard: [(the defendant murdered the victim, 'scintilla')]
+DEBUG: proofstandard: [(the defendant murdered the victim, 'scintilla'), (an act of self-defense, 'preponderance')]
 INFO: 	Initialising CAES
 INFO: 
 
@@ -49,30 +49,14 @@ DEBUG: Checking whether proposition 'the defendant murdered the victim'meets pro
 INFO:   Calling meets_proof_standard(the defendant murdered the victim, scintilla)
 INFO:     Calling applicable([Section 187 - murder is unlawful killing, is valid, evidence for killing, evidence for malice (intent of murder)], ~[s187 is excluded] => the defendant murdered the victim)
 DEBUG: Checking applicability of arg1...
-DEBUG: Current assumptions: {Witness1 testified 'attack', evidence 1 to support killing, Section 197 - An act of self-defense, is valid, Section 187 - murder is unlawful killing, is valid, evidence 2 to support malice, Witness2 saw testified 'time to run away'}
-DEBUG: Current premises: {Section 187 - murder is unlawful killing, is valid, evidence for killing, evidence for malice (intent of murder)}
-INFO:       Calling acceptable(evidence for killing)
-DEBUG: Checking whether proposition 'evidence for killing'meets proof standard 'scintilla'.
-INFO:         Calling meets_proof_standard(evidence for killing, scintilla)
-INFO:           Calling applicable([evidence 1 to support killing], ~[tampering of evidence 1] => evidence for killing)
-DEBUG: Checking applicability of arg01...
-DEBUG: Current assumptions: {Witness1 testified 'attack', evidence 1 to support killing, Section 197 - An act of self-defense, is valid, Section 187 - murder is unlawful killing, is valid, evidence 2 to support malice, Witness2 saw testified 'time to run away'}
-DEBUG: Current premises: {evidence 1 to support killing}
-DEBUG: Current exception: {tampering of evidence 1}
-INFO:             Calling acceptable(tampering of evidence 1)
-DEBUG: Checking whether proposition 'tampering of evidence 1'meets proof standard 'scintilla'.
-INFO:               Calling meets_proof_standard(tampering of evidence 1, scintilla)
-INFO:               meets_proof_standard(tampering of evidence 1, scintilla)-->False
-INFO:             acceptable(tampering of evidence 1)-->False
-INFO:           applicable([evidence 1 to support killing], ~[tampering of evidence 1] => evidence for killing)-->True
-INFO:         meets_proof_standard(evidence for killing, scintilla)-->True
-INFO:       acceptable(evidence for killing)-->True
+DEBUG: Current assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid}
+DEBUG: Current premises: {evidence for malice (intent of murder), evidence for killing, Section 187 - murder is unlawful killing, is valid}
 INFO:       Calling acceptable(evidence for malice (intent of murder))
 DEBUG: Checking whether proposition 'evidence for malice (intent of murder)'meets proof standard 'scintilla'.
 INFO:         Calling meets_proof_standard(evidence for malice (intent of murder), scintilla)
 INFO:           Calling applicable([evidence 2 to support malice], ~[tampering of evidence 2] => evidence for malice (intent of murder))
 DEBUG: Checking applicability of arg02...
-DEBUG: Current assumptions: {Witness1 testified 'attack', evidence 1 to support killing, Section 197 - An act of self-defense, is valid, Section 187 - murder is unlawful killing, is valid, evidence 2 to support malice, Witness2 saw testified 'time to run away'}
+DEBUG: Current assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid}
 DEBUG: Current premises: {evidence 2 to support malice}
 DEBUG: Current exception: {tampering of evidence 2}
 INFO:             Calling acceptable(tampering of evidence 2)
@@ -83,20 +67,36 @@ INFO:             acceptable(tampering of evidence 2)-->False
 INFO:           applicable([evidence 2 to support malice], ~[tampering of evidence 2] => evidence for malice (intent of murder))-->True
 INFO:         meets_proof_standard(evidence for malice (intent of murder), scintilla)-->True
 INFO:       acceptable(evidence for malice (intent of murder))-->True
+INFO:       Calling acceptable(evidence for killing)
+DEBUG: Checking whether proposition 'evidence for killing'meets proof standard 'scintilla'.
+INFO:         Calling meets_proof_standard(evidence for killing, scintilla)
+INFO:           Calling applicable([evidence 1 to support killing], ~[tampering of evidence 1] => evidence for killing)
+DEBUG: Checking applicability of arg01...
+DEBUG: Current assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid}
+DEBUG: Current premises: {evidence 1 to support killing}
+DEBUG: Current exception: {tampering of evidence 1}
+INFO:             Calling acceptable(tampering of evidence 1)
+DEBUG: Checking whether proposition 'tampering of evidence 1'meets proof standard 'scintilla'.
+INFO:               Calling meets_proof_standard(tampering of evidence 1, scintilla)
+INFO:               meets_proof_standard(tampering of evidence 1, scintilla)-->False
+INFO:             acceptable(tampering of evidence 1)-->False
+INFO:           applicable([evidence 1 to support killing], ~[tampering of evidence 1] => evidence for killing)-->True
+INFO:         meets_proof_standard(evidence for killing, scintilla)-->True
+INFO:       acceptable(evidence for killing)-->True
 DEBUG: Current exception: {s187 is excluded}
 INFO:       Calling acceptable(s187 is excluded)
 DEBUG: Checking whether proposition 's187 is excluded'meets proof standard 'scintilla'.
 INFO:         Calling meets_proof_standard(s187 is excluded, scintilla)
 INFO:           Calling applicable([Section 197 - An act of self-defense, is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 DEBUG: Checking applicability of arg2...
-DEBUG: Current assumptions: {Witness1 testified 'attack', evidence 1 to support killing, Section 197 - An act of self-defense, is valid, Section 187 - murder is unlawful killing, is valid, evidence 2 to support malice, Witness2 saw testified 'time to run away'}
+DEBUG: Current assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid}
 DEBUG: Current premises: {an act of self-defense, Section 197 - An act of self-defense, is valid}
 INFO:             Calling acceptable(an act of self-defense)
-DEBUG: Checking whether proposition 'an act of self-defense'meets proof standard 'scintilla'.
-INFO:               Calling meets_proof_standard(an act of self-defense, scintilla)
+DEBUG: Checking whether proposition 'an act of self-defense'meets proof standard 'preponderance'.
+INFO:               Calling meets_proof_standard(an act of self-defense, preponderance)
 INFO:                 Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 DEBUG: Checking applicability of arg3...
-DEBUG: Current assumptions: {Witness1 testified 'attack', evidence 1 to support killing, Section 197 - An act of self-defense, is valid, Section 187 - murder is unlawful killing, is valid, evidence 2 to support malice, Witness2 saw testified 'time to run away'}
+DEBUG: Current assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid}
 DEBUG: Current premises: {Witness1 testified 'attack'}
 DEBUG: Current exception: {-Witness1 is credible}
 INFO:                   Calling acceptable(-Witness1 is credible)
@@ -105,18 +105,33 @@ INFO:                     Calling meets_proof_standard(-Witness1 is credible, sc
 INFO:                     meets_proof_standard(-Witness1 is credible, scintilla)-->False
 INFO:                   acceptable(-Witness1 is credible)-->False
 INFO:                 applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)-->True
-INFO:               meets_proof_standard(an act of self-defense, scintilla)-->True
-INFO:             acceptable(an act of self-defense)-->True
+DEBUG: Checking applicability and weights of ['arg3']
+DEBUG: Weights of ['arg3'] are [0.5]
+INFO:                 Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
+DEBUG: Checking applicability of arg4...
+DEBUG: Current assumptions: {Witness1 testified 'attack', Witness2 saw testified 'time to run away', evidence 2 to support malice, Section 197 - An act of self-defense, is valid, evidence 1 to support killing, Section 187 - murder is unlawful killing, is valid}
+DEBUG: Current premises: {Witness2 saw testified 'time to run away'}
+DEBUG: Current exception: {-Witness2 is credible}
+INFO:                   Calling acceptable(-Witness2 is credible)
+DEBUG: Checking whether proposition '-Witness2 is credible'meets proof standard 'scintilla'.
+INFO:                     Calling meets_proof_standard(-Witness2 is credible, scintilla)
+INFO:                     meets_proof_standard(-Witness2 is credible, scintilla)-->False
+INFO:                   acceptable(-Witness2 is credible)-->False
+INFO:                 applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)-->True
+DEBUG: Checking applicability and weights of ['arg4']
+DEBUG: Weights of ['arg4'] are [1.0]
+INFO:               meets_proof_standard(an act of self-defense, preponderance)-->False
+INFO:             acceptable(an act of self-defense)-->False
 DEBUG: Current exception: {s197 is excluded}
 INFO:             Calling acceptable(s197 is excluded)
 DEBUG: Checking whether proposition 's197 is excluded'meets proof standard 'scintilla'.
 INFO:               Calling meets_proof_standard(s197 is excluded, scintilla)
 INFO:               meets_proof_standard(s197 is excluded, scintilla)-->False
 INFO:             acceptable(s197 is excluded)-->False
-INFO:           applicable([Section 197 - An act of self-defense, is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->True
-INFO:         meets_proof_standard(s187 is excluded, scintilla)-->True
-INFO:       acceptable(s187 is excluded)-->True
-INFO:     applicable([Section 187 - murder is unlawful killing, is valid, evidence for killing, evidence for malice (intent of murder)], ~[s187 is excluded] => the defendant murdered the victim)-->False
-INFO:   meets_proof_standard(the defendant murdered the victim, scintilla)-->False
-INFO: acceptable(the defendant murdered the victim)-->False
-INFO: ------ the defendant murdered the victim IS NOT acceptable ------
+INFO:           applicable([Section 197 - An act of self-defense, is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->False
+INFO:         meets_proof_standard(s187 is excluded, scintilla)-->False
+INFO:       acceptable(s187 is excluded)-->False
+INFO:     applicable([Section 187 - murder is unlawful killing, is valid, evidence for killing, evidence for malice (intent of murder)], ~[s187 is excluded] => the defendant murdered the victim)-->True
+INFO:   meets_proof_standard(the defendant murdered the victim, scintilla)-->True
+INFO: acceptable(the defendant murdered the victim)-->True
+INFO: ------ the defendant murdered the victim IS acceptable ------

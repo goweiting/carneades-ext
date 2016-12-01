@@ -27,7 +27,7 @@ PROOFSTANDARD :
 #
 #   <PROP_ID> : <PS> OR
 
-ACCEPTABILITY: [ ]
+ISSUE: [ ]
 # [<PROP_ID>]
 
 PARAMETER:

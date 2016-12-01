@@ -8,7 +8,7 @@
 # already available gambling options in nearby countries, and ease of gambling from remote gambling.
 # Also, it is largely believed that the additional measures for locals will be
 # effective to reduce the additional ill-effects from gambling, if any.
-# 
+#
 # However, now, on hindsight that the social discontent (largely due to huge
 # increase in population and constraint in infrastructure) from
 # hiring of foreign labours for the IRs, it is obvious that the social harm
@@ -96,7 +96,7 @@ PROOFSTANDARD:
   social harm: beyond reasonable doubt
   economic benefit: beyond reasonable doubt
 
-ACCEPTABILITY: [build, -build]
+ISSUE: [build, -build]
 
 PARAMETER:
   alpha: .5

@@ -37,7 +37,7 @@ class Parser(object):
     '-intent'
     >>> p.parameter.children
     [alpha, beta, gamma]
-    >>> p.acceptability.children
+    >>> p.issue.children
     ['murder', '-murder']
 
 
@@ -64,7 +64,7 @@ class Parser(object):
         self.assumption = None
         self.argument = None
         self.parameter = None
-        self.acceptability = None
+        self.issue = None
         self.proofstandard = None
         self.parse()
 
@@ -77,7 +77,7 @@ class Parser(object):
         - PARAMETER
         """
         found = set()  # set that contains the headers found
-        headers = ['PROPOSITION', 'ARGUMENT', 'ASSUMPTION', 'PARAMETER', 'ACCEPTABILITY', 'PROOFSTANDARD']
+        headers = ['PROPOSITION', 'ARGUMENT', 'ASSUMPTION', 'PARAMETER', 'ISSUE', 'PROOFSTANDARD']
         previous_idx = len(self.tokens)  # starting from the back
         for idx, tok in reversed(list(enumerate(self.tokens))):
             # find tok_type = `STMT`, and check if it is one of the headers
@@ -100,9 +100,9 @@ class Parser(object):
                         toks = self.tokens[idx: previous_idx]
                         self.parameter = self.generateStruct(toks)
 
-                    elif tok.c == 'ACCEPTABILITY':
+                    elif tok.c == 'ISSUE':
                         toks = self.tokens[idx: previous_idx]
-                        self.acceptability = self.generateStruct(toks)
+                        self.issue = self.generateStruct(toks)
 
                     elif tok.c == 'PROOFSTANDARD':
                         toks = self.tokens[idx: previous_idx]
@@ -476,7 +476,7 @@ def infer_depth(toks):
     >>> infer_depth(toks)
     3
     """
-    depth = 0 
+    depth = 0
     i = 0
     while len(toks):
         try:

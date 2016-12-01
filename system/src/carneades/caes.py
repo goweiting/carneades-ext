@@ -215,7 +215,7 @@ class Reader(object):
         self.caes_alpha = float()
         self.caes_beta = float()
         self.caes_gamma = float()
-        self.caes_acceptability = set()
+        self.caes_issue = set()
         self.argset = ArgumentSet()
 
     def load(self, path_to_file, dialogue=True):
@@ -356,7 +356,7 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding acceptability to CAES')
-        for acc in p.acceptability.children:
+        for acc in p.issue.children:
             # check that the prop_id are in the set of caes_propliteral
             if self.check_prop(self.caes_propliteral, acc):
                 if acc[0] == '-':  # switch the polarity of the propliteral
@@ -366,7 +366,7 @@ class Reader(object):
                 else:
                     prop = self.caes_propliteral[acc]
 
-            self.caes_acceptability.add(prop)
+            self.caes_issue.add(prop)
 
         # -----------------------------------------------------------------
         # call the initialise function:
@@ -376,7 +376,7 @@ class Reader(object):
         logging.debug('arguments: {} '.format(self.caes_argument))
         logging.debug('weights : {}'.format(self.caes_weight))
         logging.debug('assumptions: {} '.format(self.caes_assumption))
-        logging.debug('acceptability: {} '.format(self.caes_acceptability))
+        logging.debug('acceptability: {} '.format(self.caes_issue))
         logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
         if not dialogue:  # dialogue == 0
@@ -396,7 +396,7 @@ class Reader(object):
                         beta=self.caes_beta,
                         gamma=self.caes_gamma)
 
-            for acc in self.caes_acceptability:
+            for acc in self.caes_issue:
                 # print('\n\n')
                 logging.info(
                     '\n\nEvaluating acceptability of : {}'.format(acc))

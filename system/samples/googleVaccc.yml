@@ -75,7 +75,7 @@ PROOFSTANDARD:
   principle1: clear and convincing
   publishing is representation: clear and convincing
 
-ACCEPTABILITY: [-misleading, misleading]
+ISSUE: [-misleading, misleading]
 
 PARAMETER:
   alpha: .5

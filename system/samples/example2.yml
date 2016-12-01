@@ -68,7 +68,9 @@ ARGUMENT:
 
 PROOFSTANDARD:
   murder: scintilla
-ACCEPTABILITY: [murder]
+  self-defense: preponderance # so that the maximum weight of the con outweights the argument for pro ! exactly, as expected, the argument is then valid
+
+ISSUE: [murder]
 
 PARAMETER:
   alpha: 0.4
