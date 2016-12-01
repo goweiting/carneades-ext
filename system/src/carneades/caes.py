@@ -186,7 +186,7 @@ class Reader(object):
     ---
     DOCTEST:
     >>> reader = Reader(); # use default buffer_size
-    >>> reader.load('../../samples/example.yml')
+    >>> reader.load('../../samples/example.yml', dialogue=False)
     <BLANKLINE>
     ------ accused committed murder IS NOT acceptable ------
     <BLANKLINE>
@@ -397,7 +397,6 @@ class Reader(object):
                         gamma=self.caes_gamma)
 
             for acc in self.caes_issue:
-                # print('\n\n')
                 logging.info(
                     '\n\nEvaluating acceptability of : {}'.format(acc))
                 acceptability = caes.acceptable(acc)
@@ -1155,7 +1154,7 @@ class CAES(object):
 #       MAIN
 # -----------------------------------------------------------------------------
 # Set the DOCTEST to True, if want to run doctests
-DOCTEST = False
+DOCTEST = True
 
 if __name__ == '__main__':
 

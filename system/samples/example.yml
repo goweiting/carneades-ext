@@ -38,7 +38,7 @@ PROOFSTANDARD :
 
 ASSUMPTION: [kill , witness1 , witness2 , unreliable2]
 
-ISSUE: [murder]
+ISSUE: [murder, -murder]
 
 PARAMETER:
 # define the parameters use for the proofstandard
