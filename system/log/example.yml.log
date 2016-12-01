@@ -3,77 +3,39 @@ INFO: 	Parsing tokens...
 INFO: 	Adding propositions to CAES
 INFO: 	Adding assumptions to CAES
 INFO: 	Adding arguments to CAES
-DEBUG: Added proposition 'accused committed murder' to graph
-DEBUG: Added proposition '-accused committed murder' to graph
-DEBUG: Added proposition 'accused have the intent' to graph
-DEBUG: Added proposition 'accused killed the victim' to graph
-DEBUG: Proposition 'accused have the intent' is already in graph
-DEBUG: Added proposition '-accused have the intent' to graph
-DEBUG: Added proposition 'first witness' to graph
-DEBUG: Added proposition 'first witness is unreliable' to graph
-DEBUG: Proposition '-accused have the intent' is already in graph
-DEBUG: Proposition 'accused have the intent' is already in graph
-DEBUG: Added proposition 'second witness' to graph
-DEBUG: Added proposition 'second witness is unreliable' to graph
 INFO: 	Adding parameter to CAES
 INFO: 	Adding proofstandard to CAES
 INFO: 	Adding acceptability to CAES
-DEBUG: alpha:0.4, beta:0.3, gamme:0.3
-DEBUG: propliterals: {'intent': accused have the intent, 'unreliable2': second witness is unreliable, 'unreliable1': first witness is unreliable, 'witness1': first witness, 'kill': accused killed the victim, 'murder': accused committed murder, 'witness2': second witness} 
-DEBUG: arguments: {is there an intent to murder?: <__main__.Argument object at 0x7f8e7a0daa90>, is witness2 sufficient to proof intent?: <__main__.Argument object at 0x7f8e7a0dabe0>, is witness1 sufficient to proof intent?: <__main__.Argument object at 0x7f8e7a0dab70>} 
-DEBUG: weights : {is there an intent to murder?: 0.8, is witness2 sufficient to proof intent?: 0.8, is witness1 sufficient to proof intent?: 0.3}
-DEBUG: assumptions: {second witness, second witness is unreliable, first witness, accused killed the victim} 
-DEBUG: acceptability: {accused committed murder} 
-DEBUG: proofstandard: [(accused have the intent, 'clear_and_convincing'), (accused committed murder, 'beyond_reasonable_doubt')]
 INFO: 	Initialising CAES
 INFO: 
 
 Evaluating acceptability of : accused committed murder
 INFO: Calling acceptable(accused committed murder)
-DEBUG: Checking whether proposition 'accused committed murder'meets proof standard 'beyond_reasonable_doubt'.
 INFO:   Calling meets_proof_standard(accused committed murder, beyond_reasonable_doubt)
 INFO:     Calling meets_proof_standard(accused committed murder, clear_and_convincing)
 INFO:       Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
-DEBUG: Checking applicability of is there an intent to murder?...
-DEBUG: Current assumptions: {second witness, second witness is unreliable, first witness, accused killed the victim}
-DEBUG: Current premises: {accused have the intent, accused killed the victim}
 INFO:         Calling acceptable(accused have the intent)
-DEBUG: Checking whether proposition 'accused have the intent'meets proof standard 'clear_and_convincing'.
 INFO:           Calling meets_proof_standard(accused have the intent, clear_and_convincing)
 INFO:             Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
-DEBUG: Checking applicability of is witness1 sufficient to proof intent?...
-DEBUG: Current assumptions: {second witness, second witness is unreliable, first witness, accused killed the victim}
-DEBUG: Current premises: {first witness}
-DEBUG: Current exception: {first witness is unreliable}
 INFO:               Calling acceptable(first witness is unreliable)
-DEBUG: Checking whether proposition 'first witness is unreliable'meets proof standard 'scintilla'.
 INFO:                 Calling meets_proof_standard(first witness is unreliable, scintilla)
 INFO:                 meets_proof_standard(first witness is unreliable, scintilla)-->False
 INFO:               acceptable(first witness is unreliable)-->False
 INFO:             applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
-DEBUG: Checking applicability and weights of ['is witness1 sufficient to proof intent?']
-DEBUG: Weights of ['is witness1 sufficient to proof intent?'] are [0.3]
 INFO:             Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
-DEBUG: Checking applicability of is witness2 sufficient to proof intent?...
-DEBUG: Current assumptions: {second witness, second witness is unreliable, first witness, accused killed the victim}
-DEBUG: Current premises: {second witness}
-DEBUG: Current exception: {second witness is unreliable}
 INFO:             applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->False
-DEBUG: No applicable arguments in ['is witness2 sufficient to proof intent?']
-DEBUG: max weight pro 'accused have the intent' is 0.3
-DEBUG: max weight con 'accused have the intent' is 0.0
-DEBUG: max weight pro '0.3' >  alpha '0.4': False
-DEBUG: diff between pro and con = 0.3 > gamma: False
 INFO:           meets_proof_standard(accused have the intent, clear_and_convincing)-->False
 INFO:         acceptable(accused have the intent)-->False
 INFO:       applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->False
-DEBUG: No applicable arguments in ['is there an intent to murder?']
-DEBUG: No applicable arguments in []
-DEBUG: max weight pro 'accused committed murder' is 0.0
-DEBUG: max weight con 'accused committed murder' is 0.0
-DEBUG: max weight pro '0.0' >  alpha '0.4': False
-DEBUG: diff between pro and con = 0.0 > gamma: False
 INFO:     meets_proof_standard(accused committed murder, clear_and_convincing)-->False
 INFO:   meets_proof_standard(accused committed murder, beyond_reasonable_doubt)-->False
 INFO: acceptable(accused committed murder)-->False
 INFO: ------ accused committed murder IS NOT acceptable ------
+INFO: 
+
+Evaluating acceptability of : -accused committed murder
+INFO: Calling acceptable(-accused committed murder)
+INFO:   Calling meets_proof_standard(-accused committed murder, scintilla)
+INFO:   meets_proof_standard(-accused committed murder, scintilla)-->False
+INFO: acceptable(-accused committed murder)-->False
+INFO: ------ -accused committed murder IS NOT acceptable ------

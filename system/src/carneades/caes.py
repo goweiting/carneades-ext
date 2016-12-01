@@ -170,11 +170,6 @@ from carneades.tokenizer import Tokenizer
 from carneades.parser import Parser, Node
 from carneades.error import ReaderError
 
-# Uncomment the following line to raise the logging level and thereby turn off
-# debug messages
-LOGLEVEL = logging.DEBUG
-# LOGLEVEL = logging.INFO
-
 # ========================================================================
 #           READER
 # ========================================================================
@@ -343,7 +338,8 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
-        if len(p.proofstandard.children) == 0:  # use an empty list hence default PS for all the proposition
+        # use an empty list hence default PS for all the proposition
+        if len(p.proofstandard.children) == 0:
             pass
         else:
             for ps in p.proofstandard.children:
@@ -398,7 +394,7 @@ class Reader(object):
 
             for acc in self.caes_issue:
                 logging.info(
-                    '\n\nEvaluating acceptability of : {}'.format(acc))
+                    '\n\nEvaluating issue : {}'.format(acc))
                 acceptability = caes.acceptable(acc)
                 logging.info('------ {} {} acceptable ------'.format(
                     acc, ['IS NOT', 'IS'][acceptability]))
@@ -662,7 +658,7 @@ class ArgumentSet(object):
             argument.arg_id = arg_id
         else:
             argument.arg_id = 'arg{}'.format(
-                self.arg_count+1)  # default arg_id if not given
+                self.arg_count + 1)  # default arg_id if not given
         self.arguments.append(argument)  # store a list of arguments
 
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
@@ -1154,7 +1150,7 @@ class CAES(object):
 #       MAIN
 # -----------------------------------------------------------------------------
 # Set the DOCTEST to True, if want to run doctests
-DOCTEST = True
+DOCTEST = False
 
 if __name__ == '__main__':
 
@@ -1163,7 +1159,8 @@ if __name__ == '__main__':
         doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
     else:
         import argparse
-        argparser = argparse.ArgumentParser(description="Welcome to Carneades Argument Evaluation System.\n")
+        argparser = argparse.ArgumentParser(
+            description="Welcome to Carneades Argument Evaluation System.\n")
         argparser.add_argument('pathname',
                                nargs='+',
                                default='"../../samples/example.yml"',
@@ -1172,28 +1169,32 @@ if __name__ == '__main__':
                                dest='dialogue',
                                help='shows the shifting burden of proof while the arguments are evaluated in CAES. If the flag is used, dialogue mode will be used for all the files',
                                action='store_true')
+        argparser.add_argument('-logger',
+                               dest='logger',
+                               help='verbosity of the logger.(default: %(default)s)',
+                               choices=['DEBUG', 'INFO'],
+                               default='DEBUG',
+                               type=str,
+                               action='store')
         argparser.add_argument('-buffer', '--buffer_size',
                                dest='buffer_size',
                                help='set the buffer size of the reader (default: %(default)s)',
                                required=False,
                                action='store',
-                               nargs=1,
                                default=4096,
                                type=int)
         argparser.add_argument('-indent', '--indent_size',
                                dest='indent_size',
                                help='set the indent_size used in the .yml files (default: %(default)s)',
                                action='store',
-                               nargs=1,
                                default=2,
                                type=int)
-        args = argparser.parse_args()
-        print('indent size = {}'.format(args.indent_size))
-        print('buffer size = {}'.format(args.buffer_size))
 
-        filenames = args.pathname
-        indent_size = args.indent_size
-        buffer_size = args.buffer_size
+        args = vars(argparser.parse_args())
+        print(args)
+        # print('indent size = {}'.format(args.indent_size))
+        # print('buffer size = {}'.format(args.buffer_size))
+        filenames = args['pathname']
 
         # Some argument is passed:
         file_check = filenames[0]
@@ -1212,15 +1213,17 @@ if __name__ == '__main__':
                 logger_file = '../../log/{}.log'.format(
                     filename.split('/')[-1])
                 logging.basicConfig(format='%(levelname)s: %(message)s',
-                                    level=LOGLEVEL,
+                                    level=args['logger'],
                                     filemode='w',
                                     filename=logger_file)
                 assert os.path.isfile(filename), logging.exception('{} is not a file'.format(
                     filename))  # check that the filename parsed are all files
 
                 print('\nProcessing {}'.format(filename))
-                Reader(buffer_size=args.buffer_size, indent_size=args.indent_size).load(
-                    filename, dialogue=args.dialogue)
+
+                Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(
+                filename, dialogue=args['dialogue'])
+
                 logger = logging.getLogger()
                 logger.removeHandler(logger.handlers[0])
 
@@ -1229,15 +1232,15 @@ if __name__ == '__main__':
                 logger_file = '../../log/{}.log'.format(
                     file_check.split('/')[-1])
                 logging.basicConfig(format='%(levelname)s: %(message)s',
-                                    level=LOGLEVEL,
+                                    level=args['logger'],
                                     filemode='w',
                                     filename=logger_file)
                 assert os.path.isfile(file_check), logging.exception('{} is not a file'.format(
                     filename))  # check that the filename parsed are all files
 
                 print('\nProcessing {}'.format(file_check))
-                Reader(buffer_size=args.buffer_size, indent_size=args.indent_size).load(
-                    file_check, dialogue=args.dialogue)
+                Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(
+                    file_check, dialogue=args['dialogue'])
             else:
                 logging.error('Cannot find file {}'.format(filenames))
                 exit()
