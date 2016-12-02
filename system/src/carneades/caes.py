@@ -222,10 +222,6 @@ class Reader(object):
         proponent and opponent at each class:stage. At each stage, the best argument is put forth so as to attack the claim by the based on the party with the burden of proof.
         """
 
-        # define the filename for write_to_graphviz
-        dot_filename = '../../dot/{}.dot'.format(path_to_file.split('/')[-1])
-        g_filename = '../../graph/{}.pdf'.format(path_to_file.split('/')[-1])
-
         # ---------------------------------------------------------------
         #   Scanning and lexical analsys
         # ---------------------------------------------------------------
@@ -245,7 +241,7 @@ class Reader(object):
         p = Parser(t.tokens)
 
         # ---------------------------------------------------------------
-        #   Adding into CAES:
+        #   Generating the arguments required for CAES
         # ---------------------------------------------------------------
         # Processing proposition:
         logging.info('\tAdding propositions to CAES')
@@ -255,7 +251,7 @@ class Reader(object):
             text = proplit.children[0].data
             if prop_id[0] == '-':
                 raise ReaderError(
-                    '- found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.format(p))
+                    '"-" found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.format(p))
             # here, added prop_id as a field in PropLierals!
             # polarity is set to True by defailt
             self.caes_propliteral[prop_id] = PropLiteral(text)
@@ -277,25 +273,25 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding arguments to CAES')
-        # In caes: an argument consists of the following fields:
+        # In CAES: an argument consists of the following fields:
         # premises
         # exceptions
         # conclusion
-        # For proofstandards, it is a list of pairs consisting of proposition
-        # and proof standard
+        # weight
         for arg_id in p.argument.children:
             # iterating through the each node of argument
             assert type(arg_id) is Node  # typecheck
 
             premise = set(arg_id.find_child('premise').children)
             exception = set(arg_id.find_child('exception').children)
-            weight = float(arg_id.find_child('weight').children[0].data)
             conclusion = arg_id.find_child('conclusion').children[0].data
+            weight = float(arg_id.find_child('weight').children[0].data)
 
             # check the weight
             if weight < 0 or weight > 1:
                 raise ValueError(
-                    'weight for {} ({}) is not in range [0,1]'.format(arg_id, weight))
+                    'weight for {} ({}) is not in range [0,1]'.format(
+                        arg_id, weight))
             else:
                 # store the weight in the dictionary for CAES
                 self.caes_weight[arg_id] = weight
@@ -305,15 +301,21 @@ class Reader(object):
             # convert it again
             ok_c, conclusion = self.check_prop(
                 self.caes_propliteral, conclusion)
-            ok_e, exception = self.check_prop(self.caes_propliteral, exception)
-            ok_p, premise = self.check_prop(self.caes_propliteral, premise)
+            ok_e, exception = self.check_prop(
+                self.caes_propliteral, exception)
+            ok_p, premise = self.check_prop(
+                self.caes_propliteral, premise)
 
             if ok_c and ok_e and ok_p:
                 # store the arguments
-                self.caes_argument[arg_id] = Argument(conclusion=conclusion,
-                                                      premises=premise, exceptions=exception,
-                                                      weight=weight)
-                # add to argset
+                self.caes_argument[arg_id] = \
+                    Argument(conclusion=conclusion,
+                             premises=premise,
+                             exceptions=exception,
+                             weight=weight)
+
+                # add to argset, the state of the argument is treated as None
+                # when it is added
                 self.argset.add_argument(
                     self.caes_argument[arg_id], arg_id=arg_id.data)
 
@@ -358,15 +360,15 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         logging.info('\tAdding issues to CAES')
-        for acc in p.issue.children:
+        for issue in p.issue.children:
             # check that the prop_id are in the set of caes_propliteral
-            if self.check_prop(self.caes_propliteral, acc):
-                if acc[0] == '-':  # switch the polarity of the propliteral
+            if self.check_prop(self.caes_propliteral, issue):
+                if issue[0] == '-':  # switch the polarity of the propliteral
                     # find the PropLiteral in the dictionary
-                    prop = self.caes_propliteral[acc[1:]]
+                    prop = self.caes_propliteral[issue[1:]]
                     prop = prop.negate()
                 else:
-                    prop = self.caes_propliteral[acc]
+                    prop = self.caes_propliteral[issue]
 
             self.caes_issue.add(prop)
 
@@ -380,15 +382,41 @@ class Reader(object):
         logging.debug('issues: {} '.format(self.caes_issue))
         logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
+        # -----------------------------------------------------------------
+        # Create file specific directory
+        dot_dir = '../../dot/{}/'.format(
+            path_to_file.split('/')[-1][:-4]) # remove the `.yml` extension too
+        g_dir = '../../graph/{}/'.format(
+            path_to_file.split('/')[-1][:-4])
+
+        if not os.path.exists(dot_dir):
+            os.makedirs(dot_dir)
+        if not os.path.exists(g_dir):
+            os.makedirs(g_dir)
+
         if not dialogue:  # dialogue == False
+            # define the filename for write_to_graphviz
+            dot_filename = dot_dir + 'full.dot'
+            g_filename = g_dir + 'full.pdf'
             self.run(g_filename, dot_filename)
+
         elif dialogue:
-            # ===========================================================
-            # DO THE DIALOGUE THING HERE!
             print('dialogue mode on')
-            pass
+
+            # Go through each issue and generate the dialogue
+            for issue, i in enumerate(self.caes_issue):
+                # define the filename for write_to_graphviz
+                dot_filename = dot_dir + '{}.dot'.format(i)
+                g_filename = g_dir + '{}.pdf'.format(i)
+                self.dialogue(issue, i + 1, g_filename, dot_filename)
+
+        else:
+            raise ValueError('Argument dialogue takes only boolean value')
 
     def run(self, g_filename, dot_filename):
+        """
+        The standard output for CAES on the issues
+        """
         logging.info('\tInitialising CAES')
         # ------------------------------------------------------------
         #       draw the argument graphs:
@@ -409,18 +437,35 @@ class Reader(object):
 
         for issue in self.caes_issue:
             logging.info(
-                '\n\nEvaluating issue : {}'.format(issue))
+                '\n\nEvaluating issue: {}'.format(issue))
             # use the aceptablility standard in CAES
             acceptability = caes.acceptable(issue)
             logging.info('------ {} {} acceptable ------'.format(
-                acc, ['IS NOT', 'IS'][acceptability]))
+                issue, ['IS NOT', 'IS'][acceptability]))
             print('\n------ {} {} acceptable ------'.format(
-                acc, ['IS NOT', 'IS'][acceptability]))
+                issue, ['IS NOT', 'IS'][acceptability]))
 
-    # ====================================================================
+        def dialogue(self, issue, num, g_filename, dot_filename):
+            """
+            The dialogue mode recursively finds the best arguments made by
+            the proponent and opponent. Because of the use of dialogue, a new
+            `state` is defined to map the `arguments` to the `status` - where
+            status is a member of {claimed, questioned}.
+
+            :param issue : the issue :type PropLiteral in contention
+            :param g_filename : the filename for the graph to be drawn.
+                For each state in a dialogue, a graph will be output.
+            :param dot_filename : the filename for the dot file.
+                For each state in a dialogue, a dot file will be ouput
+            """
+            # Holds the current state in the dialogue
+            state_argset = ArgumentSet()  # define a new argset
+            args_issue = self.argset().get_arguments(issue)
+
+    # ------------------------------------------------------------
     #       Additional Functions to help check
-    #      propositions and proofstandards from Reader
-    # ====================================================================
+    #       propositions and proofstandards keyed in by the user
+    # ------------------------------------------------------------
 
     def check_prop(self, caes_propliteral, prop_id):
         """
@@ -479,6 +524,7 @@ class Reader(object):
 # ========================================================================
 #       CAES
 # ========================================================================
+
 
 class PropLiteral(object):
     """
@@ -658,6 +704,15 @@ class ArgumentSet(object):
         Add an argument to the graph.
         All vertex in the graph have either the 'arg' or 'prop' attribute
 
+        For 'arg' vertex - the arguments, the default state is None.
+        To illustrate the shifting burden of proof, the state will be updated
+        as a member of {claimed, questioned}
+
+        For edges between the 'arg' and 'prop' vertex, the `is_exception` field
+        denotes whether the premise is an exception.  This is required as the
+        respondent have the Burden of Proof for the exceptions to defeat the
+        argument.
+
         :parameter argument: The argument to be added to the graph.
         :type argument: :class:`Argument`
         :parameter arg_id: The ID of the argument
@@ -671,11 +726,13 @@ class ArgumentSet(object):
                 self.arg_count + 1)  # default arg_id if not given
         self.arguments.append(argument)  # store a list of arguments
 
+        # -----------------------------------------------------------
+        #   VERTICES
+        # -----------------------------------------------------------
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
-        self.graph.add_vertex(arg=argument.arg_id)
+        self.graph.add_vertex(arg=argument.arg_id, state=None)
         # returns the vertex that goes to the argument
         arg_v = g.vs.select(arg=argument.arg_id)[0]
-
         # add proposition vertices to the graph
         # conclusion:
         conclusion_v = self.add_proposition(argument.conclusion)
@@ -688,8 +745,11 @@ class ArgumentSet(object):
         exception_vs = [self.add_proposition(prop)
                         for prop in sorted(argument.exceptions)]
 
+        # -----------------------------------------------------------
+        #   EDGES
+        # -----------------------------------------------------------
         # add new edges to the graph
-        # Add conclusion to argument
+        # add edge from conclusion to argument
         g.add_edge(conclusion_v.index, arg_v.index, is_exception=False)
         # add edges from argument to the premise and exceptions
         for target in premise_vs:
@@ -920,22 +980,6 @@ assigns weights to arguments.
 :type weights: dict
 """
 
-# ========================================================================
-
-class State(object):
-    """
-    the state defines the arguments that are being considred at the moment and their status. If the argument should be considred, the status will be either {claimed or questioned} else, of None type, indicating that it is NOT used for applicability test
-
-    :param arguments: The arguments in CAES
-    :param status: the dialetical status of the argument
-    """
-
-    def __init__(self):
-        self.state = dict()
-
-    def add_args(self, argument, status):
-        state[argument] = status
-
 
 # ========================================================================
 
@@ -1100,8 +1144,9 @@ class CAES(object):
 
             result = (mwp > self.alpha) and (mwp - mwc > self.gamma)
         elif standard == 'beyond_reasonable_doubt':
-            result = self.meets_proof_standard(proposition,
-                                               'clear_and_convincing') \
+            result = \
+                self.meets_proof_standard(proposition,
+                                          'clear_and_convincing') \
                 and \
                 self.max_weight_con(proposition) < self.gamma
 
@@ -1265,7 +1310,8 @@ if __name__ == '__main__':
                                     filename=logger_file)
 
                 # check that the filename parsed are all files
-                assert os.path.isfile(file_check), logging.exception('{} is not a file'.format(filename))
+                assert os.path.isfile(file_check), logging.exception(
+                    '{} is not a file'.format(filename))
                 print('\nProcessing {}'.format(file_check))
 
                 Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(

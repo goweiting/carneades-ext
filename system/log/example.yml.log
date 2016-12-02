@@ -19,30 +19,30 @@ Added proposition 'second witness is unreliable' to graph
 	Adding proofstandard to CAES
 	Adding issues to CAES
 alpha:0.4, beta:0.3, gamme:0.3
-propliterals: {'murder': accused committed murder, 'intent': accused have the intent, 'unreliable1': first witness is unreliable, 'kill': accused killed the victim, 'witness2': second witness, 'witness1': first witness, 'unreliable2': second witness is unreliable} 
-arguments: {is witness1 sufficient to proof intent?: <__main__.Argument object at 0x7f7167a8b198>, is there an intent to murder?: <__main__.Argument object at 0x7f7167a8b0b8>, is witness2 sufficient to proof intent?: <__main__.Argument object at 0x7f7167a8b208>} 
-weights : {is witness1 sufficient to proof intent?: 0.3, is there an intent to murder?: 0.8, is witness2 sufficient to proof intent?: 0.8}
-assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness} 
+propliterals: {'intent': accused have the intent, 'unreliable2': second witness is unreliable, 'witness2': second witness, 'kill': accused killed the victim, 'unreliable1': first witness is unreliable, 'murder': accused committed murder, 'witness1': first witness} 
+arguments: {is witness1 sufficient to proof intent?: <__main__.Argument object at 0x7fd6935d32b0>, is witness2 sufficient to proof intent?: <__main__.Argument object at 0x7fd6935d3320>, is there an intent to murder?: <__main__.Argument object at 0x7fd6935d31d0>} 
+weights : {is witness1 sufficient to proof intent?: 0.3, is witness2 sufficient to proof intent?: 0.8, is there an intent to murder?: 0.8}
+assumptions: {second witness is unreliable, accused killed the victim, first witness, second witness} 
 issues: {accused committed murder, -accused committed murder} 
 proofstandard: [(accused have the intent, 'clear_and_convincing'), (accused committed murder, 'beyond_reasonable_doubt')]
 	Initialising CAES
 
 
-Evaluating issue : accused committed murder
+Evaluating issue: accused committed murder
 Calling acceptable(accused committed murder)
 Checking whether proposition 'accused committed murder'meets proof standard 'beyond_reasonable_doubt'.
   Calling meets_proof_standard(accused committed murder, beyond_reasonable_doubt)
     Calling meets_proof_standard(accused committed murder, clear_and_convincing)
       Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
 Checking applicability of is there an intent to murder?...
-Current assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness}
+Current assumptions: {second witness is unreliable, accused killed the victim, first witness, second witness}
 Current premises: {accused killed the victim, accused have the intent}
         Calling acceptable(accused have the intent)
 Checking whether proposition 'accused have the intent'meets proof standard 'clear_and_convincing'.
           Calling meets_proof_standard(accused have the intent, clear_and_convincing)
             Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
 Checking applicability of is witness1 sufficient to proof intent?...
-Current assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness}
+Current assumptions: {second witness is unreliable, accused killed the victim, first witness, second witness}
 Current premises: {first witness}
 Current exception: {first witness is unreliable}
               Calling acceptable(first witness is unreliable)
@@ -55,7 +55,7 @@ Checking applicability and weights of ['is witness1 sufficient to proof intent?'
 Weights of ['is witness1 sufficient to proof intent?'] are [0.3]
             Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
 Checking applicability of is witness2 sufficient to proof intent?...
-Current assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness}
+Current assumptions: {second witness is unreliable, accused killed the victim, first witness, second witness}
 Current premises: {second witness}
 Current exception: {second witness is unreliable}
             applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->False
@@ -79,7 +79,7 @@ acceptable(accused committed murder)-->False
 ------ accused committed murder IS NOT acceptable ------
 
 
-Evaluating issue : -accused committed murder
+Evaluating issue: -accused committed murder
 Calling acceptable(-accused committed murder)
 Checking whether proposition '-accused committed murder'meets proof standard 'scintilla'.
   Calling meets_proof_standard(-accused committed murder, scintilla)
