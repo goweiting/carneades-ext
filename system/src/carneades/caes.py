@@ -14,7 +14,7 @@
 Propositions
 ============
 
-    First, let's create some propositions using the :class:`PropLiteral`
+First, let's create some propositions using the :class:`PropLiteral`
 constructor. All propositions are atomic, that is, either positive or
 negative literals.
 
@@ -44,7 +44,7 @@ Arguments
 =========
 
 Arguments are built with the :class:`Argument` constructor. They are required
-to have a conclusion, and may also have premises and exceptions.
+to have a conclusion, and may aiulso have premises and exceptions.
 
 >>> arg1 = Argument(murder, premises={kill, intent})
 >>> arg2 = Argument(intent, premises={witness1}, exceptions={unreliable1})
@@ -223,7 +223,7 @@ class Reader(object):
         """
 
         # define the filename for write_to_graphviz
-        dot_file = '../../dot/{}.dot'.format(path_to_file.split('/')[-1])
+        dot_filename = '../../dot/{}.dot'.format(path_to_file.split('/')[-1])
         g_filename = '../../graph/{}.pdf'.format(path_to_file.split('/')[-1])
 
         # ---------------------------------------------------------------
@@ -377,44 +377,45 @@ class Reader(object):
         logging.debug('arguments: {} '.format(self.caes_argument))
         logging.debug('weights : {}'.format(self.caes_weight))
         logging.debug('assumptions: {} '.format(self.caes_assumption))
-        logging.debug('acceptability: {} '.format(self.caes_issue))
+        logging.debug('issues: {} '.format(self.caes_issue))
         logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
 
         if not dialogue:  # dialogue == False
-            # ============================================================
-            logging.info('\tInitialising CAES')
-            # ------------------------------------------------------------
-            #       draw the argument graphs:
-            # ------------------------------------------------------------
-            self.argset.draw(g_filename)
-            self.argset.write_to_graphviz(dot_file)
-
-            # ------------------------------------------------------------
-            #       Evaluate the issues using CAES
-            # ------------------------------------------------------------
-            caes = CAES(argset=self.argset,
-                        audience=Audience(
-                            self.caes_assumption, self.caes_weight),
-                        proofstandard=ProofStandard(self.caes_proofstandard),
-                        alpha=self.caes_alpha,
-                        beta=self.caes_beta,
-                        gamma=self.caes_gamma)
-
-            for acc in self.caes_issue:
-                logging.info(
-                    '\n\nEvaluating issue : {}'.format(acc))
-                acceptability = caes.acceptable(acc)
-                logging.info('------ {} {} acceptable ------'.format(
-                    acc, ['IS NOT', 'IS'][acceptability]))
-                print('\n------ {} {} acceptable ------'.format(
-                    acc, ['IS NOT', 'IS'][acceptability]))
-            # ===========================================================
-
+            self.run(g_filename, dot_filename)
         elif dialogue:
             # ===========================================================
             # DO THE DIALOGUE THING HERE!
             print('dialogue mode on')
             pass
+
+    def run(self, g_filename, dot_filename):
+        logging.info('\tInitialising CAES')
+        # ------------------------------------------------------------
+        #       draw the argument graphs:
+        # ------------------------------------------------------------
+        self.argset.draw(g_filename)
+        self.argset.write_to_graphviz(dot_filename)
+
+        # ------------------------------------------------------------
+        #       Evaluate the issues using CAES
+        # ------------------------------------------------------------
+        caes = CAES(argset=self.argset,
+                    audience=Audience(
+                        self.caes_assumption, self.caes_weight),
+                    proofstandard=ProofStandard(self.caes_proofstandard),
+                    alpha=self.caes_alpha,
+                    beta=self.caes_beta,
+                    gamma=self.caes_gamma)
+
+        for issue in self.caes_issue:
+            logging.info(
+                '\n\nEvaluating issue : {}'.format(issue))
+            # use the aceptablility standard in CAES
+            acceptability = caes.acceptable(issue)
+            logging.info('------ {} {} acceptable ------'.format(
+                acc, ['IS NOT', 'IS'][acceptability]))
+            print('\n------ {} {} acceptable ------'.format(
+                acc, ['IS NOT', 'IS'][acceptability]))
 
     # ====================================================================
     #       Additional Functions to help check
@@ -474,7 +475,6 @@ class Reader(object):
         else:
             raise ValueError(
                 'Invalid proof standard "{}" found'.format(query))
-
 
 # ========================================================================
 #       CAES
@@ -1239,7 +1239,7 @@ if __name__ == '__main__':
             for filename in filenames:
                 logger_file = '../../log/{}.log'.format(
                     filename.split('/')[-1])
-                logging.basicConfig(format='%(levelname)s: %(message)s',
+                logging.basicConfig(format='%(message)s',
                                     level=args['logger'],
                                     filemode='w',
                                     filename=logger_file)
@@ -1259,7 +1259,7 @@ if __name__ == '__main__':
             if os.path.isfile(file_check):
                 logger_file = '../../log/{}.log'.format(
                     file_check.split('/')[-1])
-                logging.basicConfig(format='%(levelname)s: %(message)s',
+                logging.basicConfig(format='%(message)s',
                                     level=args['logger'],
                                     filemode='w',
                                     filename=logger_file)

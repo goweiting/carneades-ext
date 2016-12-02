@@ -1,41 +1,88 @@
-INFO: 	Tokenizing file...
-INFO: 	Parsing tokens...
-INFO: 	Adding propositions to CAES
-INFO: 	Adding assumptions to CAES
-INFO: 	Adding arguments to CAES
-INFO: 	Adding parameter to CAES
-INFO: 	Adding proofstandard to CAES
-INFO: 	Adding acceptability to CAES
-INFO: 	Initialising CAES
-INFO: 
+	Tokenizing file...
+	Parsing tokens...
+	Adding propositions to CAES
+	Adding assumptions to CAES
+	Adding arguments to CAES
+Added proposition 'accused committed murder' to graph
+Added proposition '-accused committed murder' to graph
+Added proposition 'accused have the intent' to graph
+Added proposition 'accused killed the victim' to graph
+Proposition 'accused have the intent' is already in graph
+Added proposition '-accused have the intent' to graph
+Added proposition 'first witness' to graph
+Added proposition 'first witness is unreliable' to graph
+Proposition '-accused have the intent' is already in graph
+Proposition 'accused have the intent' is already in graph
+Added proposition 'second witness' to graph
+Added proposition 'second witness is unreliable' to graph
+	Adding parameter to CAES
+	Adding proofstandard to CAES
+	Adding issues to CAES
+alpha:0.4, beta:0.3, gamme:0.3
+propliterals: {'murder': accused committed murder, 'intent': accused have the intent, 'unreliable1': first witness is unreliable, 'kill': accused killed the victim, 'witness2': second witness, 'witness1': first witness, 'unreliable2': second witness is unreliable} 
+arguments: {is witness1 sufficient to proof intent?: <__main__.Argument object at 0x7f7167a8b198>, is there an intent to murder?: <__main__.Argument object at 0x7f7167a8b0b8>, is witness2 sufficient to proof intent?: <__main__.Argument object at 0x7f7167a8b208>} 
+weights : {is witness1 sufficient to proof intent?: 0.3, is there an intent to murder?: 0.8, is witness2 sufficient to proof intent?: 0.8}
+assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness} 
+issues: {accused committed murder, -accused committed murder} 
+proofstandard: [(accused have the intent, 'clear_and_convincing'), (accused committed murder, 'beyond_reasonable_doubt')]
+	Initialising CAES
 
-Evaluating acceptability of : accused committed murder
-INFO: Calling acceptable(accused committed murder)
-INFO:   Calling meets_proof_standard(accused committed murder, beyond_reasonable_doubt)
-INFO:     Calling meets_proof_standard(accused committed murder, clear_and_convincing)
-INFO:       Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
-INFO:         Calling acceptable(accused have the intent)
-INFO:           Calling meets_proof_standard(accused have the intent, clear_and_convincing)
-INFO:             Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
-INFO:               Calling acceptable(first witness is unreliable)
-INFO:                 Calling meets_proof_standard(first witness is unreliable, scintilla)
-INFO:                 meets_proof_standard(first witness is unreliable, scintilla)-->False
-INFO:               acceptable(first witness is unreliable)-->False
-INFO:             applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
-INFO:             Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
-INFO:             applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->False
-INFO:           meets_proof_standard(accused have the intent, clear_and_convincing)-->False
-INFO:         acceptable(accused have the intent)-->False
-INFO:       applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->False
-INFO:     meets_proof_standard(accused committed murder, clear_and_convincing)-->False
-INFO:   meets_proof_standard(accused committed murder, beyond_reasonable_doubt)-->False
-INFO: acceptable(accused committed murder)-->False
-INFO: ------ accused committed murder IS NOT acceptable ------
-INFO: 
 
-Evaluating acceptability of : -accused committed murder
-INFO: Calling acceptable(-accused committed murder)
-INFO:   Calling meets_proof_standard(-accused committed murder, scintilla)
-INFO:   meets_proof_standard(-accused committed murder, scintilla)-->False
-INFO: acceptable(-accused committed murder)-->False
-INFO: ------ -accused committed murder IS NOT acceptable ------
+Evaluating issue : accused committed murder
+Calling acceptable(accused committed murder)
+Checking whether proposition 'accused committed murder'meets proof standard 'beyond_reasonable_doubt'.
+  Calling meets_proof_standard(accused committed murder, beyond_reasonable_doubt)
+    Calling meets_proof_standard(accused committed murder, clear_and_convincing)
+      Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
+Checking applicability of is there an intent to murder?...
+Current assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness}
+Current premises: {accused killed the victim, accused have the intent}
+        Calling acceptable(accused have the intent)
+Checking whether proposition 'accused have the intent'meets proof standard 'clear_and_convincing'.
+          Calling meets_proof_standard(accused have the intent, clear_and_convincing)
+            Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
+Checking applicability of is witness1 sufficient to proof intent?...
+Current assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness}
+Current premises: {first witness}
+Current exception: {first witness is unreliable}
+              Calling acceptable(first witness is unreliable)
+Checking whether proposition 'first witness is unreliable'meets proof standard 'scintilla'.
+                Calling meets_proof_standard(first witness is unreliable, scintilla)
+                meets_proof_standard(first witness is unreliable, scintilla)-->False
+              acceptable(first witness is unreliable)-->False
+            applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
+Checking applicability and weights of ['is witness1 sufficient to proof intent?']
+Weights of ['is witness1 sufficient to proof intent?'] are [0.3]
+            Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
+Checking applicability of is witness2 sufficient to proof intent?...
+Current assumptions: {second witness is unreliable, accused killed the victim, second witness, first witness}
+Current premises: {second witness}
+Current exception: {second witness is unreliable}
+            applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->False
+No applicable arguments in ['is witness2 sufficient to proof intent?']
+max weight pro 'accused have the intent' is 0.3
+max weight con 'accused have the intent' is 0.0
+max weight pro '0.3' >  alpha '0.4': False
+diff between pro and con = 0.3 > gamma: False
+          meets_proof_standard(accused have the intent, clear_and_convincing)-->False
+        acceptable(accused have the intent)-->False
+      applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->False
+No applicable arguments in ['is there an intent to murder?']
+No applicable arguments in []
+max weight pro 'accused committed murder' is 0.0
+max weight con 'accused committed murder' is 0.0
+max weight pro '0.0' >  alpha '0.4': False
+diff between pro and con = 0.0 > gamma: False
+    meets_proof_standard(accused committed murder, clear_and_convincing)-->False
+  meets_proof_standard(accused committed murder, beyond_reasonable_doubt)-->False
+acceptable(accused committed murder)-->False
+------ accused committed murder IS NOT acceptable ------
+
+
+Evaluating issue : -accused committed murder
+Calling acceptable(-accused committed murder)
+Checking whether proposition '-accused committed murder'meets proof standard 'scintilla'.
+  Calling meets_proof_standard(-accused committed murder, scintilla)
+  meets_proof_standard(-accused committed murder, scintilla)-->False
+acceptable(-accused committed murder)-->False
+------ -accused committed murder IS NOT acceptable ------
