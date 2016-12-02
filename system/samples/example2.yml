@@ -4,12 +4,12 @@
 #   - being excluded by some other (legal) rule is an exception
 PROPOSITION:
   murder: the defendant murdered the victim
-  malice : evidence for malice (intent of murder)
-  killing: evidence for killing
-  s187 valid: Section 187 - murder is unlawful killing, is valid
+  malice : malice established (intent of murder)
+  killing: killing established
+  s187 valid: Section 187 is valid
   s187 excluded: s187 is excluded
   self-defense: an act of self-defense
-  s197 valid: Section 197 - An act of self-defense, is valid
+  s197 valid: Section 197 is valid
   s197 excluded: s197 is excluded
   w1: Witness1 testified 'attack'
   w1-credible: Witness1 is credible
@@ -63,7 +63,7 @@ ARGUMENT:
     premise: [w2]
     exception: [-w2-credible]
     conclusion: -self-defense
-    weight: 1
+    weight: .49
 
 
 PROOFSTANDARD:

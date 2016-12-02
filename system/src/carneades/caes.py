@@ -312,12 +312,13 @@ class Reader(object):
                     Argument(conclusion=conclusion,
                              premises=premise,
                              exceptions=exception,
-                             weight=weight)
+                             weight=weight,
+                             arg_id=arg_id)
 
                 # add to argset, the state of the argument is treated as None
                 # when it is added
                 self.argset.add_argument(
-                    self.caes_argument[arg_id], arg_id=arg_id.data)
+                    self.caes_argument[arg_id])
 
         # -----------------------------------------------------------------
         logging.info('\tAdding parameter to CAES')
@@ -373,14 +374,14 @@ class Reader(object):
             self.caes_issue.add(prop)
 
         # -----------------------------------------------------------------
-        logging.debug('alpha:{}, beta:{}, gamme:{}'.format(
+        logging.debug('\talpha:{}, beta:{}, gamme:{}'.format(
             self.caes_alpha, self.caes_beta, self.caes_gamma))
-        logging.debug('propliterals: {} '.format(self.caes_propliteral))
-        logging.debug('arguments: {} '.format(self.caes_argument))
-        logging.debug('weights : {}'.format(self.caes_weight))
-        logging.debug('assumptions: {} '.format(self.caes_assumption))
-        logging.debug('issues: {} '.format(self.caes_issue))
-        logging.debug('proofstandard: {}'.format(self.caes_proofstandard))
+        logging.debug('\tpropliterals: {} '.format(self.caes_propliteral))
+        logging.debug('\targuments:{} '.format([arg.__str__() for k, arg in self.caes_argument.items()]))
+        logging.debug('\tweights : {}'.format(self.caes_weight))
+        logging.debug('\tassumptions: {} '.format(self.caes_assumption))
+        logging.debug('\tissues: {} '.format(self.caes_issue))
+        logging.debug('\tproofstandard: {}'.format(self.caes_proofstandard))
 
         # -----------------------------------------------------------------
         # Create file specific directory
@@ -406,28 +407,34 @@ class Reader(object):
             # Go through each issue and generate the dialogue
             for issue, i in enumerate(self.caes_issue):
                 # define the filename for write_to_graphviz
-                dot_filename = dot_dir + '{}.dot'.format(i)
-                g_filename = g_dir + '{}.pdf'.format(i)
-                self.dialogue(issue, i + 1, g_filename, dot_filename)
+                dot_filename = dot_dir + '{}_'.format(i)
+                g_filename = g_dir + '{}_'.format(i)
+                self.dialogue(issue, g_filename, dot_filename)
 
         else:
             raise ValueError('Argument dialogue takes only boolean value')
 
-    def run(self, g_filename, dot_filename):
+    def run(self, g_filename, dot_filename, argset=None):
         """
         The standard output for CAES on the issues
+
+        :param g_filename : the filename for the pycairo graph
+        :param dot_filename : the filename for graphviz dot
+        :param argset : optional to not use the argset created from the load function in Reader()
         """
         logging.info('\tInitialising CAES')
         # ------------------------------------------------------------
         #       draw the argument graphs:
         # ------------------------------------------------------------
-        self.argset.draw(g_filename)
-        self.argset.write_to_graphviz(dot_filename)
+        if argset is None:
+            argset = self.argset
+        argset.draw(g_filename)
+        argset.write_to_graphviz(dot_filename)
 
         # ------------------------------------------------------------
         #       Evaluate the issues using CAES
         # ------------------------------------------------------------
-        caes = CAES(argset=self.argset,
+        caes = CAES(argset=argset,
                     audience=Audience(
                         self.caes_assumption, self.caes_weight),
                     proofstandard=ProofStandard(self.caes_proofstandard),
@@ -445,23 +452,51 @@ class Reader(object):
             print('\n------ {} {} acceptable ------'.format(
                 issue, ['IS NOT', 'IS'][acceptability]))
 
-        def dialogue(self, issue, num, g_filename, dot_filename):
+        def dialogue(self, p, g_filename, dot_filename):
             """
             The dialogue mode recursively finds the best arguments made by
             the proponent and opponent. Because of the use of dialogue, a new
             `state` is defined to map the `arguments` to the `status` - where
             status is a member of {claimed, questioned}.
 
-            :param issue : the issue :type PropLiteral in contention
+            :param p : the issue :type PropLiteral that the propnent and opponent are arguing about
             :param g_filename : the filename for the graph to be drawn.
                 For each state in a dialogue, a graph will be output.
             :param dot_filename : the filename for the dot file.
                 For each state in a dialogue, a dot file will be ouput
             """
-            # Holds the current state in the dialogue
-            state_argset = ArgumentSet()  # define a new argset
-            args_issue = self.argset().get_arguments(issue)
+            # Set up the arena:
+            turn = 0
 
+            # Holds the current state in the dialogue
+            state_argset = ArgumentSet()
+            # the arguments pro p; where p is the issue
+            arguments = self.argset.get_arguments(p)
+
+
+
+
+
+        def find_argument(self, who, current, full):
+            """
+            find_argument returns a "best" argument to challenge the current issue
+            """
+
+        def dialogue_state(self, arguments, turn_num):
+            """
+            Just a function to output the current dialetical status
+            """
+            actors = ['PROPONENT', 'OPPONENT']
+
+            logging.info('================ turn {} ================'.format(turn))
+            # print Where the BOP lies in for this turn
+            logging.infO('BURDEN OF PROOF : {}'.format(actors[turn_num%2]))
+            # print the list of arguments being considered rn
+            logging.info('ARGUMENTS:')
+            for arg in arguments:
+                logging.info(arg.__str__())
+
+            return
     # ------------------------------------------------------------
     #       Additional Functions to help check
     #       propositions and proofstandards keyed in by the user
@@ -594,7 +629,7 @@ class Argument(object):
     :class:`ArgumentSet`.
     """
 
-    def __init__(self, conclusion, premises=set(), exceptions=set(), weight=0):
+    def __init__(self, conclusion, premises=set(), exceptions=set(), weight=0, arg_id=None):
         """
         :param conclusion: The conclusion of the argument.
         :type conclusion: :class:`PropLiteral`
@@ -608,7 +643,7 @@ class Argument(object):
         self.premises = premises
         self.exceptions = exceptions
         self.weight = weight
-        self.arg_id = None
+        self.arg_id = arg_id
 
     def __str__(self):
         """
@@ -657,7 +692,7 @@ class ArgumentSet(object):
 
     def propset(self):
         """
-        The set of :class:`PropLiteral`\ s represented by the vertices in
+        The set of :class:`PropLiteral`s represented by the vertices in
         the graph.
 
         Retrieving this set relies on the fact that :meth:`add_proposition`
@@ -699,7 +734,7 @@ class ArgumentSet(object):
             raise TypeError('Input {} should be PropLiteral'.
                             format(proposition))
 
-    def add_argument(self, argument, arg_id=None):
+    def add_argument(self, argument):
         """
         Add an argument to the graph.
         All vertex in the graph have either the 'arg' or 'prop' attribute
@@ -719,11 +754,6 @@ class ArgumentSet(object):
         :type arg_id: str or None
         """
         g = self.graph
-        if arg_id is not None:
-            argument.arg_id = arg_id
-        else:
-            argument.arg_id = 'arg{}'.format(
-                self.arg_count + 1)  # default arg_id if not given
         self.arguments.append(argument)  # store a list of arguments
 
         # -----------------------------------------------------------
@@ -736,9 +766,8 @@ class ArgumentSet(object):
         # add proposition vertices to the graph
         # conclusion:
         conclusion_v = self.add_proposition(argument.conclusion)
-        # suppress to not have so many nodes
         self.add_proposition(argument.conclusion.negate())
-        # premise
+        # premise:
         premise_vs = [self.add_proposition(prop)
                       for prop in sorted(argument.premises)]
         # exception:
@@ -756,6 +785,29 @@ class ArgumentSet(object):
             g.add_edge(arg_v.index, target.index, is_exception=False)
         for target in exception_vs:
             g.add_edge(arg_v.index, target.index, is_exception=True)
+
+    def get_argument_exceptions(self, argument_id):
+        """
+        given an arg_id, find the exceptions in that argument.
+        If no exceptions are found, return None
+
+        :param: argument_id: The argument_id of interest
+        :return: A proposition that are exceptions of the argument
+        :rtype: list(:class:`PropLiteral`)
+        """
+        # select the vertex of the argument
+        arg_v = g.vs.select(arg=argument_id)[0]
+        exceptions_es = [e.target for e in g.es.select(is_exception=True)]
+        arg_except = [g.vs]
+
+    def get_arguments_con(self, proposition):
+        """
+        Given a proposition p, use get_arguments to find the arguments that are are con p
+
+        :param proposition: The proposition to checked.
+        :type proposition: :class:`PropLiteral`
+        """
+        return self.get_arguments(proposition.negate())
 
     def get_arguments(self, proposition):
         """
@@ -777,15 +829,16 @@ class ArgumentSet(object):
         try:
             conc_v_index = vs[0].index
             # IDs of vertices reachable in one hop from the proposition's
-            # vertex
+            # vertex (i.e. the argument vertices)
             target_IDs = [e.target for e in g.es.select(_source=conc_v_index)]
 
             # the vertices indexed by target_IDs
             out_vs = [g.vs[i] for i in target_IDs]
 
-            arg_IDs = [v['arg'] for v in out_vs]
-            args = [arg for arg in self.arguments if arg.arg_id in arg_IDs]
+            arg_IDs = [v['arg'] for v in out_vs] # a list of argument id that is connected to the conclusion
+            args = [arg for arg in self.arguments if arg.arg_id in arg_IDs] # return the arguments
             return args
+
         except IndexError:
             raise ValueError("Proposition '{}' is not in the current graph".
                              format(proposition))
@@ -1122,15 +1175,23 @@ class CAES(object):
 
         """
         arguments = self.argset.get_arguments(proposition)
+        logging.debug('\targuments:{} '.format([arg.__str__() for arg in arguments]))
 
         result = False
 
         if standard == 'scintilla':
+            # at least one applicable argument pro p
             result = any(arg for arg in arguments if self.applicable(arg))
         elif standard == 'preponderance':
+            # maximum weight of the applicable arguments pro p is grater than
+            # the maximum weight of the applicable arguments con p
             result = self.max_weight_pro(proposition) > \
                 self.max_weight_con(proposition)
         elif standard == 'clear_and_convincing':
+            # weight difference between the max weight pro and max weight con
+            # should be larger than beta
+            # and applicable argument pro p should be stronger than a given
+            # constant alpha
             mwp = self.max_weight_pro(proposition)
             mwc = self.max_weight_con(proposition)
             exceeds_alpha = mwp > self.alpha
@@ -1144,6 +1205,8 @@ class CAES(object):
 
             result = (mwp > self.alpha) and (mwp - mwc > self.gamma)
         elif standard == 'beyond_reasonable_doubt':
+            # strongest argument con p needs to be less than a given constant
+            # gamma AND ssatisfy clean and convincing (defined above)
             result = \
                 self.meets_proof_standard(proposition,
                                           'clear_and_convincing') \
@@ -1264,7 +1327,7 @@ if __name__ == '__main__':
                                type=int)
 
         args = vars(argparser.parse_args())
-        print(args)
+        # print(args)
         # print('indent size = {}'.format(args.indent_size))
         # print('buffer size = {}'.format(args.buffer_size))
         filenames = args['pathname']
