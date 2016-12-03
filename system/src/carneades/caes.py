@@ -377,7 +377,8 @@ class Reader(object):
         logging.debug('\talpha:{}, beta:{}, gamme:{}'.format(
             self.caes_alpha, self.caes_beta, self.caes_gamma))
         logging.debug('\tpropliterals: {} '.format(self.caes_propliteral))
-        logging.debug('\targuments:{} '.format([arg.__str__() for k, arg in self.caes_argument.items()]))
+        logging.debug('\targuments:{} '.format(
+            [arg.__str__() for k, arg in self.caes_argument.items()]))
         logging.debug('\tweights : {}'.format(self.caes_weight))
         logging.debug('\tassumptions: {} '.format(self.caes_assumption))
         logging.debug('\tissues: {} '.format(self.caes_issue))
@@ -386,7 +387,7 @@ class Reader(object):
         # -----------------------------------------------------------------
         # Create file specific directory
         dot_dir = '../../dot/{}/'.format(
-            path_to_file.split('/')[-1][:-4]) # remove the `.yml` extension too
+            path_to_file.split('/')[-1][:-4])  # remove the `.yml` extension too
         g_dir = '../../graph/{}/'.format(
             path_to_file.split('/')[-1][:-4])
 
@@ -399,17 +400,22 @@ class Reader(object):
             # define the filename for write_to_graphviz
             dot_filename = dot_dir + 'full.dot'
             g_filename = g_dir + 'full.pdf'
+            logging.info('\tInitialising CAES')
             self.run(g_filename, dot_filename)
+            return
 
         elif dialogue:
             print('dialogue mode on')
 
             # Go through each issue and generate the dialogue
-            for issue, i in enumerate(self.caes_issue):
+            for i, issue in enumerate(self.caes_issue):
                 # define the filename for write_to_graphviz
-                dot_filename = dot_dir + '{}_'.format(i)
-                g_filename = g_dir + '{}_'.format(i)
-                self.dialogue(issue, g_filename, dot_filename)
+                dot_filename = dot_dir + '{}_'.format(i + 1)
+                g_filename = g_dir + '{}_'.format(i + 1)
+                logging.info('\n\nISSUE: "{}"'.format(issue))
+                # always starts from turn 0
+                self.dialogue(issue, 0, g_filename, dot_filename)
+            return
 
         else:
             raise ValueError('Argument dialogue takes only boolean value')
@@ -422,7 +428,6 @@ class Reader(object):
         :param dot_filename : the filename for graphviz dot
         :param argset : optional to not use the argset created from the load function in Reader()
         """
-        logging.info('\tInitialising CAES')
         # ------------------------------------------------------------
         #       draw the argument graphs:
         # ------------------------------------------------------------
@@ -430,7 +435,21 @@ class Reader(object):
             argset = self.argset
         argset.draw(g_filename)
         argset.write_to_graphviz(dot_filename)
+        if argset is None:
+            argset = self.argset
+        argset.draw(g_filename)
+        argset.write_to_graphviz(dot_filename)
 
+        # ------------------------------------------------------------
+        #       Evaluate the issues using CAES
+        # ------------------------------------------------------------
+        caes = CAES(argset=argset,
+                    audience=Audience(
+                        self.caes_assumption, self.caes_weight),
+                    proofstandard=ProofStandard(self.caes_proofstandard),
+                    alpha=self.caes_alpha,
+                    beta=self.caes_beta,
+                    gamma=self.caes_gamma)
         # ------------------------------------------------------------
         #       Evaluate the issues using CAES
         # ------------------------------------------------------------
@@ -452,51 +471,92 @@ class Reader(object):
             print('\n------ {} {} acceptable ------'.format(
                 issue, ['IS NOT', 'IS'][acceptability]))
 
-        def dialogue(self, p, g_filename, dot_filename):
-            """
-            The dialogue mode recursively finds the best arguments made by
-            the proponent and opponent. Because of the use of dialogue, a new
-            `state` is defined to map the `arguments` to the `status` - where
-            status is a member of {claimed, questioned}.
+    def dialogue(self, p, turn, g_filename, dot_filename):
+        """
+        The dialogue mode recursively finds the best arguments made by
+        the proponent and opponent. Because of the use of dialogue, a new
+        `state` is defined to map the `arguments` to the `status` - where
+        status is a member of {claimed, questioned}.
 
-            :param p : the issue :type PropLiteral that the propnent and opponent are arguing about
-            :param g_filename : the filename for the graph to be drawn.
-                For each state in a dialogue, a graph will be output.
-            :param dot_filename : the filename for the dot file.
-                For each state in a dialogue, a dot file will be ouput
-            """
-            # Set up the arena:
-            turn = 0
+        :param p : the issue :type PropLiteral that the propnent and opponent are arguing about
+        :param g_filename : the filename for the graph to be drawn.
+            For each state in a dialogue, a graph will be output.
+        :param dot_filename : the filename for the dot file.
+            For each state in a dialogue, a dot file will be ouput
+        """
+        # Set up the arena:
+        ps_SE = ProofStandard([])
+        # Holds the current state in the dialogue
+        dialogue_state_argset = ArgumentSet()
+        # the arguments pro p; where p is the issue
+        arguments = self.argset.get_arguments(p)
+        for arg in arguments:  # update the initial dialogue_state_argset
+            dialogue_state_argset.add_argument(arg)
 
-            # Holds the current state in the dialogue
-            state_argset = ArgumentSet()
-            # the arguments pro p; where p is the issue
-            arguments = self.argset.get_arguments(p)
+        burden_status = self.burden_met(p, dialogue_state_argset, ps_SE)
+        # if not burden_status:
+            # the current party is not done yet;
+            # Since we are using SE, it means that there isnt any applicable pro
+            # argument to support p; Hence, have to support premise: by finding
+            # more argument
 
 
 
+        g_file = g_filename + str(turn) + '.pdf'
+        dot_file = dot_filename + str(turn) + '.dot'
+        dialogue_state_argset.draw(g_file)
+        dialogue_state_argset.write_to_graphviz(dot_file)
+        summary += self.dialogue_state(dialogue_state_argset.arguments, turn, burden_status )  # print info
 
+    def burden_met(self, issue, argset, ps):
+        """
+        Checks that the burden of proof of the proponent or opponent is met
+        using the CAES acceptability function.
+        If it is acceptable, the party have met its burden of proof.
 
-        def find_argument(self, who, current, full):
-            """
-            find_argument returns a "best" argument to challenge the current issue
-            """
+        :param argset: the current arguments that are being considered
+        :param ps : proofstandard for the arguments. If ps is an empty list,
+        then the default scintilla of evidence is used for all the statement.
+        """
+        caes = CAES(argset=argset,
+                    proofstandard=ps,
+                    audience=Audience(
+                        self.caes_assumption, self.caes_weight),
+                    alpha=self.caes_alpha,
+                    beta=self.caes_beta,
+                    gamma=self.caes_gamma)
+        return caes.acceptable(issue)
 
-        def dialogue_state(self, arguments, turn_num):
-            """
-            Just a function to output the current dialetical status
-            """
-            actors = ['PROPONENT', 'OPPONENT']
+    def find_argument(self, who, current, full):
+        """
+        find_argument returns a "best" argument to challenge the current issue
+        """
 
-            logging.info('================ turn {} ================'.format(turn))
-            # print Where the BOP lies in for this turn
-            logging.infO('BURDEN OF PROOF : {}'.format(actors[turn_num%2]))
-            # print the list of arguments being considered rn
-            logging.info('ARGUMENTS:')
-            for arg in arguments:
-                logging.info(arg.__str__())
+    def dialogue_state(self, arguments, turn_num, burden_status):
+        """
+        Just a function to output the current dialetical status
+        return summary for printing at the end of the dialogue
+        """
+        actors = ['PROPONENT', 'OPPONENT']
 
-            return
+        logging.info(
+            '================ turn {} ================'.format(turn_num))
+        summary = '================ turn {} ================'.format(turn_num) + '\n'
+        # print Where the BOP lies in for this turn
+        logging.info('BURDEN OF PROOF @ {}'.format(actors[turn_num % 2]))
+        summary += 'BURDEN OF PROOF @ {}'.format(actors[turn_num % 2]) + '\n'
+        # print the list of arguments being considered rn
+        logging.info('ARGUMENTS:')
+        summary += 'ARGUMENTS:\n'
+        for arg in arguments:
+            logging.info(arg.__str__())
+            summary += arg.__str__() + '\n'
+        logging.info('Checking if burden of proof @ {} is met...\t\t {}'.format(
+            actors[turn_num % 2], burden_status))
+        summary += ('Checking if burden of proof @ {} is met...\t\t {}'.format(
+            actors[turn_num % 2], burden_status)) + '\n'
+        return summary
+
     # ------------------------------------------------------------
     #       Additional Functions to help check
     #       propositions and proofstandards keyed in by the user
@@ -755,7 +815,6 @@ class ArgumentSet(object):
         """
         g = self.graph
         self.arguments.append(argument)  # store a list of arguments
-
         # -----------------------------------------------------------
         #   VERTICES
         # -----------------------------------------------------------
@@ -773,7 +832,6 @@ class ArgumentSet(object):
         # exception:
         exception_vs = [self.add_proposition(prop)
                         for prop in sorted(argument.exceptions)]
-
         # -----------------------------------------------------------
         #   EDGES
         # -----------------------------------------------------------
@@ -796,9 +854,17 @@ class ArgumentSet(object):
         :rtype: list(:class:`PropLiteral`)
         """
         # select the vertex of the argument
-        arg_v = g.vs.select(arg=argument_id)[0]
-        exceptions_es = [e.target for e in g.es.select(is_exception=True)]
-        arg_except = [g.vs]
+        # arg_v = g.vs.select(arg=argument_id)[0]
+        # out_vs = [e.target for e in g.es.select(_source=arg_v.index, is_exception=True)]
+        # # find the vertices belonging to these exceptions
+        # except_vs = [g.vs[i] for i in out_vs]
+        # excepts = [ex for ex.prop in except_vs]
+        for arg in self.arguments:
+            if arg.arg_id == argument_id:
+                return sorted(arg.exceptions)
+
+        raise ValueError(
+            'No {} found in arguments in argset'.format(argument_id))
 
     def get_arguments_con(self, proposition):
         """
@@ -835,8 +901,10 @@ class ArgumentSet(object):
             # the vertices indexed by target_IDs
             out_vs = [g.vs[i] for i in target_IDs]
 
-            arg_IDs = [v['arg'] for v in out_vs] # a list of argument id that is connected to the conclusion
-            args = [arg for arg in self.arguments if arg.arg_id in arg_IDs] # return the arguments
+            # a list of argument id that is connected to the conclusion
+            arg_IDs = [v['arg'] for v in out_vs]
+            # return the arguments
+            args = [arg for arg in self.arguments if arg.arg_id in arg_IDs]
             return args
 
         except IndexError:
@@ -1175,7 +1243,8 @@ class CAES(object):
 
         """
         arguments = self.argset.get_arguments(proposition)
-        logging.debug('\targuments:{} '.format([arg.__str__() for arg in arguments]))
+        logging.debug('\targuments:{} '.format(
+            [arg.__str__() for arg in arguments]))
 
         result = False
 

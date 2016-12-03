@@ -1,0 +1,14 @@
+digraph G{ 
+"arg1" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"the defendant murdered the victim" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-the defendant murdered the victim" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Section 187 is valid" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"killing established" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"malice established (intent of murder)" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"s187 is excluded" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"the defendant murdered the victim" -> "arg1" ; 
+"arg1" -> "Section 187 is valid" ; 
+"arg1" -> "killing established" ; 
+"arg1" -> "malice established (intent of murder)" ; 
+"arg1" -> "s187 is excluded" [arrowhead=dot] ; 
+}
