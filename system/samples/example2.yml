@@ -3,9 +3,9 @@
 #   - The validity of a legal rule is assumed and supported with evidence only if questioned
 #   - being excluded by some other (legal) rule is an exception
 PROPOSITION:
-  murder: the defendant murdered the victim
-  malice : malice established (intent of murder)
-  killing: killing established
+  murder: murder #the defendant murdered the victim
+  malice : malice #malice established (intent of murder)
+  killing: killing #established
   s187 valid: Section 187 is valid
   s187 excluded: s187 is excluded
   self-defense: an act of self-defense
@@ -13,12 +13,12 @@ PROPOSITION:
   s197 excluded: s197 is excluded
   w1: Witness1 testified 'attack'
   w1-credible: Witness1 is credible
-  w1-liar: Witness1 lied in court (contempt of court)
+  w1-liar: Witness1 lied in court
   w2: Witness2 saw testified 'time to run away'
   w2-credible: Witness2 is credible
-  ev1: evidence 1 to support killing
+  ev1: evidence 1 supports killing
   ev1 tampered: tampering of evidence 1
-  ev2: evidence 2 to support malice
+  ev2: evidence 2 supports malice
   ev2 tampered: tampering of evidence 2
 
 ASSUMPTION: [ev1, ev2, s187 valid, s197 valid, w1, w2] # legal rules are assumed to be valid, unless questioned; exclusion of legal rules is not questioning legal rule but an exception to the rule - hence modeled as an exception

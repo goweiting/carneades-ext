@@ -212,8 +212,9 @@ class Reader(object):
         self.caes_gamma = float()
         self.caes_issue = set()
         self.argset = ArgumentSet()
+        self.actors = ['PROPONENT', 'OPPONENT']
 
-    def load(self, path_to_file, dialogue=True):
+    def load(self, path_to_file, dialogue):
         """
         load the file of interest, tokenize and parse it. Using the information given by the user in the file(s), call CAES to evaluate the arguments
         -----
@@ -414,7 +415,7 @@ class Reader(object):
                 g_filename = g_dir + '{}_'.format(i + 1)
                 logging.info('\n\nISSUE: "{}"'.format(issue))
                 # always starts from turn 0
-                self.dialogue(issue, 0, g_filename, dot_filename)
+                self.dialogue(issue, g_filename, dot_filename)
             return
 
         else:
@@ -435,21 +436,7 @@ class Reader(object):
             argset = self.argset
         argset.draw(g_filename)
         argset.write_to_graphviz(dot_filename)
-        if argset is None:
-            argset = self.argset
-        argset.draw(g_filename)
-        argset.write_to_graphviz(dot_filename)
 
-        # ------------------------------------------------------------
-        #       Evaluate the issues using CAES
-        # ------------------------------------------------------------
-        caes = CAES(argset=argset,
-                    audience=Audience(
-                        self.caes_assumption, self.caes_weight),
-                    proofstandard=ProofStandard(self.caes_proofstandard),
-                    alpha=self.caes_alpha,
-                    beta=self.caes_beta,
-                    gamma=self.caes_gamma)
         # ------------------------------------------------------------
         #       Evaluate the issues using CAES
         # ------------------------------------------------------------
@@ -471,44 +458,156 @@ class Reader(object):
             print('\n------ {} {} acceptable ------'.format(
                 issue, ['IS NOT', 'IS'][acceptability]))
 
-    def dialogue(self, p, turn, g_filename, dot_filename):
+    def dialogue(self, issue, g_filename, dot_filename):
         """
-        The dialogue mode recursively finds the best arguments made by
-        the proponent and opponent. Because of the use of dialogue, a new
-        `state` is defined to map the `arguments` to the `status` - where
-        status is a member of {claimed, questioned}.
+        1. Keeps track of the dialogue status for the issue - and output it
+        when the dialogue is futile - `summary`
+        2. For each proponent and opponent at every start of the turn find the
+        'best argument to attack' each other.
+        3. Once the party has presented their argument(s) and the Burden of
+        Proof has been met, the process will repeat for the next party
+        4. all these terminates when:
+            a) there are no more arguments defined, OR
+            b) there are no more "best arguments" by either party to attak each
+            other - i.e. reached a stalemate
+        5. When termination happens:
+            a) the summary will be printed,
+            b) with the acceptability of the issue evaluated using the PS
+            defined by the users
+        6) At each step of the argument, the status of the argument set will be
+        printed, and the current view of the arguments (in an argumentation
+        graph will be printed)
 
-        :param p : the issue :type PropLiteral that the propnent and opponent are arguing about
+        :param issue : the issue :type PropLiteral that the propnent and opponent are arguing about
         :param g_filename : the filename for the graph to be drawn.
             For each state in a dialogue, a graph will be output.
         :param dot_filename : the filename for the dot file.
             For each state in a dialogue, a dot file will be ouput
         """
         # Set up the arena:
-        ps_SE = ProofStandard([])
-        # Holds the current state in the dialogue
-        dialogue_state_argset = ArgumentSet()
+        summary = ""
+        turn = 0  # always starts with the proponent
+        ps_SE = ProofStandard([])  # use scintilla of evidence for every step
+        dialogue_state_argset = ArgumentSet()  # Holds the current state in the dialogue
+
         # the arguments pro p; where p is the issue
-        arguments = self.argset.get_arguments(p)
-        for arg in arguments:  # update the initial dialogue_state_argset
-            dialogue_state_argset.add_argument(arg)
+        # sort the arguments according to their weight, with the largest first
+        args_pro = self.argset.get_arguments(issue)
+        args_pro = sorted(args_pro, key=lambda args: args.weight)
+        current_arg = args_pro.pop()  # the argument with the largest weight
+        # start with the best pro argument
+        dialogue_state_argset.add_argument(current_arg, state='claimed')
+        burden_status = self.burden_met(
+            issue, dialogue_state_argset, ps_SE, turn)
+        summary += self.dialogue_state(dialogue_state_argset,
+                                       turn, burden_status, g_filename, dot_filename)
 
-        burden_status = self.burden_met(p, dialogue_state_argset, ps_SE)
-        # if not burden_status:
-            # the current party is not done yet;
-            # Since we are using SE, it means that there isnt any applicable pro
-            # argument to support p; Hence, have to support premise: by finding
-            # more argument
+        # check that there are more arguments to be added into the argset
+        while self.debatable(dialogue_state_argset):
 
+            # the proponent's Burden of proof must first be met; otherwise she
+            # has lost the argument
+            if not burden_status:
+                # need to further support premises:
+                dialogue_state_argset = self.support_premise(
+                    current_arg, dialogue_state_argset)
+                # check if the burden is met
+                burden_status = self.burden_met(
+                    issue, dialogue_state_argset, ps_SE, turn)
+                summary += self.dialogue_state(dialogue_state_argset,
+                                               turn, burden_status, g_filename, dot_filename)
 
+                # proponent cant satisfy the Burden
+                if not burden_status:
+                    logging.info(
+                        "{} did not manage to satisfy her burden of proof".format(self.actors[turn % 2]))
+                    logging.info('DIALOGUE ENDED')
+                    logging.info('{}'.format(summary))
+                    break
 
-        g_file = g_filename + str(turn) + '.pdf'
-        dot_file = dot_filename + str(turn) + '.dot'
-        dialogue_state_argset.draw(g_file)
-        dialogue_state_argset.write_to_graphviz(dot_file)
-        summary += self.dialogue_state(dialogue_state_argset.arguments, turn, burden_status )  # print info
+            # it is the Opponent's turn now:
+            turn += 1  # next actor on the issue:
 
-    def burden_met(self, issue, argset, ps):
+            # -------------------------------------------------------------
+            # PROPONENT
+            # -----------------------------------------------------------
+            if turn % 2 == 0:
+                # the argument with the largest weight
+                arg_pro = self.find_best_pro_argument(
+                    dialogue_state_argset)
+                # start with the best pro argument
+                dialogue_state_argset.add_argument(
+                    arg_con, state='claimed')
+                burden_status = self.burden_met(
+                    issue, dialogue_state_argset, ps_SE)
+                summary += self.dialogue_state(
+                    dialogue_state_argset, turn, burden_status)
+                continue
+
+            # -----------------------------------------------------------
+            # OPPONENT
+            # -----------------------------------------------------------
+            else:
+                arg_con = self.find_best_con_argument(
+                    dialogue_state_argset)
+                # the argument with the largest weight
+                # start with the best con argument
+                dialogue_state_argset.add_argument(
+                    arg_con, state='claimed')
+                burden_status = self.burden_met(
+                    issue, dialogue_state_argset, ps_SE)
+                continue
+
+        # ----------------------------------------------------------------
+        # NO LONGER DEBATABLE:
+        # ----------------------------------------------------------------
+        g_file = g_filename + 'final.pdf'
+        dot_file = dot_filename + 'final.dot'
+        # Do acceptability test using the the PS defined:
+        self.run(g_filename=g_file, dot_filename=dot_file,
+                 argset=dialogue_state_argset)
+        logging.info('{}'.format(summary))  # summarise the dialogue
+        return
+
+    def debatable(self, dialogue_state_argset):
+        """
+        Given the current dialogue state, check if there are any more arguments to be added
+
+        :param dialogue_state_argset - the current state for the dialogue
+        :rtype True - if there are more arguments to be added; otherwise False
+        """
+
+        print('Checking debatable..?')
+        arg_pro = self.find_best_pro_argument(dialogue_state_argset)
+        arg_con = self.find_best_con_argument(dialogue_state_argset)
+        if len(arg_pro + arg_con):
+            logging.debug('Checking if debatable... True')
+            return True
+        else:
+            if sorted(dialogue_state_argset.arguments) == sorted(self.argset.arguments):
+                # the number of arguments have been maxed out!
+                logging.info(
+                    'All arguments have been added into the argset! nothing else to consider')
+                logging.debug('Checking if debatable... False')
+                return False
+
+    def support_premise(self, current_arg, argset):
+        """
+        The current argument in argset requires more support - as the BOP is not met.
+        Here, we model the party trying to support their arguments by putting forward fruther claims in support of their premise
+
+        :param current_arg : :type Argument - the argument that that needs to be support in the curent argset
+        :param argset : the current dialogue state argset where new arguments should be added
+        """
+        logging.info('Supporting premises for arg: {}'.format(current_arg))
+        for premise in current_arg.premises:
+            # find arguments to support the premises
+            for args in self.argset.get_arguments(premise):
+                argset.add_argument(args, state='claimed')
+
+        return argset
+
+    def burden_met(self, issue, argset, ps, turn_num):
         """
         Checks that the burden of proof of the proponent or opponent is met
         using the CAES acceptability function.
@@ -525,36 +624,65 @@ class Reader(object):
                     alpha=self.caes_alpha,
                     beta=self.caes_beta,
                     gamma=self.caes_gamma)
-        return caes.acceptable(issue)
+        burden_status = caes.acceptable(issue)
+        print("\n-----------------------------------------\nBurden of Proof met by {} : {}".format(
+            self.actors[turn_num % 2], burden_status) + "\n-----------------------------------------")
+        return burden_status
 
-    def find_argument(self, who, current, full):
+    def find_best_pro_argument(self, argset):
         """
-        find_argument returns a "best" argument to challenge the current issue
+        find the best argument to attack the current arguments put forth by the opponent
+        """
+        full_argset = self.argset
+        current_argset = argset
+
+    def find_best_con_argument(self, argset):
+        """
+        find the best argument to attack the current arguments put forth by the proponent
+        """
+        full_argset = self.argset
+        # first, find the arguments that are claimed by the proponent!
+        args_claimed = argset.get_arguments_status('claimed')
+
+    def dialogue_state(self, argset, turn_num, burden_status, g_filename, dot_filename):
+        """
+        1) print and log the current dialogue status
+        2) output the graph for viewing at this turn!
         """
 
-    def dialogue_state(self, arguments, turn_num, burden_status):
-        """
-        Just a function to output the current dialetical status
-        return summary for printing at the end of the dialogue
-        """
-        actors = ['PROPONENT', 'OPPONENT']
-
+        # CURRENT STAUS
         logging.info(
-            '================ turn {} ================'.format(turn_num))
-        summary = '================ turn {} ================'.format(turn_num) + '\n'
+            '================== turn {} =================='.format(turn_num))
+        summary = '================== turn {} =================='.format(
+            turn_num) + '\n'
         # print Where the BOP lies in for this turn
-        logging.info('BURDEN OF PROOF @ {}'.format(actors[turn_num % 2]))
-        summary += 'BURDEN OF PROOF @ {}'.format(actors[turn_num % 2]) + '\n'
-        # print the list of arguments being considered rn
+        logging.info('BURDEN OF PROOF @ {}'.format(self.actors[turn_num % 2]))
+        summary += 'BURDEN OF PROOF @ {}'.format(
+            self.actors[turn_num % 2]) + '\n'
+
+        #  ARGUMENTS
         logging.info('ARGUMENTS:')
         summary += 'ARGUMENTS:\n'
-        for arg in arguments:
+        for arg in argset.arguments:
             logging.info(arg.__str__())
             summary += arg.__str__() + '\n'
-        logging.info('Checking if burden of proof @ {} is met...\t\t {}'.format(
-            actors[turn_num % 2], burden_status))
-        summary += ('Checking if burden of proof @ {} is met...\t\t {}'.format(
-            actors[turn_num % 2], burden_status)) + '\n'
+        # logging.info('Checking if burden of proof @ {} is met...\t\t {}'.format(
+        #     self.actors[turn_num % 2], burden_status))
+        # summary += ('Checking if burden of proof @ {} is met...\t\t {}'.format(
+        #     self.actors[turn_num % 2], burden_status)) + '\n'
+        logging.info("\n-----------------------------------------\nBurden of Proof met by {} : {}".format(
+            self.actors[turn_num % 2], burden_status) + "\n-----------------------------------------")
+        summary += ("\n-----------------------------------------\nBurden of Proof met by {} : {}".format(
+            self.actors[turn_num % 2], burden_status) + "\n-----------------------------------------")
+        # GRAPHS
+        g_file = g_filename + str(turn_num) + '.pdf'
+        dot_file = dot_filename + str(turn_num) + '.dot'
+        argset.draw(g_file)
+        argset.write_to_graphviz(dot_file)
+        logging.info(
+            '================== turn {} =================='.format(turn_num))
+        summary = '================== turn {} =================='.format(
+            turn_num) + '\n'
         return summary
 
     # ------------------------------------------------------------
@@ -794,7 +922,7 @@ class ArgumentSet(object):
             raise TypeError('Input {} should be PropLiteral'.
                             format(proposition))
 
-    def add_argument(self, argument):
+    def add_argument(self, argument, state=None):
         """
         Add an argument to the graph.
         All vertex in the graph have either the 'arg' or 'prop' attribute
@@ -819,7 +947,9 @@ class ArgumentSet(object):
         #   VERTICES
         # -----------------------------------------------------------
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
-        self.graph.add_vertex(arg=argument.arg_id, state=None)
+        if state is not None:
+            assert state == 'claimed' or state == 'questioned'
+        self.graph.add_vertex(arg=argument.arg_id, state=state)
         # returns the vertex that goes to the argument
         arg_v = g.vs.select(arg=argument.arg_id)[0]
         # add proposition vertices to the graph
@@ -853,12 +983,6 @@ class ArgumentSet(object):
         :return: A proposition that are exceptions of the argument
         :rtype: list(:class:`PropLiteral`)
         """
-        # select the vertex of the argument
-        # arg_v = g.vs.select(arg=argument_id)[0]
-        # out_vs = [e.target for e in g.es.select(_source=arg_v.index, is_exception=True)]
-        # # find the vertices belonging to these exceptions
-        # except_vs = [g.vs[i] for i in out_vs]
-        # excepts = [ex for ex.prop in except_vs]
         for arg in self.arguments:
             if arg.arg_id == argument_id:
                 return sorted(arg.exceptions)
@@ -910,6 +1034,28 @@ class ArgumentSet(object):
         except IndexError:
             raise ValueError("Proposition '{}' is not in the current graph".
                              format(proposition))
+
+    def get_arguments_status(self, status):
+        """
+        Find the arguments with the desired attribute value
+
+        :param status - a member {claimed, questioned}
+        :raise ValueError if the status is not of claimed or questioned
+        """
+        if str(status) != 'claimed' and str(status) != 'questioned':
+            raise ValueError('{} is not a valid status'.format(status))
+        else:
+            arg_IDs = [self.graph.vs[v.index]['arg']
+                       for v in self.graph.vs.select(state=status)]
+            args = [arg for arg in self.arguments if arg.arg_id in arg_IDs]
+            return args
+
+    def set_argument_status(self, argument_id, state):
+        """
+        Update the status of an argument to either {claimed, questioned}
+        """
+        arg_v = g.vs.select(arg=argument_id)[0]
+        g.vs[arg_v.index]['state'] = state
 
     def draw(self, g_filename, debug=False):
         """
