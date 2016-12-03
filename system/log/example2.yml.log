@@ -6,9 +6,9 @@
 	Adding parameter to CAES
 	Adding proofstandard to CAES
 	Adding issues to CAES
-=========================================
-
+********************************************************************************
 ISSUE: "murder"
+********************************************************************************
 Calling acceptable(murder)
   Calling meets_proof_standard(murder, scintilla)
     Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
@@ -27,11 +27,9 @@ acceptable(murder)-->False
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
-
 -----------------------------------------
 Burden of proof met by PROPONENT : False
------------------------------------------
-================== turn 0 ==================
+============================================
 Supporting premises for arg: [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
 Calling acceptable(murder)
   Calling meets_proof_standard(murder, scintilla)
@@ -69,11 +67,9 @@ ARGUMENTS:
 [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
 [evidence 1 supports killing], ~[tampering of evidence 1] => killing
 [evidence 2 supports malice], ~[tampering of evidence 2] => malice
-
 -----------------------------------------
 Burden of proof met by PROPONENT : True
------------------------------------------
-================== turn 0 ==================
+============================================
 Calling acceptable(murder)
   Calling meets_proof_standard(murder, scintilla)
     Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
@@ -121,85 +117,77 @@ ARGUMENTS:
 [evidence 1 supports killing], ~[tampering of evidence 1] => killing
 [evidence 2 supports malice], ~[tampering of evidence 2] => malice
 [Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
-
 -----------------------------------------
 Burden of proof met by OPPONENT : True
------------------------------------------
-================== turn 1 ==================
-Calling acceptable(murder)
-  Calling meets_proof_standard(murder, scintilla)
-    Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
-      Calling acceptable(killing)
-        Calling meets_proof_standard(killing, scintilla)
-          Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
-            Calling acceptable(tampering of evidence 1)
-              Calling meets_proof_standard(tampering of evidence 1, scintilla)
-              meets_proof_standard(tampering of evidence 1, scintilla)-->False
-            acceptable(tampering of evidence 1)-->False
-          applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)-->True
-        meets_proof_standard(killing, scintilla)-->True
-      acceptable(killing)-->True
-      Calling acceptable(malice)
-        Calling meets_proof_standard(malice, scintilla)
-          Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
-            Calling acceptable(tampering of evidence 2)
-              Calling meets_proof_standard(tampering of evidence 2, scintilla)
-              meets_proof_standard(tampering of evidence 2, scintilla)-->False
-            acceptable(tampering of evidence 2)-->False
-          applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)-->True
-        meets_proof_standard(malice, scintilla)-->True
-      acceptable(malice)-->True
-      Calling acceptable(s187 is excluded)
-        Calling meets_proof_standard(s187 is excluded, scintilla)
-          Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
-            Calling acceptable(an act of self-defense)
-              Calling meets_proof_standard(an act of self-defense, scintilla)
-              meets_proof_standard(an act of self-defense, scintilla)-->False
-            acceptable(an act of self-defense)-->False
-            Calling acceptable(s197 is excluded)
-              Calling meets_proof_standard(s197 is excluded, scintilla)
-              meets_proof_standard(s197 is excluded, scintilla)-->False
-            acceptable(s197 is excluded)-->False
-          applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->False
-        meets_proof_standard(s187 is excluded, scintilla)-->False
-      acceptable(s187 is excluded)-->False
-    applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->True
-  meets_proof_standard(murder, scintilla)-->True
-acceptable(murder)-->True
-================== turn 2 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
-[evidence 1 supports killing], ~[tampering of evidence 1] => killing
-[evidence 2 supports malice], ~[tampering of evidence 2] => malice
-[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+============================================
 
------------------------------------------
-Burden of proof met by PROPONENT : True
------------------------------------------
-================== turn 2 ==================
+
+Evaluating issue: murder
+Calling acceptable(murder)
+  Calling meets_proof_standard(murder, beyond_reasonable_doubt)
+    Calling meets_proof_standard(murder, clear_and_convincing)
+      Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
+        Calling acceptable(killing)
+          Calling meets_proof_standard(killing, scintilla)
+            Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
+              Calling acceptable(tampering of evidence 1)
+                Calling meets_proof_standard(tampering of evidence 1, scintilla)
+                meets_proof_standard(tampering of evidence 1, scintilla)-->False
+              acceptable(tampering of evidence 1)-->False
+            applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)-->True
+          meets_proof_standard(killing, scintilla)-->True
+        acceptable(killing)-->True
+        Calling acceptable(malice)
+          Calling meets_proof_standard(malice, scintilla)
+            Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
+              Calling acceptable(tampering of evidence 2)
+                Calling meets_proof_standard(tampering of evidence 2, scintilla)
+                meets_proof_standard(tampering of evidence 2, scintilla)-->False
+              acceptable(tampering of evidence 2)-->False
+            applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)-->True
+          meets_proof_standard(malice, scintilla)-->True
+        acceptable(malice)-->True
+        Calling acceptable(s187 is excluded)
+          Calling meets_proof_standard(s187 is excluded, scintilla)
+            Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
+              Calling acceptable(an act of self-defense)
+                Calling meets_proof_standard(an act of self-defense, scintilla)
+                meets_proof_standard(an act of self-defense, scintilla)-->False
+              acceptable(an act of self-defense)-->False
+              Calling acceptable(s197 is excluded)
+                Calling meets_proof_standard(s197 is excluded, scintilla)
+                meets_proof_standard(s197 is excluded, scintilla)-->False
+              acceptable(s197 is excluded)-->False
+            applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->False
+          meets_proof_standard(s187 is excluded, scintilla)-->False
+        acceptable(s187 is excluded)-->False
+      applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->True
+    meets_proof_standard(murder, clear_and_convincing)-->True
+  meets_proof_standard(murder, beyond_reasonable_doubt)-->True
+acceptable(murder)-->True
+------ murder IS acceptable ------
+
+
+
+********************************************************************************
+DIALOGUE SUMMARY:
+********************************************************************************
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
-
 -----------------------------------------
 Burden of proof met by PROPONENT : False
------------------------------------------
 ============================================
-
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
 [evidence 1 supports killing], ~[tampering of evidence 1] => killing
 [evidence 2 supports malice], ~[tampering of evidence 2] => malice
-
 -----------------------------------------
 Burden of proof met by PROPONENT : True
------------------------------------------
 ============================================
-
 ================== turn 1 ==================
 BURDEN OF PROOF @ OPPONENT
 ARGUMENTS:
@@ -207,23 +195,8 @@ ARGUMENTS:
 [evidence 1 supports killing], ~[tampering of evidence 1] => killing
 [evidence 2 supports malice], ~[tampering of evidence 2] => malice
 [Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
-
 -----------------------------------------
 Burden of proof met by OPPONENT : True
------------------------------------------
 ============================================
 
-================== turn 2 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
-[evidence 1 supports killing], ~[tampering of evidence 1] => killing
-[evidence 2 supports malice], ~[tampering of evidence 2] => malice
-[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
-
------------------------------------------
-Burden of proof met by PROPONENT : True
------------------------------------------
-============================================
-
-
+********************************************************************************

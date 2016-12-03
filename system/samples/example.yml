@@ -33,7 +33,7 @@ ARGUMENT:
     weight: 0.8
 
 PROOFSTANDARD :
-  intent : preponderance
+  intent : beyond reasonable doubt
 
 ASSUMPTION: [kill , witness1 , witness2]
 

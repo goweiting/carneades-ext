@@ -67,8 +67,8 @@ ARGUMENT:
 
 
 PROOFSTANDARD:
-  murder: scintilla
-  self-defense: preponderance # so that the maximum weight of the con outweights the argument for pro ! exactly, as expected, the argument is then valid
+  murder: beyond reasonable doubt
+# self-defense: preponderance # so that the maximum weight of the con outweights the argument for pro ! exactly, as expected, the argument is then valid
 
 ISSUE: [murder]
 

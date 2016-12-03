@@ -414,7 +414,7 @@ class Reader(object):
                 dot_filename = dot_dir + '{}_'.format(i + 1)
                 g_filename = g_dir + '{}_'.format(i + 1)
                 logging.info(
-                    '=========================================\n\nISSUE: "{}"'.format(issue))
+                    '********************************************************************************\nISSUE: "{}"\n********************************************************************************'.format(issue))
                 # always starts from turn 0
                 self.dialogue(issue, g_filename, dot_filename)
             return
@@ -422,7 +422,7 @@ class Reader(object):
         else:
             raise ValueError('Argument dialogue takes only boolean value')
 
-    def run(self, g_filename, dot_filename, argset=None):
+    def run(self, g_filename=None, dot_filename=None, argset=None, issues=None):
         """
         The standard output for CAES on the issues
 
@@ -435,8 +435,9 @@ class Reader(object):
         # ------------------------------------------------------------
         if argset is None:
             argset = self.argset
-        argset.draw(g_filename)
-        argset.write_to_graphviz(dot_filename)
+        if g_filename is not None and dot_filename is not None:
+            argset.draw(g_filename)
+            argset.write_to_graphviz(dot_filename)
 
         # ------------------------------------------------------------
         #       Evaluate the issues using CAES
@@ -449,7 +450,10 @@ class Reader(object):
                     beta=self.caes_beta,
                     gamma=self.caes_gamma)
 
-        for issue in self.caes_issue:
+        if issues is None:
+            issues = self.caes_issue
+
+        for issue in issues:
             logging.info(
                 '\n\nEvaluating issue: {}'.format(issue))
             # use the aceptablility standard in CAES
@@ -506,7 +510,14 @@ class Reader(object):
 
         # the arguments pro p; where p is the issue
         # sort the arguments according to their weight, with the largest first
+
         args_pro = self.argset.get_arguments(issue)
+        if len(args_pro) == 0:
+            logging.info('Issue {} cannot be evaluated. In sufficient arguments to form an argumentation graph'.format(issue))
+            logging.info('Evaluating on the full argumentation set...')
+            self.run(issues=[issue])
+            return
+
         args_pro = sorted(args_pro, key=lambda args: args.weight)
         best_arg = args_pro.pop()  # the argument with the largest weight
         # start with the best pro argument
@@ -549,17 +560,6 @@ class Reader(object):
             # PROPONENT
             # -----------------------------------------------------------
             if turn % 2 == 0:
-                # the argument with the largest weight
-                # arg_pro = self.find_best_pro_argument(
-                #     dialogue_state_argset)
-                # # start with the best pro argument
-                # dialogue_state_argset.add_argument(
-                #     arg_pro, state='claimed')
-                burden_status = self.burden_met(
-                    issue, dialogue_state_argset, ps_SE, turn)
-                summary += self.dialogue_state(dialogue_state_argset,
-                                               turn, burden_status,
-                                               g_filename, dot_filename)
                 break
 
             # -----------------------------------------------------------
@@ -571,8 +571,8 @@ class Reader(object):
                     (arg_con, arg_attacked) = self.find_best_con_argument(
                         dialogue_state_argset)
                 except TypeError:
-                    logging.info('Opponent is done here')
-                    return
+                    logging.info('All arguments exhausted')
+                    break
 
                 # change the state of atgument to `questioned`
                 dialogue_state_argset.set_argument_status(
@@ -592,10 +592,15 @@ class Reader(object):
         g_file = g_filename + 'final.pdf'
         dot_file = dot_filename + 'final.dot'
         # Do acceptability test using the the PS defined:
-        # self.run(g_filename=g_file, dot_filename=dot_file,
-                #  argset=dialogue_state_argset)
-        logging.info('{}'.format(summary))  # summarise the dialogue
-        return summary, dialogue_state_argset
+        self.run(g_filename=g_file, dot_filename=dot_file,
+                 argset=dialogue_state_argset, issues=[issue])
+        logging.info(
+            '\n\n\n********************************************************************************')
+        logging.info(
+            'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.format(summary))
+        logging.info(
+            '********************************************************************************')
+        # return summary, dialogue_state_argset
 
     def debatable(self, dialogue_state_argset):
         """
@@ -604,8 +609,6 @@ class Reader(object):
         :param dialogue_state_argset - the current state for the dialogue
         :rtype True - if there are more arguments to be added; otherwise False
         """
-
-        print('Checking debatable..?')
         # arg_pro = self.find_best_pro_argument(dialogue_state_argset)
         # arg_con = self.find_best_con_argument(dialogue_state_argset)
         # if len(arg_pro + arg_con):
@@ -621,6 +624,7 @@ class Reader(object):
             logging.debug('Checking if debatable... False')
             return False
         else:
+            logging.debug('Checking if debatable... True')
             return True
 
     def support_premise(self, current_arg, argset):
@@ -674,9 +678,7 @@ class Reader(object):
         The respondent to the argument have the burden of production of any
         exceptions. First, we find the list of claims put forth by the
         proponent. If there are multiple claims, we rank the claims according
-        to their weights.
-
-        For each claim:
+        to their weights. For each claim:
         1) check if there are exceptions
             2) for each exceptions, check if there are arguments that will lead
             to the exception being true
@@ -685,7 +687,7 @@ class Reader(object):
         if there are NO argument to support the exceptions in the claims, then
         we have to find a rebuttal to the claims
         This is done as:
-        1) find any argument that is `con` of the claim (start finding )
+        1) find any argument that is `con` of the claim
         """
         # first, find the arguments that are claimed by the proponent, and sort
         # it according to their weight
@@ -693,7 +695,7 @@ class Reader(object):
         args_claimed = sorted(args_claimed, key=lambda arg: arg.weight)
 
         while len(args_claimed):
-
+            print('haha')
             arg = args_claimed.pop()  # the argument with the hgihest weightage
             if len(arg.exceptions):  # if there are exceptions
                 for exception in arg.exceptions:
@@ -703,16 +705,19 @@ class Reader(object):
                     if len(args_con):
                         args_con = sorted(args_con, key=lambda arg: arg.weight)
                         # return the argument that supports the exception with the
-                        # largest weight and the argument this argument is attacking
+                        # largest weight and the argument this argument is
+                        # attacking
                         return (args_con.pop(), arg)
-
             else:
                 # consider the next claim by the proponent
                 continue
 
         # if ever reached here, there are no arguments to attacked the
         # exceptions. Hence, a rebuttal is needed
+        args_claimed = argset.get_arguments_status('claimed')
+        args_claimed = sorted(args_claimed, key=lambda arg: arg.weight)
         while len(args_claimed):
+
             arg = args_claimed.pop()
 
             arg_con = self.argset.get_arguments_con(arg.conclusion)
@@ -746,24 +751,23 @@ class Reader(object):
 
         #  ARGUMENTS
         logging.info('ARGUMENTS:')
-        summary += 'ARGUMENTS:\n'
+        summary += 'ARGUMENTS:'
         for arg in argset.arguments:
             logging.info(arg.__str__())
-            summary += arg.__str__() + '\n'
+            summary += '\n' + arg.__str__()
 
-        logging.info("\n-----------------------------------------\nBurden of proof met by {} : {}".format(
-            self.actors[turn_num % 2], burden_status) + "\n-----------------------------------------")
+        logging.info("-----------------------------------------\nBurden of proof met by {} : {}".format(
+            self.actors[turn_num % 2], burden_status))
         summary += ("\n-----------------------------------------\nBurden of proof met by {} : {}".format(
-            self.actors[turn_num % 2], burden_status) + "\n-----------------------------------------\n")
+            self.actors[turn_num % 2], burden_status))
+
         # GRAPHS
         g_file = g_filename + str(turn_num) + '.pdf'
         dot_file = dot_filename + str(turn_num) + '.dot'
         argset.draw(g_file)
         argset.write_to_graphviz(dot_file)
-        logging.info(
-            '================== turn {} =================='.format(turn_num))
-        summary += '============================================'.format(
-            turn_num) + '\n\n'
+        logging.info('============================================')
+        summary += '\n============================================\n'
         return summary
 
     # ------------------------------------------------------------
