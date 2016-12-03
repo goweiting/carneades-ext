@@ -41,7 +41,7 @@ ARGUMENT:
     premise: [killing, malice, s187 valid] # these ordinary premises are assumed to be supported
     exception: [s187 excluded]
     conclusion: murder
-    weight: 0.2
+    weight: 0.5
 
 # The prosecution has met its burden of production
 # Next, the defense put forward its self-defense argument:
