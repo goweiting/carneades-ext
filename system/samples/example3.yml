@@ -1,0 +1,48 @@
+# Toy example to illistrate:
+# Converging argument for an issue - i.e two or more premises required to be
+# satisfied before it the issue is satisfied
+
+PROPOSITION:
+  i: issue
+  s1: support 1
+  s2: support 2
+  s3: support 3
+  p1: premise1
+  p2: premise2
+  p3: premise3
+
+ASSUMPTION: [p1,p2,p3]
+
+ARGUMENT:
+  arg1:
+    premise: [s1, s2, s3]
+    exception: []
+    conclusion: i
+    weight: 0.5
+
+  arg2:
+    premise: [p1]
+    exception: []
+    conclusion: s1
+    weight: 0.2
+
+  arg3:
+    premise: [p2]
+    exception: []
+    conclusion: s2
+    weight: 0.1
+
+  arg4:
+    premise: [p3]
+    exception: []
+    conclusion: s3
+    weight: 0.1
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

@@ -1,0 +1,59 @@
+# Toy example to illistrate:
+# Here we have two arguments that suppor tthe issue; and one that does not
+# CAES will naturally choose the argument with the largest weight to support
+# the issue
+# However, this is defeated by the negative argument very well, as (using
+# preponderance of evidence) the argument pro argument is insufficient to concur
+# It is expected that
+
+PROPOSITION:
+  i: issue
+  s1: support 1
+  s2: support 2
+  p1: premise1
+  p2: premise2
+  neg1: negative 1
+  p3: premise3
+
+
+ASSUMPTION: [p1, p2, p3]
+
+ARGUMENT:
+  arg1:
+    premise: [s1]
+    exception: [neg1]
+    conclusion: i
+    weight: 0.5
+
+  arg2:
+    premise: [s2]
+    exception: []
+    conclusion: i
+    weight: 0.2
+
+  arg3:
+    premise: [p1]
+    exception: []
+    conclusion: s1
+    weight: 0.2
+
+  arg4:
+    premise: [p2]
+    exception: []
+    conclusion: s2
+    weight: 0.2
+
+  defeat arg1:
+    premise: [p3]
+    exception: []
+    conclusion: neg1
+    weight: 0.6
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

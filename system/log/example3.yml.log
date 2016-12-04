@@ -1,0 +1,76 @@
+	Tokenizing file...
+	Parsing tokens...
+	Adding propositions to CAES
+	Adding assumptions to CAES
+	Adding arguments to CAES
+Added argument 'arg1' to graph by claimer None
+Added argument 'arg2' to graph by claimer None
+Added argument 'arg3' to graph by claimer None
+Added argument 'arg4' to graph by claimer None
+	Adding parameter to CAES
+	Adding proofstandard to CAES
+	Adding issues to CAES
+********************************************************************************
+ISSUE: "issue"
+********************************************************************************
+Added argument 'arg1' to graph by claimer PROPONENT
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1, support 2, support 3], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+Checking burden of proof for PROPONENT
+Calling acceptable(issue)
+  Calling meets_proof_standard(issue, scintilla)
+    Calling applicable([support 1, support 2, support 3], ~[] => issue)
+      Calling acceptable(support 1)
+        Calling meets_proof_standard(support 1, scintilla)
+        meets_proof_standard(support 1, scintilla)-->False
+      acceptable(support 1)-->False
+    applicable([support 1, support 2, support 3], ~[] => issue)-->False
+  meets_proof_standard(issue, scintilla)-->False
+acceptable(issue)-->False
+Added argument 'arg2' to graph by claimer PROPONENT
+proposition "support 1" state updated to claimed
+Added argument 'arg3' to graph by claimer PROPONENT
+proposition "support 2" state updated to claimed
+Added argument 'arg4' to graph by claimer PROPONENT
+proposition "support 3" state updated to claimed
+Checking burden of proof for PROPONENT
+Calling acceptable(issue)
+  Calling meets_proof_standard(issue, scintilla)
+    Calling applicable([support 1, support 2, support 3], ~[] => issue)
+      Calling acceptable(support 1)
+        Calling meets_proof_standard(support 1, scintilla)
+          Calling applicable([premise1], ~[] => support 1)
+          applicable([premise1], ~[] => support 1)-->True
+        meets_proof_standard(support 1, scintilla)-->True
+      acceptable(support 1)-->True
+      Calling acceptable(support 2)
+        Calling meets_proof_standard(support 2, scintilla)
+          Calling applicable([premise2], ~[] => support 2)
+          applicable([premise2], ~[] => support 2)-->True
+        meets_proof_standard(support 2, scintilla)-->True
+      acceptable(support 2)-->True
+      Calling acceptable(support 3)
+        Calling meets_proof_standard(support 3, scintilla)
+          Calling applicable([premise3], ~[] => support 3)
+          applicable([premise3], ~[] => support 3)-->True
+        meets_proof_standard(support 3, scintilla)-->True
+      acceptable(support 3)-->True
+    applicable([support 1, support 2, support 3], ~[] => issue)-->True
+  meets_proof_standard(issue, scintilla)-->True
+acceptable(issue)-->True
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1, support 2, support 3], ~[] => issue
+[premise1], ~[] => support 1
+[premise2], ~[] => support 2
+[premise3], ~[] => support 3
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+No arguments found by RESPONDENT for issue 'issue'

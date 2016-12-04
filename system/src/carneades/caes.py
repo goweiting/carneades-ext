@@ -540,11 +540,10 @@ class Reader(object):
         #     best_arg = args_pro.pop()
         #     subissue = best_arg.conclusion
         #     self.dialogue(subissue,
-        #                     g_filename=,dot_filename=,
-        #                     turn_num=,
-        #                     argset=)
+        #                   g_filename=, dot_filename=,
+        #                   turn_num=,
+        #                   argset=)
 
-        best_arg_pro = args_pro.pop()
         dialogue_state_argset.add_argument(best_arg_pro,
                                            state='claimed',
                                            claimer=self.actors[turn_num % 2])
@@ -563,13 +562,13 @@ class Reader(object):
         if not burden_status:
             # the proponent's Burden of proof must first be met; otherwise she
             # has lost the argument
-            print('LOL LOST!')
+            logging.info('{} did not met the Burden of Proof for issue \'{}\''.format(
+                self.actors[turn_num % 2], issue))
             return dialogue_state_argset, summary, turn_num
 
         else:
             turn_num += 1  # the respondent turn's to raise an issue
 
-            # if turn_num % 2:  # 1
             try:
                 (arg_con, arg_attacked) = \
                     self.find_best_con_argument(
@@ -1106,7 +1105,7 @@ class ArgumentSet(object):
             assert state == 'claimed' or state == 'questioned'
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
         self.graph.add_vertex(arg=argument.arg_id, claimer=claimer)
-        logging.info('Added argument \'{}\' to graph by claimer {}'.format(
+        logging.info('Added argument \'{}\' to graph by claimer \'{}\''.format(
             argument.arg_id, claimer))
         # returns the vertex that goes to the argument
         arg_v = g.vs.select(arg=argument.arg_id)[0]
