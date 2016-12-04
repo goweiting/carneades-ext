@@ -26,7 +26,9 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 ============================================
-Supporting premises for arg: [accused have the intent, accused killed the victim], ~[] => accused committed murder
+Supporting premises for argument:
+[accused have the intent, accused killed the victim], ~[] => accused committed murder
+
 Calling acceptable(accused committed murder)
   Calling meets_proof_standard(accused committed murder, scintilla)
     Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
@@ -76,6 +78,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by OPPONENT : True
 ============================================
+All arguments have been added into the argset! nothing else to consider
 
 
 Evaluating issue: accused committed murder
