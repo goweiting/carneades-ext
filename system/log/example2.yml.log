@@ -3,13 +3,19 @@
 	Adding propositions to CAES
 	Adding assumptions to CAES
 	Adding arguments to CAES
+Added argument 'arg01' to graph by claimer None
+Added argument 'arg02' to graph by claimer None
+Added argument 'arg1' to graph by claimer None
+Added argument 'arg2' to graph by claimer None
+Added argument 'arg3' to graph by claimer None
+Added argument 'arg4' to graph by claimer None
 	Adding parameter to CAES
 	Adding proofstandard to CAES
 	Adding issues to CAES
 ********************************************************************************
 ISSUE: "murder"
 ********************************************************************************
-Calling dialogue(murder, ../../graph/example2/1_, ../../dot/example2/1_)
+Added argument 'arg1' to graph by claimer PROPONENT
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
@@ -17,22 +23,265 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 ============================================
-  Calling acceptable(murder)
-    Calling meets_proof_standard(murder, scintilla)
-      Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
-        Calling acceptable(killing)
-          Calling meets_proof_standard(killing, scintilla)
-          meets_proof_standard(killing, scintilla)-->False
-        acceptable(killing)-->False
-        Calling acceptable(s187 is excluded)
-          Calling meets_proof_standard(s187 is excluded, scintilla)
-          meets_proof_standard(s187 is excluded, scintilla)-->False
-        acceptable(s187 is excluded)-->False
-      applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->False
-    meets_proof_standard(murder, scintilla)-->False
-  acceptable(murder)-->False
-  Calling acceptable(murder)
-    Calling meets_proof_standard(murder, scintilla)
+Checking burden of proof for PROPONENT
+Calling acceptable(murder)
+  Calling meets_proof_standard(murder, scintilla)
+    Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
+      Calling acceptable(killing)
+        Calling meets_proof_standard(killing, scintilla)
+        meets_proof_standard(killing, scintilla)-->False
+      acceptable(killing)-->False
+      Calling acceptable(s187 is excluded)
+        Calling meets_proof_standard(s187 is excluded, scintilla)
+        meets_proof_standard(s187 is excluded, scintilla)-->False
+      acceptable(s187 is excluded)-->False
+    applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->False
+  meets_proof_standard(murder, scintilla)-->False
+acceptable(murder)-->False
+Added argument 'arg01' to graph by claimer PROPONENT
+proposition "killing" state updated to claimed
+Added argument 'arg02' to graph by claimer PROPONENT
+proposition "malice" state updated to claimed
+Checking burden of proof for PROPONENT
+Calling acceptable(murder)
+  Calling meets_proof_standard(murder, scintilla)
+    Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
+      Calling acceptable(killing)
+        Calling meets_proof_standard(killing, scintilla)
+          Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
+            Calling acceptable(tampering of evidence 1)
+              Calling meets_proof_standard(tampering of evidence 1, scintilla)
+              meets_proof_standard(tampering of evidence 1, scintilla)-->False
+            acceptable(tampering of evidence 1)-->False
+          applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)-->True
+        meets_proof_standard(killing, scintilla)-->True
+      acceptable(killing)-->True
+      Calling acceptable(malice)
+        Calling meets_proof_standard(malice, scintilla)
+          Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
+            Calling acceptable(tampering of evidence 2)
+              Calling meets_proof_standard(tampering of evidence 2, scintilla)
+              meets_proof_standard(tampering of evidence 2, scintilla)-->False
+            acceptable(tampering of evidence 2)-->False
+          applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)-->True
+        meets_proof_standard(malice, scintilla)-->True
+      acceptable(malice)-->True
+      Calling acceptable(s187 is excluded)
+        Calling meets_proof_standard(s187 is excluded, scintilla)
+        meets_proof_standard(s187 is excluded, scintilla)-->False
+      acceptable(s187 is excluded)-->False
+    applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->True
+  meets_proof_standard(murder, scintilla)-->True
+acceptable(murder)-->True
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+proposition "murder" state updated to questioned
+SUB ISSUE: "s187 is excluded"
+Added argument 'arg2' to graph by claimer RESPONDENT
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+============================================
+Checking burden of proof for RESPONDENT
+Calling acceptable(s187 is excluded)
+  Calling meets_proof_standard(s187 is excluded, scintilla)
+    Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
+      Calling acceptable(an act of self-defense)
+        Calling meets_proof_standard(an act of self-defense, scintilla)
+        meets_proof_standard(an act of self-defense, scintilla)-->False
+      acceptable(an act of self-defense)-->False
+      Calling acceptable(s197 is excluded)
+        Calling meets_proof_standard(s197 is excluded, scintilla)
+        meets_proof_standard(s197 is excluded, scintilla)-->False
+      acceptable(s197 is excluded)-->False
+    applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->False
+  meets_proof_standard(s187 is excluded, scintilla)-->False
+acceptable(s187 is excluded)-->False
+Added argument 'arg3' to graph by claimer RESPONDENT
+proposition "an act of self-defense" state updated to claimed
+Checking burden of proof for RESPONDENT
+Calling acceptable(s187 is excluded)
+  Calling meets_proof_standard(s187 is excluded, scintilla)
+    Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
+      Calling acceptable(an act of self-defense)
+        Calling meets_proof_standard(an act of self-defense, scintilla)
+          Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
+            Calling acceptable(-Witness1 is credible)
+              Calling meets_proof_standard(-Witness1 is credible, scintilla)
+              meets_proof_standard(-Witness1 is credible, scintilla)-->False
+            acceptable(-Witness1 is credible)-->False
+          applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)-->True
+        meets_proof_standard(an act of self-defense, scintilla)-->True
+      acceptable(an act of self-defense)-->True
+      Calling acceptable(s197 is excluded)
+        Calling meets_proof_standard(s197 is excluded, scintilla)
+        meets_proof_standard(s197 is excluded, scintilla)-->False
+      acceptable(s197 is excluded)-->False
+    applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->True
+  meets_proof_standard(s187 is excluded, scintilla)-->True
+acceptable(s187 is excluded)-->True
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+============================================
+proposition "an act of self-defense" state updated to questioned
+SUB ISSUE: "-an act of self-defense"
+Added argument 'arg4' to graph by claimer PROPONENT
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+Checking burden of proof for PROPONENT
+Calling acceptable(-an act of self-defense)
+  Calling meets_proof_standard(-an act of self-defense, scintilla)
+    Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
+      Calling acceptable(-Witness2 is credible)
+        Calling meets_proof_standard(-Witness2 is credible, scintilla)
+        meets_proof_standard(-Witness2 is credible, scintilla)-->False
+      acceptable(-Witness2 is credible)-->False
+    applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)-->True
+  meets_proof_standard(-an act of self-defense, scintilla)-->True
+acceptable(-an act of self-defense)-->True
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+No arguments found by RESPONDENT for issue '-an act of self-defense'
+
+
+Evaluating issue: s187 is excluded
+Calling acceptable(s187 is excluded)
+  Calling meets_proof_standard(s187 is excluded, scintilla)
+    Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
+      Calling acceptable(an act of self-defense)
+        Calling meets_proof_standard(an act of self-defense, scintilla)
+          Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
+            Calling acceptable(-Witness1 is credible)
+              Calling meets_proof_standard(-Witness1 is credible, scintilla)
+              meets_proof_standard(-Witness1 is credible, scintilla)-->False
+            acceptable(-Witness1 is credible)-->False
+          applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)-->True
+        meets_proof_standard(an act of self-defense, scintilla)-->True
+      acceptable(an act of self-defense)-->True
+      Calling acceptable(s197 is excluded)
+        Calling meets_proof_standard(s197 is excluded, scintilla)
+        meets_proof_standard(s197 is excluded, scintilla)-->False
+      acceptable(s197 is excluded)-->False
+    applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->True
+  meets_proof_standard(s187 is excluded, scintilla)-->True
+acceptable(s187 is excluded)-->True
+------ s187 is excluded IS acceptable ------
+
+
+
+********************************************************************************
+DIALOGUE SUMMARY:
+********************************************************************************
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+
+********************************************************************************
+
+
+Evaluating issue: murder
+Calling acceptable(murder)
+  Calling meets_proof_standard(murder, beyond_reasonable_doubt)
+    Calling meets_proof_standard(murder, clear_and_convincing)
       Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
         Calling acceptable(killing)
           Calling meets_proof_standard(killing, scintilla)
@@ -56,23 +305,36 @@ Burden of proof met by PROPONENT : ?
         acceptable(malice)-->True
         Calling acceptable(s187 is excluded)
           Calling meets_proof_standard(s187 is excluded, scintilla)
-          meets_proof_standard(s187 is excluded, scintilla)-->False
-        acceptable(s187 is excluded)-->False
-      applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->True
-    meets_proof_standard(murder, scintilla)-->True
-  acceptable(murder)-->True
+            Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
+              Calling acceptable(an act of self-defense)
+                Calling meets_proof_standard(an act of self-defense, scintilla)
+                  Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
+                    Calling acceptable(-Witness1 is credible)
+                      Calling meets_proof_standard(-Witness1 is credible, scintilla)
+                      meets_proof_standard(-Witness1 is credible, scintilla)-->False
+                    acceptable(-Witness1 is credible)-->False
+                  applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)-->True
+                meets_proof_standard(an act of self-defense, scintilla)-->True
+              acceptable(an act of self-defense)-->True
+              Calling acceptable(s197 is excluded)
+                Calling meets_proof_standard(s197 is excluded, scintilla)
+                meets_proof_standard(s197 is excluded, scintilla)-->False
+              acceptable(s197 is excluded)-->False
+            applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->True
+          meets_proof_standard(s187 is excluded, scintilla)-->True
+        acceptable(s187 is excluded)-->True
+      applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)-->False
+    meets_proof_standard(murder, clear_and_convincing)-->False
+  meets_proof_standard(murder, beyond_reasonable_doubt)-->False
+acceptable(murder)-->False
+------ murder IS NOT acceptable ------
+
+
+
+********************************************************************************
+DIALOGUE SUMMARY:
+********************************************************************************
 ================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
-[evidence 1 supports killing], ~[tampering of evidence 1] => killing
-[evidence 2 supports malice], ~[tampering of evidence 2] => malice
------------------------------------------
-Burden of proof met by PROPONENT : True
-============================================
-
-
-  Calling dialogue(s187 is excluded, ../../graph/example2/1_, ../../dot/example2/1_, 1, <__main__.ArgumentSet object at 0x7f1700211e48>, ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
@@ -88,7 +350,6 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 ============================================
-)
 ================== turn 1 ==================
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
@@ -99,40 +360,6 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by RESPONDENT : ?
 ============================================
-    Calling acceptable(s187 is excluded)
-      Calling meets_proof_standard(s187 is excluded, scintilla)
-        Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
-          Calling acceptable(an act of self-defense)
-            Calling meets_proof_standard(an act of self-defense, scintilla)
-            meets_proof_standard(an act of self-defense, scintilla)-->False
-          acceptable(an act of self-defense)-->False
-          Calling acceptable(s197 is excluded)
-            Calling meets_proof_standard(s197 is excluded, scintilla)
-            meets_proof_standard(s197 is excluded, scintilla)-->False
-          acceptable(s197 is excluded)-->False
-        applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->False
-      meets_proof_standard(s187 is excluded, scintilla)-->False
-    acceptable(s187 is excluded)-->False
-    Calling acceptable(s187 is excluded)
-      Calling meets_proof_standard(s187 is excluded, scintilla)
-        Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
-          Calling acceptable(an act of self-defense)
-            Calling meets_proof_standard(an act of self-defense, scintilla)
-              Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
-                Calling acceptable(-Witness1 is credible)
-                  Calling meets_proof_standard(-Witness1 is credible, scintilla)
-                  meets_proof_standard(-Witness1 is credible, scintilla)-->False
-                acceptable(-Witness1 is credible)-->False
-              applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)-->True
-            meets_proof_standard(an act of self-defense, scintilla)-->True
-          acceptable(an act of self-defense)-->True
-          Calling acceptable(s197 is excluded)
-            Calling meets_proof_standard(s197 is excluded, scintilla)
-            meets_proof_standard(s197 is excluded, scintilla)-->False
-          acceptable(s197 is excluded)-->False
-        applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)-->True
-      meets_proof_standard(s187 is excluded, scintilla)-->True
-    acceptable(s187 is excluded)-->True
 ================== turn 1 ==================
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
@@ -144,24 +371,29 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by RESPONDENT : True
 ============================================
-
-
-No arguments found
-  dialogue(s187 is excluded, ../../graph/example2/1_, ../../dot/example2/1_, 1, <__main__.ArgumentSet object at 0x7f1700211e48>, ================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
------------------------------------------
-Burden of proof met by PROPONENT : ?
-============================================
-================== turn 0 ==================
+================== turn 2 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
 [evidence 1 supports killing], ~[tampering of evidence 1] => killing
 [evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 ============================================
-)-->(<__main__.ArgumentSet object at 0x7f1700211e48>, "================== turn 0 ==================\nBURDEN OF PROOF @ PROPONENT\nARGUMENTS:\n[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder\n-----------------------------------------\nBurden of proof met by PROPONENT : ?\n============================================\n================== turn 0 ==================\nBURDEN OF PROOF @ PROPONENT\nARGUMENTS:\n[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder\n[evidence 1 supports killing], ~[tampering of evidence 1] => killing\n[evidence 2 supports malice], ~[tampering of evidence 2] => malice\n-----------------------------------------\nBurden of proof met by PROPONENT : True\n============================================\n================== turn 1 ==================\nBURDEN OF PROOF @ RESPONDENT\nARGUMENTS:\n[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder\n[evidence 1 supports killing], ~[tampering of evidence 1] => killing\n[evidence 2 supports malice], ~[tampering of evidence 2] => malice\n[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded\n-----------------------------------------\nBurden of proof met by RESPONDENT : ?\n============================================\n================== turn 1 ==================\nBURDEN OF PROOF @ RESPONDENT\nARGUMENTS:\n[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder\n[evidence 1 supports killing], ~[tampering of evidence 1] => killing\n[evidence 2 supports malice], ~[tampering of evidence 2] => malice\n[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded\n[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense\n-----------------------------------------\nBurden of proof met by RESPONDENT : True\n============================================\n", 2)
-dialogue(murder, ../../graph/example2/1_, ../../dot/example2/1_)-->None
+
+********************************************************************************
