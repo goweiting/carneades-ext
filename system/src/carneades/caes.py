@@ -456,7 +456,15 @@ class Reader(object):
             if isinstance(issues, list):
                 pass
             else:
-                issues = [issues]  # cast into list
+                logging.info(
+                    '\n\nEvaluating issue: {}'.format(issues))
+                # use the aceptablility standard in CAES
+                acceptability = caes.acceptable(issues)
+                logging.info('------ {} {} acceptable ------'.format(
+                    issues, ['IS NOT', 'IS'][acceptability]))
+                print('\n------ {} {} acceptable ------'.format(
+                    issues, ['IS NOT', 'IS'][acceptability]))
+                return acceptability
 
         for issue in issues:
             logging.info(
@@ -518,11 +526,18 @@ class Reader(object):
         if dialogue_state_argset is None:
             dialogue_state_argset = ArgumentSet()  # store the dialogue
 
+
         # -----------------------------------------------------------------
         # Start the dialogue by finding the best pro argument by the proponent
         # -----------------------------------------------------------------
         args_pro = self.argset.get_arguments(issue)
-        if len(args_pro) == 0:
+        try:
+            args_pro_dialogue = dialogue_state_argset.get_arguments(issue)
+            args_pro = [arg for arg in args_pro if arg not in args_pro_dialogue]
+        except KeyError:
+            pass
+
+        if len(args_pro) == 0 and dialogue_state_argset is None:
             # If the argument cannot be reached as there is nothing to argue
             # about, then we will just evaluate it according to the full
             # argumentaion set available.
@@ -536,14 +551,7 @@ class Reader(object):
 
         # start with the best argument, i.e. the one with the highest weight
         args_pro = sorted(args_pro, key=lambda args: args.weight)
-        # while len(args_pro):
-        #     best_arg = args_pro.pop()
-        #     subissue = best_arg.conclusion
-        #     self.dialogue(subissue,
-        #                   g_filename=, dot_filename=,
-        #                   turn_num=,
-        #                   argset=)
-
+        best_arg_pro = args_pro.pop()
         dialogue_state_argset.add_argument(best_arg_pro,
                                            state='claimed',
                                            claimer=self.actors[turn_num % 2])
@@ -588,13 +596,27 @@ class Reader(object):
                               turn_num, dialogue_state_argset, summary)
 
         # ----------------------------------------------------------------
-        #   NO LONGER DEBATABLE:
+        #   NO LONGER DEBATABLE?
         # ----------------------------------------------------------------
         g_file = g_filename + 'final.pdf'
         dot_file = dot_filename + 'final.dot'
         # Do acceptability test using the the PS defined:
-        self.run(g_filename=g_file, dot_filename=dot_file,
-                 argset=dialogue_state_argset, issues=[issue])
+        acceptability = self.run(g_filename=g_file, dot_filename=dot_file,
+                                argset=dialogue_state_argset, issues=[issue])
+
+        while not acceptability:
+            if len(args_pro):
+                dialogue_state_argset, summary, turn_num = \
+                    self.dialogue(issue, g_filename, dot_filename,
+                                  turn_num, dialogue_state_argset, summary)
+                acceptability = self.run(g_filename=g_file,
+                                        dot_filename=dot_file,
+                                        argset=dialogue_state_argset, issues=issue)
+            else:
+                logging.info('No arguments found')
+                return dialogue_state_argset, summary, turn_num
+
+
         logging.info(
             '\n\n\n********************************************************************************')
         logging.info(
@@ -602,6 +624,9 @@ class Reader(object):
         logging.info(
             '********************************************************************************')
         return dialogue_state_argset, summary, turn_num
+
+
+
 
     def debatable(self, issue, dialogue_state_argset):
         """
