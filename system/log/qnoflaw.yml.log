@@ -1,0 +1,217 @@
+	Tokenizing file...
+	Parsing tokens...
+	Adding propositions to CAES
+	Adding assumptions to CAES
+	Adding arguments to CAES
+Added argument 'the Government argues that entering and leaving the treaties fall under the crowns prerogative; hence have the power to invoke' to graph by claimer None
+Added argument 'the ECA and s2(1) have effect on domestic law, unless it is removed (such as using art 50)' to graph by claimer None
+Added argument 'because TEU affects domesitc law, hence parliment is required to approve it' to graph by claimer None
+Added argument 'because parliment approves it, it is supreme' to graph by claimer None
+Added argument 'if making and unmkaing law uses the same procedures, then procedure for ECA1972 should be used (Government bites on itself)' to graph by claimer None
+	Adding parameter to CAES
+	Adding proofstandard to CAES
+	Adding issues to CAES
+********************************************************************************
+ISSUE: "Government can invoke Article 50 with Crown prerogative powers"
+********************************************************************************
+Added argument 'the Government argues that entering and leaving the treaties fall under the crowns prerogative; hence have the power to invoke' to graph by claimer PROPONENT
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+Checking burden of proof for PROPONENT
+Calling acceptable(Government can invoke Article 50 with Crown prerogative powers)
+  Calling meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, scintilla)
+    Calling applicable([Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers)
+    applicable([Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers)-->True
+  meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, scintilla)-->True
+acceptable(Government can invoke Article 50 with Crown prerogative powers)-->True
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+proposition "Government can invoke Article 50 with Crown prerogative powers" state updated to questioned
+SUB ISSUE: "-Government can invoke Article 50 with Crown prerogative powers"
+Added argument 'because parliment approves it, it is supreme' to graph by claimer RESPONDENT
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+============================================
+Checking burden of proof for RESPONDENT
+Calling acceptable(-Government can invoke Article 50 with Crown prerogative powers)
+  Calling meets_proof_standard(-Government can invoke Article 50 with Crown prerogative powers, scintilla)
+    Calling applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)
+    applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)-->True
+  meets_proof_standard(-Government can invoke Article 50 with Crown prerogative powers, scintilla)-->True
+acceptable(-Government can invoke Article 50 with Crown prerogative powers)-->True
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+============================================
+No arguments found by PROPONENT for issue '-Government can invoke Article 50 with Crown prerogative powers'
+
+
+Evaluating issue: Government can invoke Article 50 with Crown prerogative powers
+Calling acceptable(Government can invoke Article 50 with Crown prerogative powers)
+  Calling meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, beyond_reasonable_doubt)
+    Calling meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, clear_and_convincing)
+      Calling applicable([Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers)
+      applicable([Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers)-->True
+      Calling applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)
+      applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)-->True
+    meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, clear_and_convincing)-->False
+  meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, beyond_reasonable_doubt)-->False
+acceptable(Government can invoke Article 50 with Crown prerogative powers)-->False
+------ Government can invoke Article 50 with Crown prerogative powers IS NOT acceptable ------
+
+
+
+********************************************************************************
+DIALOGUE SUMMARY:
+********************************************************************************
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+============================================
+
+********************************************************************************
+********************************************************************************
+ISSUE: "-Government can invoke Article 50 with Crown prerogative powers"
+********************************************************************************
+Added argument 'because parliment approves it, it is supreme' to graph by claimer PROPONENT
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+Checking burden of proof for PROPONENT
+Calling acceptable(-Government can invoke Article 50 with Crown prerogative powers)
+  Calling meets_proof_standard(-Government can invoke Article 50 with Crown prerogative powers, scintilla)
+    Calling applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)
+    applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)-->True
+  meets_proof_standard(-Government can invoke Article 50 with Crown prerogative powers, scintilla)-->True
+acceptable(-Government can invoke Article 50 with Crown prerogative powers)-->True
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+proposition "-Government can invoke Article 50 with Crown prerogative powers" state updated to questioned
+SUB ISSUE: "Government can invoke Article 50 with Crown prerogative powers"
+Added argument 'the Government argues that entering and leaving the treaties fall under the crowns prerogative; hence have the power to invoke' to graph by claimer RESPONDENT
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+============================================
+Checking burden of proof for RESPONDENT
+Calling acceptable(Government can invoke Article 50 with Crown prerogative powers)
+  Calling meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, scintilla)
+    Calling applicable([Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers)
+    applicable([Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers)-->True
+  meets_proof_standard(Government can invoke Article 50 with Crown prerogative powers, scintilla)-->True
+acceptable(Government can invoke Article 50 with Crown prerogative powers)-->True
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+============================================
+No arguments found by PROPONENT for issue 'Government can invoke Article 50 with Crown prerogative powers'
+
+
+Evaluating issue: -Government can invoke Article 50 with Crown prerogative powers
+Calling acceptable(-Government can invoke Article 50 with Crown prerogative powers)
+  Calling meets_proof_standard(-Government can invoke Article 50 with Crown prerogative powers, scintilla)
+    Calling applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)
+    applicable([Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers)-->True
+  meets_proof_standard(-Government can invoke Article 50 with Crown prerogative powers, scintilla)-->True
+acceptable(-Government can invoke Article 50 with Crown prerogative powers)-->True
+------ -Government can invoke Article 50 with Crown prerogative powers IS acceptable ------
+
+
+
+********************************************************************************
+DIALOGUE SUMMARY:
+********************************************************************************
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Crown is sovereign and legislation enacted by the Crown with the consent of both Houses of Parliment is supreme, Parliment must pass the necessary legislation if there are changes to domestic law], ~[] => -Government can invoke Article 50 with Crown prerogative powers
+[Making and unmaking a treaty requires the same procedures], ~[-TEU is an International Treaty] => Government can invoke Article 50 with Crown prerogative powers
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+============================================
+
+********************************************************************************
