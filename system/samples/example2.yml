@@ -21,21 +21,21 @@ PROPOSITION:
   ev2: evidence 2 supports malice
   ev2 tampered: tampering of evidence 2
 
-ASSUMPTION: [ev1, ev2, s187 valid, s197 valid, w1, w2] # legal rules are assumed to be valid, unless questioned; exclusion of legal rules is not questioning legal rule but an exception to the rule - hence modeled as an exception
+ASSUMPTION: [killing, malice, ev1, ev2, s187 valid, s197 valid, w1, w2] # legal rules are assumed to be valid, unless questioned; exclusion of legal rules is not questioning legal rule but an exception to the rule - hence modeled as an exception
 
 ARGUMENT:
 # Added two new argument to imply that killing and malice is acceptable
-  arg01 :
-    premise: [ev1]
-    exception: [ev1 tampered]
-    conclusion: killing
-    weight: 0.2
-
-  arg02:
-    premise: [ev2]
-    exception: [ev2 tampered]
-    conclusion: malice
-    weight: 0.2
+# arg01 :
+#   premise: [ev1]
+#   exception: [ev1 tampered]
+#   conclusion: killing
+#   weight: 0.2
+#
+# arg02:
+#   premise: [ev2]
+#   exception: [ev2 tampered]
+#   conclusion: malice
+#   weight: 0.2
 
   arg1 :
     premise: [killing, malice, s187 valid] # these ordinary premises are assumed to be supported
