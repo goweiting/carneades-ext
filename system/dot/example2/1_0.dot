@@ -6,9 +6,23 @@ digraph G{
 "killing" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "malice" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "s187 is excluded" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg01" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-killing" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"evidence 1 supports killing" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"tampering of evidence 1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg02" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-malice" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"evidence 2 supports malice" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"tampering of evidence 2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "murder" -> "arg1" ; 
 "arg1" -> "Section 187 is valid" ; 
 "arg1" -> "killing" ; 
 "arg1" -> "malice" ; 
 "arg1" -> "s187 is excluded" [arrowhead=dot] ; 
+"killing" -> "arg01" ; 
+"arg01" -> "evidence 1 supports killing" ; 
+"arg01" -> "tampering of evidence 1" [arrowhead=dot] ; 
+"malice" -> "arg02" ; 
+"arg02" -> "evidence 2 supports malice" ; 
+"arg02" -> "tampering of evidence 2" [arrowhead=dot] ; 
 }

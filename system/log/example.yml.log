@@ -10,6 +10,13 @@
 ISSUE: "accused committed murder"
 ********************************************************************************
 Calling dialogue(accused committed murder, ../../graph/example/1_, ../../dot/example/1_)
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[accused have the intent, accused killed the victim], ~[] => accused committed murder
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+============================================
   Calling acceptable(accused committed murder)
     Calling meets_proof_standard(accused committed murder, scintilla)
       Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
@@ -44,85 +51,6 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 ============================================
-  Calling acceptable(accused committed murder)
-    Calling meets_proof_standard(accused committed murder, scintilla)
-      Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
-        Calling acceptable(accused have the intent)
-          Calling meets_proof_standard(accused have the intent, scintilla)
-            Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
-              Calling acceptable(first witness is unreliable)
-                Calling meets_proof_standard(first witness is unreliable, scintilla)
-                meets_proof_standard(first witness is unreliable, scintilla)-->False
-              acceptable(first witness is unreliable)-->False
-            applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
-          meets_proof_standard(accused have the intent, scintilla)-->True
-        acceptable(accused have the intent)-->True
-      applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->True
-    meets_proof_standard(accused committed murder, scintilla)-->True
-  acceptable(accused committed murder)-->True
-================== turn 1 ==================
-BURDEN OF PROOF @ RESPONDENT
-ARGUMENTS:
-[accused have the intent, accused killed the victim], ~[] => accused committed murder
-[first witness], ~[first witness is unreliable] => accused have the intent
-[second witness], ~[second witness is unreliable] => -accused have the intent
------------------------------------------
-Burden of proof met by RESPONDENT : True
-============================================
-All arguments exhausted
-
-
-Evaluating issue: accused committed murder
-  Calling acceptable(accused committed murder)
-    Calling meets_proof_standard(accused committed murder, scintilla)
-      Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
-        Calling acceptable(accused have the intent)
-          Calling meets_proof_standard(accused have the intent, beyond_reasonable_doubt)
-            Calling meets_proof_standard(accused have the intent, clear_and_convincing)
-              Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
-                Calling acceptable(first witness is unreliable)
-                  Calling meets_proof_standard(first witness is unreliable, scintilla)
-                  meets_proof_standard(first witness is unreliable, scintilla)-->False
-                acceptable(first witness is unreliable)-->False
-              applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
-              Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
-                Calling acceptable(second witness is unreliable)
-                  Calling meets_proof_standard(second witness is unreliable, scintilla)
-                  meets_proof_standard(second witness is unreliable, scintilla)-->False
-                acceptable(second witness is unreliable)-->False
-              applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->True
-            meets_proof_standard(accused have the intent, clear_and_convincing)-->False
-          meets_proof_standard(accused have the intent, beyond_reasonable_doubt)-->False
-        acceptable(accused have the intent)-->False
-      applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->False
-    meets_proof_standard(accused committed murder, scintilla)-->False
-  acceptable(accused committed murder)-->False
------- accused committed murder IS NOT acceptable ------
-
-
-
-********************************************************************************
-DIALOGUE SUMMARY:
-********************************************************************************
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[accused have the intent, accused killed the victim], ~[] => accused committed murder
-[first witness], ~[first witness is unreliable] => accused have the intent
------------------------------------------
-Burden of proof met by PROPONENT : True
-============================================
-================== turn 1 ==================
-BURDEN OF PROOF @ RESPONDENT
-ARGUMENTS:
-[accused have the intent, accused killed the victim], ~[] => accused committed murder
-[first witness], ~[first witness is unreliable] => accused have the intent
-[second witness], ~[second witness is unreliable] => -accused have the intent
------------------------------------------
-Burden of proof met by RESPONDENT : True
-============================================
-
-********************************************************************************
 dialogue(accused committed murder, ../../graph/example/1_, ../../dot/example/1_)-->None
 ********************************************************************************
 ISSUE: "-accused committed murder"
@@ -138,4 +66,4 @@ Evaluating issue: -accused committed murder
     meets_proof_standard(-accused committed murder, scintilla)-->False
   acceptable(-accused committed murder)-->False
 ------ -accused committed murder IS NOT acceptable ------
-dialogue(-accused committed murder, ../../graph/example/2_, ../../dot/example/2_)-->None
+dialogue(-accused committed murder, ../../graph/example/2_, ../../dot/example/2_)-->(<__main__.ArgumentSet object at 0x7fe376ba1710>, '', 0)
