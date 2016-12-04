@@ -3,55 +3,90 @@
 	Adding propositions to CAES
 	Adding assumptions to CAES
 	Adding arguments to CAES
-Added argument 'arg1' to graph by claimer None
-Added argument 'arg2' to graph by claimer None
-Added argument 'arg4' to graph by claimer None
-Added argument 'arg5' to graph by claimer None
+Added argument 'arg1' to graph by claimer 'None'
+Added proposition 'issue' to graph with state None
+Added proposition '-issue' to graph with state None
+Added proposition 'support 1' to graph with state None
+Added argument 'arg2' to graph by claimer 'None'
+Proposition 'issue' is already in graph
+Proposition '-issue' is already in graph
+Added proposition 'support 2' to graph with state None
+Added argument 'arg4' to graph by claimer 'None'
+Proposition 'support 1' is already in graph
+Added proposition '-support 1' to graph with state None
+Added proposition 'premise1' to graph with state None
+Added argument 'arg5' to graph by claimer 'None'
+Proposition 'support 2' is already in graph
+Added proposition '-support 2' to graph with state None
+Added proposition 'premise2' to graph with state None
 	Adding parameter to CAES
 	Adding proofstandard to CAES
 	Adding issues to CAES
 ********************************************************************************
 ISSUE: "issue"
 ********************************************************************************
-Added argument 'arg1' to graph by claimer PROPONENT
+Added argument 'arg2' to graph by claimer 'PROPONENT'
+Added proposition 'issue' to graph with state claimed
+Added proposition '-issue' to graph with state None
+Added proposition 'support 2' to graph with state None
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
-[support 1], ~[] => issue
+[support 2], ~[] => issue
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 ============================================
 Checking burden of proof for PROPONENT
 Calling acceptable(issue)
+Checking whether proposition 'issue'meets proof standard 'scintilla'.
   Calling meets_proof_standard(issue, scintilla)
-    Calling applicable([support 1], ~[] => issue)
-      Calling acceptable(support 1)
-        Calling meets_proof_standard(support 1, scintilla)
-        meets_proof_standard(support 1, scintilla)-->False
-      acceptable(support 1)-->False
-    applicable([support 1], ~[] => issue)-->False
+	arguments:['[support 2], ~[] => issue'] 
+    Calling applicable([support 2], ~[] => issue)
+Checking applicability of arg2...
+Current assumptions: {premise1, premise2}
+Current premises: {support 2}
+      Calling acceptable(support 2)
+Checking whether proposition 'support 2'meets proof standard 'scintilla'.
+        Calling meets_proof_standard(support 2, scintilla)
+	arguments:[] 
+        meets_proof_standard(support 2, scintilla)-->False
+      acceptable(support 2)-->False
+    applicable([support 2], ~[] => issue)-->False
   meets_proof_standard(issue, scintilla)-->False
 acceptable(issue)-->False
-Added argument 'arg4' to graph by claimer PROPONENT
-proposition "support 1" state updated to claimed
+Added argument 'arg5' to graph by claimer 'PROPONENT'
+Proposition 'support 2' is already in graph
+Added proposition '-support 2' to graph with state None
+Added proposition 'premise2' to graph with state None
+proposition "support 2" state updated to claimed
 Checking burden of proof for PROPONENT
 Calling acceptable(issue)
+Checking whether proposition 'issue'meets proof standard 'scintilla'.
   Calling meets_proof_standard(issue, scintilla)
-    Calling applicable([support 1], ~[] => issue)
-      Calling acceptable(support 1)
-        Calling meets_proof_standard(support 1, scintilla)
-          Calling applicable([premise1], ~[] => support 1)
-          applicable([premise1], ~[] => support 1)-->True
-        meets_proof_standard(support 1, scintilla)-->True
-      acceptable(support 1)-->True
-    applicable([support 1], ~[] => issue)-->True
+	arguments:['[support 2], ~[] => issue'] 
+    Calling applicable([support 2], ~[] => issue)
+Checking applicability of arg2...
+Current assumptions: {premise1, premise2}
+Current premises: {support 2}
+      Calling acceptable(support 2)
+Checking whether proposition 'support 2'meets proof standard 'scintilla'.
+        Calling meets_proof_standard(support 2, scintilla)
+	arguments:['[premise2], ~[] => support 2'] 
+          Calling applicable([premise2], ~[] => support 2)
+Checking applicability of arg5...
+Current assumptions: {premise1, premise2}
+Current premises: {premise2}
+          applicable([premise2], ~[] => support 2)-->True
+        meets_proof_standard(support 2, scintilla)-->True
+      acceptable(support 2)-->True
+    applicable([support 2], ~[] => issue)-->True
   meets_proof_standard(issue, scintilla)-->True
 acceptable(issue)-->True
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
-[support 1], ~[] => issue
-[premise1], ~[] => support 1
+[support 2], ~[] => issue
+[premise2], ~[] => support 2
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 ============================================

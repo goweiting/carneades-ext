@@ -3,16 +3,47 @@
 	Adding propositions to CAES
 	Adding assumptions to CAES
 	Adding arguments to CAES
-Added argument 'is there an intent to murder?' to graph by claimer None
-Added argument 'is witness1 sufficient to proof intent?' to graph by claimer None
-Added argument 'is witness2 sufficient to proof intent?' to graph by claimer None
+Added argument 'is there an intent to murder?' to graph by claimer 'None'
+Added proposition 'accused committed murder' to graph with state None
+Added proposition '-accused committed murder' to graph with state None
+Added proposition 'accused have the intent' to graph with state None
+Added proposition 'accused killed the victim' to graph with state None
+Added argument 'is witness1 sufficient to proof intent?' to graph by claimer 'None'
+Proposition 'accused have the intent' is already in graph
+Added proposition '-accused have the intent' to graph with state None
+Added proposition 'first witness' to graph with state None
+Added proposition 'first witness is unreliable' to graph with state None
+Added argument 'is witness2 sufficient to proof intent?' to graph by claimer 'None'
+Proposition '-accused have the intent' is already in graph
+Proposition 'accused have the intent' is already in graph
+Added proposition 'second witness' to graph with state None
+Added proposition 'second witness is unreliable' to graph with state None
 	Adding parameter to CAES
 	Adding proofstandard to CAES
 	Adding issues to CAES
 ********************************************************************************
+ISSUE: "-accused committed murder"
+********************************************************************************
+Issue -accused committed murder cannot be evaluated. In sufficient arguments to form an argumentation graph
+Evaluating on the full argumentation set...
+
+
+Evaluating issue: -accused committed murder
+Calling acceptable(-accused committed murder)
+Checking whether proposition '-accused committed murder'meets proof standard 'scintilla'.
+  Calling meets_proof_standard(-accused committed murder, scintilla)
+	arguments:[] 
+  meets_proof_standard(-accused committed murder, scintilla)-->False
+acceptable(-accused committed murder)-->False
+------ -accused committed murder IS NOT acceptable ------
+********************************************************************************
 ISSUE: "accused committed murder"
 ********************************************************************************
-Added argument 'is there an intent to murder?' to graph by claimer PROPONENT
+Added argument 'is there an intent to murder?' to graph by claimer 'PROPONENT'
+Added proposition 'accused committed murder' to graph with state claimed
+Added proposition '-accused committed murder' to graph with state None
+Added proposition 'accused have the intent' to graph with state None
+Added proposition 'accused killed the victim' to graph with state None
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
@@ -22,26 +53,50 @@ Burden of proof met by PROPONENT : ?
 ============================================
 Checking burden of proof for PROPONENT
 Calling acceptable(accused committed murder)
+Checking whether proposition 'accused committed murder'meets proof standard 'scintilla'.
   Calling meets_proof_standard(accused committed murder, scintilla)
+	arguments:['[accused have the intent, accused killed the victim], ~[] => accused committed murder'] 
     Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
+Checking applicability of is there an intent to murder?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {accused killed the victim, accused have the intent}
       Calling acceptable(accused have the intent)
+Checking whether proposition 'accused have the intent'meets proof standard 'scintilla'.
         Calling meets_proof_standard(accused have the intent, scintilla)
+	arguments:[] 
         meets_proof_standard(accused have the intent, scintilla)-->False
       acceptable(accused have the intent)-->False
     applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)-->False
   meets_proof_standard(accused committed murder, scintilla)-->False
 acceptable(accused committed murder)-->False
-Added argument 'is witness1 sufficient to proof intent?' to graph by claimer PROPONENT
+Added argument 'is witness1 sufficient to proof intent?' to graph by claimer 'PROPONENT'
+Proposition 'accused have the intent' is already in graph
+Added proposition '-accused have the intent' to graph with state None
+Added proposition 'first witness' to graph with state None
+Added proposition 'first witness is unreliable' to graph with state None
 proposition "accused have the intent" state updated to claimed
 Checking burden of proof for PROPONENT
 Calling acceptable(accused committed murder)
+Checking whether proposition 'accused committed murder'meets proof standard 'scintilla'.
   Calling meets_proof_standard(accused committed murder, scintilla)
+	arguments:['[accused have the intent, accused killed the victim], ~[] => accused committed murder'] 
     Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
+Checking applicability of is there an intent to murder?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {accused killed the victim, accused have the intent}
       Calling acceptable(accused have the intent)
+Checking whether proposition 'accused have the intent'meets proof standard 'scintilla'.
         Calling meets_proof_standard(accused have the intent, scintilla)
+	arguments:['[first witness], ~[first witness is unreliable] => accused have the intent'] 
           Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
+Checking applicability of is witness1 sufficient to proof intent?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {first witness}
+Current exception: {first witness is unreliable}
             Calling acceptable(first witness is unreliable)
+Checking whether proposition 'first witness is unreliable'meets proof standard 'scintilla'.
               Calling meets_proof_standard(first witness is unreliable, scintilla)
+	arguments:[] 
               meets_proof_standard(first witness is unreliable, scintilla)-->False
             acceptable(first witness is unreliable)-->False
           applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
@@ -60,7 +115,11 @@ Burden of proof met by PROPONENT : True
 ============================================
 proposition "accused have the intent" state updated to questioned
 SUB ISSUE: "-accused have the intent"
-Added argument 'is witness2 sufficient to proof intent?' to graph by claimer RESPONDENT
+Added argument 'is witness2 sufficient to proof intent?' to graph by claimer 'RESPONDENT'
+Proposition '-accused have the intent' is already in graph
+Proposition 'accused have the intent' is already in graph
+Added proposition 'second witness' to graph with state None
+Added proposition 'second witness is unreliable' to graph with state None
 ================== turn 1 ==================
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
@@ -72,10 +131,18 @@ Burden of proof met by RESPONDENT : ?
 ============================================
 Checking burden of proof for RESPONDENT
 Calling acceptable(-accused have the intent)
+Checking whether proposition '-accused have the intent'meets proof standard 'scintilla'.
   Calling meets_proof_standard(-accused have the intent, scintilla)
+	arguments:['[second witness], ~[second witness is unreliable] => -accused have the intent'] 
     Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
+Checking applicability of is witness2 sufficient to proof intent?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {second witness}
+Current exception: {second witness is unreliable}
       Calling acceptable(second witness is unreliable)
+Checking whether proposition 'second witness is unreliable'meets proof standard 'scintilla'.
         Calling meets_proof_standard(second witness is unreliable, scintilla)
+	arguments:[] 
         meets_proof_standard(second witness is unreliable, scintilla)-->False
       acceptable(second witness is unreliable)-->False
     applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->True
@@ -95,23 +162,51 @@ No arguments found by PROPONENT for issue '-accused have the intent'
 
 Evaluating issue: accused committed murder
 Calling acceptable(accused committed murder)
+Checking whether proposition 'accused committed murder'meets proof standard 'scintilla'.
   Calling meets_proof_standard(accused committed murder, scintilla)
+	arguments:['[accused have the intent, accused killed the victim], ~[] => accused committed murder'] 
     Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
+Checking applicability of is there an intent to murder?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {accused killed the victim, accused have the intent}
       Calling acceptable(accused have the intent)
+Checking whether proposition 'accused have the intent'meets proof standard 'beyond_reasonable_doubt'.
         Calling meets_proof_standard(accused have the intent, beyond_reasonable_doubt)
+	arguments:['[first witness], ~[first witness is unreliable] => accused have the intent'] 
           Calling meets_proof_standard(accused have the intent, clear_and_convincing)
+	arguments:['[first witness], ~[first witness is unreliable] => accused have the intent'] 
             Calling applicable([first witness], ~[first witness is unreliable] => accused have the intent)
+Checking applicability of is witness1 sufficient to proof intent?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {first witness}
+Current exception: {first witness is unreliable}
               Calling acceptable(first witness is unreliable)
+Checking whether proposition 'first witness is unreliable'meets proof standard 'scintilla'.
                 Calling meets_proof_standard(first witness is unreliable, scintilla)
+	arguments:[] 
                 meets_proof_standard(first witness is unreliable, scintilla)-->False
               acceptable(first witness is unreliable)-->False
             applicable([first witness], ~[first witness is unreliable] => accused have the intent)-->True
+Checking applicability and weights of [is witness1 sufficient to proof intent?]
+Weights of [is witness1 sufficient to proof intent?] are [0.81]
             Calling applicable([second witness], ~[second witness is unreliable] => -accused have the intent)
+Checking applicability of is witness2 sufficient to proof intent?...
+Current assumptions: {first witness, accused killed the victim, second witness}
+Current premises: {second witness}
+Current exception: {second witness is unreliable}
               Calling acceptable(second witness is unreliable)
+Checking whether proposition 'second witness is unreliable'meets proof standard 'scintilla'.
                 Calling meets_proof_standard(second witness is unreliable, scintilla)
+	arguments:[] 
                 meets_proof_standard(second witness is unreliable, scintilla)-->False
               acceptable(second witness is unreliable)-->False
             applicable([second witness], ~[second witness is unreliable] => -accused have the intent)-->True
+Checking applicability and weights of [is witness2 sufficient to proof intent?]
+Weights of [is witness2 sufficient to proof intent?] are [0.8]
+max weight pro 'accused have the intent' is 0.81
+max weight con 'accused have the intent' is 0.8
+max weight pro '0.81' >  alpha '0.4': True
+diff between pro and con = 0.010000000000000009 > gamma: False
           meets_proof_standard(accused have the intent, clear_and_convincing)-->False
         meets_proof_standard(accused have the intent, beyond_reasonable_doubt)-->False
       acceptable(accused have the intent)-->False
@@ -119,6 +214,7 @@ Calling acceptable(accused committed murder)
   meets_proof_standard(accused committed murder, scintilla)-->False
 acceptable(accused committed murder)-->False
 ------ accused committed murder IS NOT acceptable ------
+No arguments found
 
 
 
@@ -160,16 +256,3 @@ Burden of proof met by RESPONDENT : True
 ============================================
 
 ********************************************************************************
-********************************************************************************
-ISSUE: "-accused committed murder"
-********************************************************************************
-Issue -accused committed murder cannot be evaluated. In sufficient arguments to form an argumentation graph
-Evaluating on the full argumentation set...
-
-
-Evaluating issue: -accused committed murder
-Calling acceptable(-accused committed murder)
-  Calling meets_proof_standard(-accused committed murder, scintilla)
-  meets_proof_standard(-accused committed murder, scintilla)-->False
-acceptable(-accused committed murder)-->False
------- -accused committed murder IS NOT acceptable ------

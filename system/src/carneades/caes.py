@@ -417,7 +417,6 @@ class Reader(object):
                     '********************************************************************************\nISSUE: "{}"\n********************************************************************************'.format(issue))
                 # always starts from turn 0
                 self.dialogue(issue, g_filename, dot_filename)
-            return
 
         else:
             raise ValueError('Argument dialogue takes only boolean value')
@@ -537,7 +536,11 @@ class Reader(object):
         except KeyError:
             pass
 
-        if len(args_pro) == 0 and dialogue_state_argset is None:
+        # start with the best argument, i.e. the one with the highest weight
+        args_pro = sorted(args_pro, key=lambda args: args.weight)
+        try:
+            best_arg_pro = args_pro.pop()
+        except IndexError:
             # If the argument cannot be reached as there is nothing to argue
             # about, then we will just evaluate it according to the full
             # argumentaion set available.
@@ -549,9 +552,6 @@ class Reader(object):
             self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
             return dialogue_state_argset, summary, turn_num
 
-        # start with the best argument, i.e. the one with the highest weight
-        args_pro = sorted(args_pro, key=lambda args: args.weight)
-        best_arg_pro = args_pro.pop()
         dialogue_state_argset.add_argument(best_arg_pro,
                                            state='claimed',
                                            claimer=self.actors[turn_num % 2])
@@ -606,6 +606,8 @@ class Reader(object):
 
         while not acceptability:
             if len(args_pro):
+                # If there are other arguments that can help with the issue,
+                # add them in:
                 dialogue_state_argset, summary, turn_num = \
                     self.dialogue(issue, g_filename, dot_filename,
                                   turn_num, dialogue_state_argset, summary)
@@ -614,41 +616,13 @@ class Reader(object):
                                         argset=dialogue_state_argset, issues=issue)
             else:
                 logging.info('No arguments found')
+                logging.info(
+                    '\n\n\n********************************************************************************')
+                logging.info(
+                    'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.format(summary))
+                logging.info(
+                    '********************************************************************************')
                 return dialogue_state_argset, summary, turn_num
-
-
-        logging.info(
-            '\n\n\n********************************************************************************')
-        logging.info(
-            'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.format(summary))
-        logging.info(
-            '********************************************************************************')
-        return dialogue_state_argset, summary, turn_num
-
-
-
-
-    def debatable(self, issue, dialogue_state_argset):
-        """
-        Given the current dialogue state, check if there are any more arguments to be added
-
-        :param dialogue_state_argset - the current state for the dialogue
-        :param issue - the issue of contention
-        :rtype True - if there are more arguments to be added; otherwise False
-        """
-        # find the difference between all the arguments available and the
-        # current dialogue state argsument set.
-        delta = [
-            x for x in self.argset.arguments if x not in dialogue_state_argset.arguments]
-        if len(delta):
-            logging.debug('Checking if debatable... True')
-            return True
-        else:
-            # the number of arguments have been maxed out!
-            logging.info(
-                'All arguments have been added into the argset! nothing else to consider')
-            logging.debug('Checking if debatable... False')
-            return False
 
     def burden_met(self, issue, argument, argset, ps, turn_num, summary):
         """
@@ -690,67 +664,6 @@ class Reader(object):
                 logging.info('{}'.format(summary))
         return argset, summary, burden_status
 
-    # The proponent of the issue first put forth a claim. Then the opponent
-    # questioned it by presenting either a rebuttal or a counterargument (am
-    # attack on the argument)
-    # The rebuttal is a
-
-    def find_best_pro_argument(self, issue, argset):
-        """
-        First, find the arguments with conclusions `questioned` by the opponent
-        For all these arguments, find the arguments that are put forth by the
-        opponent - which matches the issue
-        After finding the subset of these issues, iteratively search for con arguments that can be used to defeat the arguments
-        """
-
-        args_questioned = argset.get_arguments_status('questioned')
-        premises = []
-        for arg in args_to_consider:
-            premises.extend(arg.premises + arg.exceptions)
-        args_by_respondent = argset.get_argument_claimer('RESPONDENT')
-        args_to_consider = [
-            arg for arg in args_by_respondent if arg.conclusion in premises]
-
-        # args_questioned_ = [
-        #     arg for arg in args_questioned if arg.conclusion == issue]
-        args_questioned_sorted = sorted(
-            args_questioned_, key=lambda arg: arg.weight)
-
-        while len(args_questioned_sorted):
-            arg = args_questioned_sorted.pop()
-            if len(arg.exceptions):  # if there are exceptions
-                for exception in arg.exceptions:
-                    # iterate through the exceptions and find arguments that
-                    # can be used to claim the exceptions
-                    args_con = self.argset.get_arguments(exception)
-                    if len(args_con):
-                        args_con = sorted(args_con, key=lambda arg: arg.weight)
-                        # return the argument that supports the exception with the
-                        # largest weight and the argument this argument is
-                        # attacking
-                        return (args_con.pop(), arg)
-            else:
-                # consider the next claim by the proponent
-                continue
-
-        # if ever reached here, there are no arguments to attacked the
-        # exceptions. Hence, a rebuttal is needed
-        args_questioned_sorted = sorted(
-            args_questioned_, key=lambda arg: arg.weight)
-        while len(args_questioned_sorted):
-            arg = args_questioned_sorted.pop()
-            arg_con = self.argset.get_arguments_con(arg.conclusion)
-            if len(arg_con):
-                # there';s at least one argument that is avaliable for rebuttal
-                arg_con = sorted(arg_con, key=lambda arg: arg.weight)
-                return (arg_con.pop(), arg)
-
-            else:
-                # consider the net claim by proponent
-                continue
-
-        return False
-
     def find_best_con_argument(self, issue, argset):
         """
         The respondent to the argument have the burden of production of any
@@ -770,13 +683,6 @@ class Reader(object):
         # first, find the arguments that are claimed by the proponent, and sort
         # it according to their weight
         args_claimed_ = argset.get_arguments_status(issue, 'claimed')
-        print("\nCLAIMED:\n{}".format(args_claimed_))
-        # args_claimed_ = [
-        #     arg for arg in args_claimed if arg.conclusion == issue]
-        # for arg in args_claimed:
-        #     # only find relevant arguments that lead to the issue
-        #     if arg.conclusion == issue:
-        #         args_claimed_.append(arg)
         args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
 
         while len(args_claimed_sorted):
@@ -1048,15 +954,6 @@ class ArgumentSet(object):
         self.arg_count = 0
         self.arguments = []
 
-        # def __str__(self):
-        #     argument_str = ""
-        #     for arg in self.arguments:
-        #         argument_str += arg.__str__() + '\n'
-        #     return argument_str
-        #
-        # def __repr__(self):
-        #     return self.__str__()
-
     def propset(self):
         """
         The set of :class:`PropLiteral`s represented by the vertices in
@@ -1193,15 +1090,6 @@ class ArgumentSet(object):
             raise ValueError("Proposition '{}' is not in the current graph".
                              format(proposition))
 
-    def get_argument_claimer(self, claimer):
-        """
-        Find arguments that are claimed by actors
-        """
-        arg_IDs = [self.graph.vs[v.index]['arg'] for v in
-                   self.graph.vs.select(claimer=claimer)]
-        args = [arg for arg in self.arguments if arg.arg_id in arg_IDs]
-        return args
-
     def get_arguments_con(self, proposition):
         """
         Given a proposition p, use get_arguments to find the arguments that are are con p
@@ -1247,9 +1135,7 @@ class ArgumentSet(object):
         self.graph.vs.select(prop=concl)['state'] = state
         logging.info(
             'proposition "{}" state updated to {}'.format(concl, state))
-        # print(self.graph)
 
-    # -----------------------------------------------------------------------
     def draw(self, g_filename, debug=False):
         """
         Visualise an :class:`ArgumentSet` as a labeled graph.

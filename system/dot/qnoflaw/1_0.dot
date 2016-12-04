@@ -1,10 +1,10 @@
 digraph G{ 
-"the Government argues that entering and\nleaving the treaties fall under the\ncrowns prerogative; hence have the power\nto invoke" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
-"Government can invoke Article 50 with\nCrown prerogative powers" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"because parliment approves it, it is\nsupreme" [color="black", fillcolor="coral4",fixedsize=false, shape=box, style="filled"]; 
 "-Government can invoke Article 50 with\nCrown prerogative powers" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"Making and unmaking a treaty requires\nthe same procedures" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"-TEU is an International Treaty" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"Government can invoke Article 50 with\nCrown prerogative powers" -> "the Government argues that entering and\nleaving the treaties fall under the\ncrowns prerogative; hence have the power\nto invoke" ; 
-"the Government argues that entering and\nleaving the treaties fall under the\ncrowns prerogative; hence have the power\nto invoke" -> "Making and unmaking a treaty requires\nthe same procedures" ; 
-"the Government argues that entering and\nleaving the treaties fall under the\ncrowns prerogative; hence have the power\nto invoke" -> "-TEU is an International Treaty" [arrowhead=dot] ; 
+"Government can invoke Article 50 with\nCrown prerogative powers" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Crown is sovereign and legislation\nenacted by the Crown with the consent of\nboth Houses of Parliment is supreme" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Parliment must pass the necessary\nlegislation if there are changes to\ndomestic law" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-Government can invoke Article 50 with\nCrown prerogative powers" -> "because parliment approves it, it is\nsupreme" ; 
+"because parliment approves it, it is\nsupreme" -> "Crown is sovereign and legislation\nenacted by the Crown with the consent of\nboth Houses of Parliment is supreme" ; 
+"because parliment approves it, it is\nsupreme" -> "Parliment must pass the necessary\nlegislation if there are changes to\ndomestic law" ; 
 }
