@@ -56,6 +56,6 @@ class TraceCalls(object):
                 self.stream.write("\n{}{}({})-->{}".format(indent, fn.__name__,
                                                            argstr, ret))
                 logging.info("{}{}({})-->{}".format(indent, fn.__name__,
-                                                      argstr, ret))
+                                                    argstr, ret))
                 return ret
         return wrapper

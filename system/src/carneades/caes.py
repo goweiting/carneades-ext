@@ -169,6 +169,7 @@ from carneades.tracecalls import TraceCalls
 from carneades.tokenizer import Tokenizer
 from carneades.parser import Parser, Node
 from carneades.error import ReaderError
+from carneades.simpletracecalls import SimpleTraceCalls
 
 # ========================================================================
 #           READER
@@ -197,6 +198,9 @@ class Reader(object):
         :param buffer_size: defaults to 4096
         :param indent_size: defaults to 2
         """
+        # ---------------------------------------------------------------
+        #   User defined parameters for the source file and parsing
+        # ---------------------------------------------------------------
         self.buffer_size = buffer_size
         self.indent_size = indent_size
         # ---------------------------------------------------------------
@@ -212,7 +216,10 @@ class Reader(object):
         self.caes_gamma = float()
         self.caes_issue = set()
         self.argset = ArgumentSet()
+
+        # For dialogue:
         self.actors = ['PROPONENT', 'RESPONDENT']
+        self.top_issue = None
 
     def load(self, path_to_file, dialogue):
         """
@@ -237,8 +244,6 @@ class Reader(object):
         #   Parsing:
         # ---------------------------------------------------------------
         logging.info('\tParsing tokens...')
-
-        # parse() will be initiated automatically once initialised
         p = Parser(t.tokens)
 
         # ---------------------------------------------------------------
@@ -275,10 +280,7 @@ class Reader(object):
         # -----------------------------------------------------------------
         logging.info('\tAdding arguments to CAES')
         # In CAES: an argument consists of the following fields:
-        # premises
-        # exceptions
-        # conclusion
-        # weight
+        # premises, exceptions, conclusion, weight
         for arg_id in p.argument.children:
             # iterating through the each node of argument
             assert type(arg_id) is Node  # typecheck
@@ -318,8 +320,7 @@ class Reader(object):
 
                 # add to argset, the state of the argument is treated as None
                 # when it is added
-                self.argset.add_argument(
-                    self.caes_argument[arg_id])
+                self.argset.add_argument(self.caes_argument[arg_id])
 
         # -----------------------------------------------------------------
         logging.info('\tAdding parameter to CAES')
@@ -386,7 +387,7 @@ class Reader(object):
         # logging.debug('\tproofstandard: {}'.format(self.caes_proofstandard))
 
         # -----------------------------------------------------------------
-        # Create file specific directory
+        # Create file specific directory for graphing
         dot_dir = '../../dot/{}/'.format(
             path_to_file.split('/')[-1][:-4])  # remove the `.yml` extension too
         g_dir = '../../graph/{}/'.format(
@@ -406,34 +407,45 @@ class Reader(object):
             return
 
         elif dialogue:
+            logging.debug('Dialogue Mode: On')
             print('dialogue mode on')
 
-            # Go through each issue and generate the dialogue
+            # Go through each issue and generate a dialogue each
             for i, issue in enumerate(self.caes_issue):
                 # define the filename for write_to_graphviz
                 dot_filename = dot_dir + '{}_'.format(i + 1)
                 g_filename = g_dir + '{}_'.format(i + 1)
                 logging.info(
                     '********************************************************************************\nISSUE: "{}"\n********************************************************************************'.format(issue))
-                # always starts from turn 0
-                self.dialogue(issue, g_filename, dot_filename)
+                self.top_issue = issue
+                dialogue_state_argset, summary, turn_num = \
+                    self.dialogue(issue, g_filename, dot_filename)
+                logging.info(
+                    '\n\n\n********************************************************************************')
+                logging.info(
+                    'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.format(summary))
+                logging.info(
+                    '********************************************************************************')
 
         else:
             raise ValueError('Argument dialogue takes only boolean value')
 
-    def run(self, g_filename=None, dot_filename=None, argset=None, issues=None):
+    def run(self, g_filename=None, dot_filename=None, proofstandard=None, argset=None, issues=None):
         """
-        The standard output for CAES on the issues
+        Check if the given argumentation graph is acceptable in the parameters
+        parsed - i.e. evaluate in CAES using the proofstandards and the Audience
 
         :param g_filename : the filename for the pycairo graph
         :param dot_filename : the filename for graphviz dot
-        :param argset : optional to not use the argset created from the load function in Reader()
+        :param argset : for evaluating the issue based on the current
+        argumentation graph argset instead of all the arguments parsed.
+        :param proofstandard: The proofstandard applicable to the arguments in the argset
         """
-        # ------------------------------------------------------------
-        #       draw the argument graphs:
-        # ------------------------------------------------------------
+
         if argset is None:
             argset = self.argset
+        if proofstandard is None:
+            proofstandard = ProofStandard(self.caes_proofstandard)
         if g_filename is not None and dot_filename is not None:
             argset.draw(g_filename)
             argset.write_to_graphviz(dot_filename)
@@ -444,36 +456,36 @@ class Reader(object):
         caes = CAES(argset=argset,
                     audience=Audience(
                         self.caes_assumption, self.caes_weight),
-                    proofstandard=ProofStandard(self.caes_proofstandard),
+                    proofstandard=proofstandard,
                     alpha=self.caes_alpha,
                     beta=self.caes_beta,
                     gamma=self.caes_gamma)
 
         if issues is None:
+            # Evaluate all the issues that has been parsed
             issues = self.caes_issue
-        else:
-            if isinstance(issues, list):
-                pass
-            else:
+            for issue in issues:
                 logging.info(
-                    '\n\nEvaluating issue: {}'.format(issues))
+                    '\n\nEvaluating issue: "{}"'.format(issue))
                 # use the aceptablility standard in CAES
-                acceptability = caes.acceptable(issues)
-                logging.info('------ {} {} acceptable ------'.format(
-                    issues, ['IS NOT', 'IS'][acceptability]))
-                print('\n------ {} {} acceptable ------'.format(
-                    issues, ['IS NOT', 'IS'][acceptability]))
-                return acceptability
+                acceptability = caes.acceptable(issue)
+                logging.info('------ "{}" {} acceptable ------'.format(
+                    issue, ['IS NOT', 'IS'][acceptability]))
+                print('\n------ "{}" {} acceptable ------'.format(
+                    issue, ['IS NOT', 'IS'][acceptability]))
 
-        for issue in issues:
+        elif isinstance(issues, PropLiteral):
+            # evaluating a single statement usually based on the current
+            # argumentation graph
             logging.info(
-                '\n\nEvaluating issue: {}'.format(issue))
-            # use the aceptablility standard in CAES
-            acceptability = caes.acceptable(issue)
+                'Evaluating issue: {}'.format(issues))
+            acceptability = caes.acceptable(issues)
             logging.info('------ {} {} acceptable ------'.format(
-                issue, ['IS NOT', 'IS'][acceptability]))
+                issues, ['IS NOT', 'IS'][acceptability]))
             print('\n------ {} {} acceptable ------'.format(
-                issue, ['IS NOT', 'IS'][acceptability]))
+                issues, ['IS NOT', 'IS'][acceptability]))
+
+            return acceptability
 
     # @TraceCalls()
     def dialogue(self, issue, g_filename, dot_filename, turn_num=None, dialogue_state_argset=None, summary=None):
@@ -516,7 +528,6 @@ class Reader(object):
         # -----------------------------------------------------------------
         # Set up the arena:
         # -----------------------------------------------------------------
-
         ps_SE = ProofStandard([])  # use scintilla of evidence for BOP checking
         if summary is None:
             summary = ""
@@ -525,14 +536,14 @@ class Reader(object):
         if dialogue_state_argset is None:
             dialogue_state_argset = ArgumentSet()  # store the dialogue
 
-
         # -----------------------------------------------------------------
         # Start the dialogue by finding the best pro argument by the proponent
         # -----------------------------------------------------------------
         args_pro = self.argset.get_arguments(issue)
         try:
             args_pro_dialogue = dialogue_state_argset.get_arguments(issue)
-            args_pro = [arg for arg in args_pro if arg not in args_pro_dialogue]
+            args_pro = [
+                arg for arg in args_pro if arg not in args_pro_dialogue]
         except KeyError:
             pass
 
@@ -547,35 +558,39 @@ class Reader(object):
             g_file = g_filename + 'final.pdf'
             dot_file = dot_filename + 'final.dot'
             logging.info(
-                'Issue {} cannot be evaluated. In sufficient arguments to form an argumentation graph'.format(issue))
-            logging.info('Evaluating on the full argumentation set...')
+                'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.format(issue))
+            logging.info('Evaluating on the full argumentation set')
             self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
             return dialogue_state_argset, summary, turn_num
 
+        # Add the first argument pro the issue into the argset:
         dialogue_state_argset.add_argument(best_arg_pro,
                                            state='claimed',
                                            claimer=self.actors[turn_num % 2])
-        summary += self.dialogue_state(dialogue_state_argset,
+        summary += self.dialogue_state(dialogue_state_argset, issue,
                                        turn_num, '?',
                                        g_filename, dot_filename)
 
-        # check thath the proponent of issue have met her burden of proof
+        # check that the proponent of issue have met her burden of proof
+        # The evaluation of the Burden of Proof is using scintilla of evidence
         dialogue_state_argset, summary, burden_status = \
-            self.burden_met(issue, best_arg_pro, dialogue_state_argset, ps_SE,
-                            turn_num, summary)
-        summary += self.dialogue_state(dialogue_state_argset,
+            self.burden_met(issue, best_arg_pro,
+                            dialogue_state_argset, ps_SE, turn_num, summary)
+
+        summary += self.dialogue_state(dialogue_state_argset, issue,
                                        turn_num, burden_status,
                                        g_filename, dot_filename)
-
+        # the proponent's Burden of proof must first be met; otherwise she
+        # has lost the argument
         if not burden_status:
-            # the proponent's Burden of proof must first be met; otherwise she
-            # has lost the argument
             logging.info('{} did not met the Burden of Proof for issue \'{}\''.format(
                 self.actors[turn_num % 2], issue))
             return dialogue_state_argset, summary, turn_num
 
         else:
-            turn_num += 1  # the respondent turn's to raise an issue
+
+            # the respondent turn's to raise an issue
+            turn_num += 1
 
             try:
                 (arg_con, arg_attacked) = \
@@ -594,7 +609,9 @@ class Reader(object):
             dialogue_state_argset, summary, turn_num = \
                 self.dialogue(sub_issue, g_filename, dot_filename,
                               turn_num, dialogue_state_argset, summary)
-
+            summary += self.dialogue_state(dialogue_state_argset, issue,
+                                           turn_num, burden_status,
+                                           g_filename, dot_filename)
         # ----------------------------------------------------------------
         #   NO LONGER DEBATABLE?
         # ----------------------------------------------------------------
@@ -602,7 +619,7 @@ class Reader(object):
         dot_file = dot_filename + 'final.dot'
         # Do acceptability test using the the PS defined:
         acceptability = self.run(g_filename=g_file, dot_filename=dot_file,
-                                argset=dialogue_state_argset, issues=[issue])
+                                 argset=dialogue_state_argset, issues=[issue])
 
         while not acceptability:
             if len(args_pro):
@@ -612,17 +629,12 @@ class Reader(object):
                     self.dialogue(issue, g_filename, dot_filename,
                                   turn_num, dialogue_state_argset, summary)
                 acceptability = self.run(g_filename=g_file,
-                                        dot_filename=dot_file,
-                                        argset=dialogue_state_argset, issues=issue)
+                                         dot_filename=dot_file,
+                                         argset=dialogue_state_argset, issues=issue)
             else:
                 logging.info('No arguments found')
-                logging.info(
-                    '\n\n\n********************************************************************************')
-                logging.info(
-                    'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.format(summary))
-                logging.info(
-                    '********************************************************************************')
                 return dialogue_state_argset, summary, turn_num
+
 
     def burden_met(self, issue, argument, argset, ps, turn_num, summary):
         """
@@ -648,12 +660,16 @@ class Reader(object):
             for premise in argument.premises:
                 # find arguments that support the premises
                 for arg in self.argset.get_arguments(premise):
-                    argset.add_argument(arg, state='claimed',
-                                        claimer=self.actors[turn_num % 2])
+                    try:
+                        argset.add_argument(arg, state='claimed',
+                                            claimer=self.actors[turn_num % 2])
+                    except ValueError:
+                        return argset, summary, False
                     argset.set_argument_status(arg.conclusion, state='claimed')
 
             # Check if the burden is met after adding the arguments
             # to support the premises
+
             argset, summary, burden_status = \
                 self.burden_met(issue, argument, argset, ps, turn_num, summary)
 
@@ -705,7 +721,6 @@ class Reader(object):
 
         # if ever reached here, there are no arguments to attacked the
         # exceptions. Hence, a rebuttal is needed
-
         args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
         while len(args_claimed_sorted):
             arg = args_claimed_sorted.pop()
@@ -720,10 +735,14 @@ class Reader(object):
 
         return False
 
-    def dialogue_state(self, argset, turn_num, burden_status,
+    def dialogue_state(self, argset, issue, turn_num, burden_status,
                        g_filename=None, dot_filename=None):
         """
         1) print and log the current dialogue status
+            - Which party have the burden of proof
+            - the arguments in the current state
+            - satisfiability of the burden of proof by the actor
+            - the acceptability of the top level issue at the curent level
         2) output the graph for viewing at this turn!
         """
 
@@ -748,6 +767,28 @@ class Reader(object):
             self.actors[turn_num % 2], burden_status))
         summary += ("\n-----------------------------------------\nBurden of proof met by {} : {}".format(
             self.actors[turn_num % 2], burden_status))
+
+        # Top issue acceptable??
+        logging.info('-----------------------------------------')
+        ps = []  # store all the relevant proofstandard
+        for arg in argset.arguments:
+            # iterate through the arguments, and find the proofstandard used to
+            # evaluate the conclusion of these arguments from proofstandards
+            # parsed
+            concl = arg.conclusion
+            ps.extend([(prop_id, prop_ps) for (prop_id, prop_ps)
+                       in self.caes_proofstandard if prop_id == concl])
+        logging.debug(ps)
+        ps = ProofStandard(ps)
+        acceptability = self.run(argset=argset, issues=issue, proofstandard=ps)
+        summary += (
+            "\n-----------------------------------------\n\t\tISSUE \"{}\" acceptable? -> {}".format(issue, acceptability))
+
+        if self.top_issue != issue:
+            acceptability_top = self.run(
+                argset=argset, issues=self.top_issue, proofstandard=ps)
+            summary += (
+                "\nTOP ISSUE \"{}\" acceptable? -> {}".format(self.top_issue, acceptability_top))
 
         # GRAPHS
         if g_filename is not None and dot_filename is not None:
@@ -817,6 +858,70 @@ class Reader(object):
         else:
             raise ValueError(
                 'Invalid proof standard "{}" found'.format(query))
+
+# class dialogue(object):
+#     """
+#     Given a set of arguments, create a dialogue between the Proponent and
+#     Respondent (the parties) of the issue of contention.
+#
+#     The shifting of the burden of proof is emulated here too. A party
+#     satisfy her burden of proof if the current arguments put forward for the
+#     argument is acceptable by a proofstandard - the default being scintilla of
+#     evidence
+#
+#     In each of the dialogue, the argumentation graph will be stored in the
+#     respectively directories.
+#
+#
+#     """
+#
+#     def __init__(self, issue, full_argset, current_argset=None, g_filename, dot_filename, issue_num=None, turn_num=None):
+#         self.toplevelissue = issue
+#         self.issue_num = issue_num
+#         self.argset = full_argset
+#         # self.proofstandard = proofstandard
+#         self.ps_BOP = ProofStandard([])  # use scintilla of evidence for BOP checking
+#         self.g_filename = g_filename
+#         self.dot_filename = dot_filename
+#         self.issue_num = issue_num
+#         self.actors = ['PROPONENT', 'RESPONDENT']
+#
+#         if turn_num is None:
+#             self.turn_num = 0
+#         else:
+#             self.turn_num = turn_num
+#         if current_argset is None:
+#             self.dialogue_state_argset = ArgumentSet()
+#         else:
+#             self.dialogue_state_argset = current_argset
+#         self.summary = ""
+#
+#         # Start the conversation between the actors
+#         self.debate()
+#
+#     def debate(self):
+#         """
+#         Runs the debate between the actors
+#         """
+#         args_pro = self.argset.get_arguments(issue)
+#         try:
+#             args_pro_dialogue = self.dialogue_state_argset.get_arguments(issue)
+#             args_pro = [arg for arg in args_pro if arg not in args_pro_dialogue]
+#         except KeyError:
+#             pass
+#
+#         args_pro = sorted(args_pro, key=lambda arg: arg.weight)
+#         try:
+#             best_arg_pro = args_pro.pop()
+#         except IndexError:
+#             g_file = self.g_filename + 'final.pdf'
+#             dot_file = self.dot_filename + 'final.dot'
+#             return (False, issue, g_file, dot_file)
+#
+#
+#
+#
+
 
 # ========================================================================
 #       CAES
@@ -927,8 +1032,6 @@ class Argument(object):
             excepts = sorted(self.exceptions)
         return "{}, ~{} => {}".format(prems, excepts, self.conclusion)
 
-    def __repr__(self):
-        return self.__str__()
 
 # ========================================================================
 
@@ -1019,6 +1122,9 @@ class ArgumentSet(object):
         :type arg_id: str or None
         """
         g = self.graph
+        if argument in self.arguments:
+            raise ValueError(
+                '"{}" is already in the argument set'.format(argument))
         self.arguments.append(argument)  # store a list of arguments
         # -----------------------------------------------------------
         #   VERTICES
@@ -1310,6 +1416,12 @@ class ProofStandard(object):
         :type proposition: :class:`PropLiteral`
         """
         return self.config[proposition]
+
+    def __str__(self):
+        return print(self.config)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 # ========================================================================
