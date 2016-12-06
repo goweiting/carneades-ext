@@ -169,7 +169,6 @@ from carneades.tracecalls import TraceCalls
 from carneades.tokenizer import Tokenizer
 from carneades.parser import Parser, Node
 from carneades.error import ReaderError
-from carneades.simpletracecalls import SimpleTraceCalls
 
 # ========================================================================
 #           READER
@@ -412,11 +411,11 @@ class Reader(object):
 
             # Go through each issue and generate a dialogue each
             for i, issue in enumerate(self.caes_issue):
+                logging.info(
+                '********************************************************************************\nISSUE {}: "{}"\n********************************************************************************'.format(i, issue))
                 # define the filename for write_to_graphviz
                 dot_filename = dot_dir + '{}_'.format(i + 1)
                 g_filename = g_dir + '{}_'.format(i + 1)
-                logging.info(
-                    '********************************************************************************\nISSUE: "{}"\n********************************************************************************'.format(issue))
                 self.top_issue = issue
                 dialogue_state_argset, summary, turn_num = \
                     self.dialogue(issue, g_filename, dot_filename)
@@ -582,11 +581,13 @@ class Reader(object):
                                        g_filename, dot_filename)
         # the proponent's Burden of proof must first be met; otherwise she
         # has lost the argument
+        # TODO: TEST WHAT IF DOWNSTREAM THE BURDEN OF PROOF IS NOT SATISFIABLE?
         if not burden_status:
             logging.info('{} did not met the Burden of Proof for issue \'{}\''.format(
                 self.actors[turn_num % 2], issue))
+            # raise Exception("Burden of Proof not met!")
             return dialogue_state_argset, summary, turn_num
-
+            
         else:
 
             # the respondent turn's to raise an issue
@@ -635,6 +636,7 @@ class Reader(object):
                 logging.info('No arguments found')
                 return dialogue_state_argset, summary, turn_num
 
+        return dialogue_state_argset, summary, turn_num
 
     def burden_met(self, issue, argument, argset, ps, turn_num, summary):
         """
@@ -653,6 +655,7 @@ class Reader(object):
                     audience=Audience(
                         self.caes_assumption, self.caes_weight))
         burden_status = caes.acceptable(issue)
+        logging.debug("CHECKING THE BURDEN OF PROOF")
 
         # if the burden is not met due to the premises not supported,
         # find arguments to support the premises
@@ -661,15 +664,18 @@ class Reader(object):
                 # find arguments that support the premises
                 for arg in self.argset.get_arguments(premise):
                     try:
+                        # prevent repeated argument from being added into
+                        # argset
                         argset.add_argument(arg, state='claimed',
                                             claimer=self.actors[turn_num % 2])
+                        argset.set_argument_status(arg.conclusion,
+                                                   state='claimed')
                     except ValueError:
                         return argset, summary, False
-                    argset.set_argument_status(arg.conclusion, state='claimed')
 
             # Check if the burden is met after adding the arguments
             # to support the premises
-
+            logging.debug('HAHSDHASDHASHDASHASDH')
             argset, summary, burden_status = \
                 self.burden_met(issue, argument, argset, ps, turn_num, summary)
 
@@ -678,6 +684,7 @@ class Reader(object):
                 logging.info(
                     "{} did not manage to satisfy her burden of proof".format(self.actors[turn_num % 2]))
                 logging.info('{}'.format(summary))
+
         return argset, summary, burden_status
 
     def find_best_con_argument(self, issue, argset):

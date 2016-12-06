@@ -49,7 +49,7 @@ ARGUMENT:
     conclusion: neg1
     weight: 0.6
 
-ISSUE: [i]
+ISSUE: [i,-i]
 
 PROOFSTANDARD: []
 

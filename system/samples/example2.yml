@@ -59,11 +59,11 @@ ARGUMENT:
     weight: 0.5
 
 # The prosecution called a second witness to testify that the defendant had enough time to run away
-  arg4:
-    premise: [w2]
-    exception: [-w2-credible]
-    conclusion: -self-defense
-    weight: .49
+# arg4:
+#   premise: [w2]
+#   exception: [-w2-credible]
+#   conclusion: -self-defense
+#   weight: .49
 
 
 PROOFSTANDARD:

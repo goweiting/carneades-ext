@@ -12,7 +12,7 @@ Added argument 'defeat arg1' to graph by claimer 'None'
 	Adding proofstandard to CAES
 	Adding issues to CAES
 ********************************************************************************
-ISSUE: "issue"
+ISSUE 0: "issue"
 ********************************************************************************
 Added argument 'arg1' to graph by claimer 'PROPONENT'
 ================== turn 0 ==================
@@ -22,7 +22,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 -----------------------------------------
-
+Evaluating issue: issue
 Calling acceptable(issue)
   Calling meets_proof_standard(issue, scintilla)
     Calling applicable([support 1], ~[negative 1] => issue)
@@ -37,9 +37,6 @@ Calling acceptable(issue)
     applicable([support 1], ~[negative 1] => issue)-->False
   meets_proof_standard(issue, scintilla)-->False
 acceptable(issue)-->False
-
-
-Evaluating issue: issue
 ------ issue IS NOT acceptable ------
 ============================================
 Checking burden of proof for PROPONENT
@@ -84,7 +81,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
-
+Evaluating issue: issue
 Calling acceptable(issue)
   Calling meets_proof_standard(issue, scintilla)
     Calling applicable([support 1], ~[negative 1] => issue)
@@ -101,9 +98,6 @@ Calling acceptable(issue)
     applicable([support 1], ~[negative 1] => issue)-->True
   meets_proof_standard(issue, scintilla)-->True
 acceptable(issue)-->True
-
-
-Evaluating issue: issue
 ------ issue IS acceptable ------
 ============================================
 proposition "issue" state updated to questioned
@@ -118,17 +112,34 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by RESPONDENT : ?
 -----------------------------------------
-
+Evaluating issue: negative 1
 Calling acceptable(negative 1)
   Calling meets_proof_standard(negative 1, scintilla)
     Calling applicable([premise3], ~[] => negative 1)
     applicable([premise3], ~[] => negative 1)-->True
   meets_proof_standard(negative 1, scintilla)-->True
 acceptable(negative 1)-->True
-
-
-Evaluating issue: negative 1
 ------ negative 1 IS acceptable ------
+Evaluating issue: issue
+Calling acceptable(issue)
+  Calling meets_proof_standard(issue, scintilla)
+    Calling applicable([support 1], ~[negative 1] => issue)
+      Calling acceptable(support 1)
+        Calling meets_proof_standard(support 1, scintilla)
+          Calling applicable([premise1], ~[] => support 1)
+          applicable([premise1], ~[] => support 1)-->True
+        meets_proof_standard(support 1, scintilla)-->True
+      acceptable(support 1)-->True
+      Calling acceptable(negative 1)
+        Calling meets_proof_standard(negative 1, scintilla)
+          Calling applicable([premise3], ~[] => negative 1)
+          applicable([premise3], ~[] => negative 1)-->True
+        meets_proof_standard(negative 1, scintilla)-->True
+      acceptable(negative 1)-->True
+    applicable([support 1], ~[negative 1] => issue)-->False
+  meets_proof_standard(issue, scintilla)-->False
+acceptable(issue)-->False
+------ issue IS NOT acceptable ------
 ============================================
 Checking burden of proof for RESPONDENT
 Calling acceptable(negative 1)
@@ -146,19 +157,66 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by RESPONDENT : True
 -----------------------------------------
-
+Evaluating issue: negative 1
 Calling acceptable(negative 1)
   Calling meets_proof_standard(negative 1, scintilla)
     Calling applicable([premise3], ~[] => negative 1)
     applicable([premise3], ~[] => negative 1)-->True
   meets_proof_standard(negative 1, scintilla)-->True
 acceptable(negative 1)-->True
-
-
-Evaluating issue: negative 1
 ------ negative 1 IS acceptable ------
+Evaluating issue: issue
+Calling acceptable(issue)
+  Calling meets_proof_standard(issue, scintilla)
+    Calling applicable([support 1], ~[negative 1] => issue)
+      Calling acceptable(support 1)
+        Calling meets_proof_standard(support 1, scintilla)
+          Calling applicable([premise1], ~[] => support 1)
+          applicable([premise1], ~[] => support 1)-->True
+        meets_proof_standard(support 1, scintilla)-->True
+      acceptable(support 1)-->True
+      Calling acceptable(negative 1)
+        Calling meets_proof_standard(negative 1, scintilla)
+          Calling applicable([premise3], ~[] => negative 1)
+          applicable([premise3], ~[] => negative 1)-->True
+        meets_proof_standard(negative 1, scintilla)-->True
+      acceptable(negative 1)-->True
+    applicable([support 1], ~[negative 1] => issue)-->False
+  meets_proof_standard(issue, scintilla)-->False
+acceptable(issue)-->False
+------ issue IS NOT acceptable ------
 ============================================
 No arguments found by PROPONENT for issue 'negative 1'
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+-----------------------------------------
+Evaluating issue: issue
+Calling acceptable(issue)
+  Calling meets_proof_standard(issue, scintilla)
+    Calling applicable([support 1], ~[negative 1] => issue)
+      Calling acceptable(support 1)
+        Calling meets_proof_standard(support 1, scintilla)
+          Calling applicable([premise1], ~[] => support 1)
+          applicable([premise1], ~[] => support 1)-->True
+        meets_proof_standard(support 1, scintilla)-->True
+      acceptable(support 1)-->True
+      Calling acceptable(negative 1)
+        Calling meets_proof_standard(negative 1, scintilla)
+          Calling applicable([premise3], ~[] => negative 1)
+          applicable([premise3], ~[] => negative 1)-->True
+        meets_proof_standard(negative 1, scintilla)-->True
+      acceptable(negative 1)-->True
+    applicable([support 1], ~[negative 1] => issue)-->False
+  meets_proof_standard(issue, scintilla)-->False
+acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
 Added argument 'arg2' to graph by claimer 'PROPONENT'
 ================== turn 2 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -170,7 +228,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 -----------------------------------------
-
+Evaluating issue: issue
 Calling acceptable(issue)
   Calling meets_proof_standard(issue, scintilla)
     Calling applicable([support 1], ~[negative 1] => issue)
@@ -195,9 +253,6 @@ Calling acceptable(issue)
     applicable([support 2], ~[] => issue)-->False
   meets_proof_standard(issue, scintilla)-->False
 acceptable(issue)-->False
-
-
-Evaluating issue: issue
 ------ issue IS NOT acceptable ------
 ============================================
 Checking burden of proof for PROPONENT
@@ -265,7 +320,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
-
+Evaluating issue: issue
 Calling acceptable(issue)
   Calling meets_proof_standard(issue, scintilla)
     Calling applicable([support 1], ~[negative 1] => issue)
@@ -292,12 +347,10 @@ Calling acceptable(issue)
     applicable([support 2], ~[] => issue)-->True
   meets_proof_standard(issue, scintilla)-->True
 acceptable(issue)-->True
-
-
-Evaluating issue: issue
 ------ issue IS acceptable ------
 ============================================
 No arguments found by RESPONDENT for issue 'issue'
+Evaluating issue: issue
 Calling acceptable(issue)
   Calling meets_proof_standard(issue, scintilla)
     Calling applicable([support 1], ~[negative 1] => issue)
@@ -324,11 +377,7 @@ Calling acceptable(issue)
     applicable([support 2], ~[] => issue)-->True
   meets_proof_standard(issue, scintilla)-->True
 acceptable(issue)-->True
-
-
-Evaluating issue: issue
 ------ issue IS acceptable ------
-No arguments found
 
 
 
@@ -342,7 +391,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 -----------------------------------------
-ISSUE "issue" acceptable? -> False
+		ISSUE "issue" acceptable? -> False
 ============================================
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -352,7 +401,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
-ISSUE "issue" acceptable? -> True
+		ISSUE "issue" acceptable? -> True
 ============================================
 ================== turn 1 ==================
 BURDEN OF PROOF @ RESPONDENT
@@ -363,7 +412,8 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by RESPONDENT : ?
 -----------------------------------------
-ISSUE "negative 1" acceptable? -> True
+		ISSUE "negative 1" acceptable? -> True
+TOP ISSUE "issue" acceptable? -> False
 ============================================
 ================== turn 1 ==================
 BURDEN OF PROOF @ RESPONDENT
@@ -374,7 +424,19 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by RESPONDENT : True
 -----------------------------------------
-ISSUE "negative 1" acceptable? -> True
+		ISSUE "negative 1" acceptable? -> True
+TOP ISSUE "issue" acceptable? -> False
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
 ============================================
 ================== turn 2 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -386,7 +448,7 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 -----------------------------------------
-ISSUE "issue" acceptable? -> False
+		ISSUE "issue" acceptable? -> False
 ============================================
 ================== turn 2 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -399,7 +461,26 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
-ISSUE "issue" acceptable? -> True
+		ISSUE "issue" acceptable? -> True
 ============================================
+
+********************************************************************************
+********************************************************************************
+ISSUE 1: "-issue"
+********************************************************************************
+ISSUE "-issue" cannot be evaluated because there are insufficient arguments to form an argumentation graph
+Evaluating on the full argumentation set
+Evaluating issue: -issue
+Calling acceptable(-issue)
+  Calling meets_proof_standard(-issue, scintilla)
+  meets_proof_standard(-issue, scintilla)-->False
+acceptable(-issue)-->False
+------ -issue IS NOT acceptable ------
+
+
+
+********************************************************************************
+DIALOGUE SUMMARY:
+********************************************************************************
 
 ********************************************************************************
