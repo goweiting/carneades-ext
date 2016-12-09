@@ -69,7 +69,7 @@ class Tokenizer(object):
 
         for lineIdx, line in enumerate(stream):
             # iterate through each line of the file
-            lineIdx += 1 # starts from 1 instead of 0
+            lineIdx += 1  # starts from 1 instead of 0
             pointer = 0
 
             if line[-1:] != '\n':
@@ -79,16 +79,6 @@ class Tokenizer(object):
 
             # ---------------------------------------------------------------
             #   Find INDENNT:
-            #   ---
-            #   Example
-            #   """
-            #   >>> string = 'a line without any ident'
-            #   >>> indents = re.split(r'^  ', string')
-            #   ['a line without any indent']
-            #   >>> string = '    two indents in this line'
-            #   >>> len(re.split(r'^  ', string)) == 2
-            #   True
-            #   """
             # ---------------------------------------------------------------
             # use regex to find the indent based on the user defined
             # indent_size
@@ -103,13 +93,15 @@ class Tokenizer(object):
                 # shorten the line by removing the indent
                 line = line[self.indent_size:]
                 pointer += self.indent_size
-                indents = re.split(indent_pattern, line) # get the next indent
+                indents = re.split(indent_pattern, line)  # get the next indent
 
             # if there are more things to be tokenised, check if whitespaces
             # are well-defined
             if len(line) and line[0] == ' ':
                 raise TokenizerError(
-                    lineIdx, pointer, 'The indent size is {}, but additional whitespace is found'.format(self.indent_size))
+                    lineIdx, pointer,
+                    'The indent size is {}, but additional whitespace is found'.
+                    format(self.indent_size))
 
             # ---------------------------------------------------------------
             #   COMMENT CHECKER:
@@ -137,11 +129,13 @@ class Tokenizer(object):
                     continue
 
                 elif char == '[':
-                    line, pointer = self.tokenize_seq(line, lineIdx, pointer-1) # trigger to find the sequnce
+                    line, pointer = self.tokenize_seq(
+                        line, lineIdx,
+                        pointer - 1)  # trigger to find the sequnce
                     continue
 
                 elif char == ' ':
-                    line = line[1:] # ignore the white spaces
+                    line = line[1:]  # ignore the white spaces
                     continue
 
                 else:  # word
@@ -177,7 +171,7 @@ class Tokenizer(object):
                     Token(char, lineIdx, pointer, 'SEQUENCE_CLOSE'))
                 line = line[1:]
                 print(line)
-                return line, pointer # complete sequence, return to the caller
+                return line, pointer  # complete sequence, return to the caller
 
             elif char == ',':
                 self.tokens.append(
@@ -186,7 +180,7 @@ class Tokenizer(object):
                 continue
 
             elif char == ' ':
-                line = line[1:] # ignore the white spaces
+                line = line[1:]  # ignore the white spaces
                 continue
 
             else:
@@ -199,7 +193,9 @@ class Tokenizer(object):
                 continue
 
         if len(line) == 0:
-            raise TokenizerError(lineIdx, pointer, '[ found but is not closed with ]')
+            raise TokenizerError(lineIdx, pointer,
+                                 '[ found but is not closed with ]')
+
 
 # ---------------------------------------------------------------------------
 class Token(object):
@@ -222,12 +218,10 @@ class Token(object):
         :param colIdx : the column number of the file
         :parm sourceID : if multiple files are given in the :argument, this corresponds to the nth file.
         """
-        accepted_tokens = ['STMT',
-                           'MAPPING_VALUE',
-                           'SEQUENCE_SEPARATOR',
-                           'SEQUENCE_OPEN',
-                           'SEQUENCE_CLOSE',
-                           'INDENT']
+        accepted_tokens = [
+            'STMT', 'MAPPING_VALUE', 'SEQUENCE_SEPARATOR', 'SEQUENCE_OPEN',
+            'SEQUENCE_CLOSE', 'INDENT'
+        ]
         self.c = c
         self.lineIdx = lineIdx
         self.colIdx = colIdx
@@ -239,8 +233,8 @@ class Token(object):
         # print('Token at {}, {}\t= {}'.format(lineIdx, colIdx, c)) # DEBUG
 
     def output(self):
-        return (str(self.lineIdx) + ' ' + str(self.colIdx) +
-                ' ' + self.type + ' ' + str(self.c) + '\n')
+        return (str(self.lineIdx) + ' ' + str(self.colIdx) + ' ' + self.type +
+                ' ' + str(self.c) + '\n')
 
     def __str__(self):  # same as output
         return (str(self.c))

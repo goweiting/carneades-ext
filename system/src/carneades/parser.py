@@ -1,5 +1,6 @@
 from collections import deque
 from error import ParseError
+
 # -------------------------------------------------------------------------
 # :class: parser
 # :class: Node
@@ -77,7 +78,10 @@ class Parser(object):
         - PARAMETER
         """
         found = set()  # set that contains the headers found
-        headers = ['PROPOSITION', 'ARGUMENT', 'ASSUMPTION', 'PARAMETER', 'ISSUE', 'PROOFSTANDARD']
+        headers = [
+            'PROPOSITION', 'ARGUMENT', 'ASSUMPTION', 'PARAMETER', 'ISSUE',
+            'PROOFSTANDARD'
+        ]
         previous_idx = len(self.tokens)  # starting from the back
         for idx, tok in reversed(list(enumerate(self.tokens))):
             # find tok_type = `STMT`, and check if it is one of the headers
@@ -85,27 +89,27 @@ class Parser(object):
                 if tok.c not in found:
                     # call generateStruct to create nodes for each headers
                     if tok.c == 'PROPOSITION':
-                        toks = self.tokens[idx: previous_idx]
+                        toks = self.tokens[idx:previous_idx]
                         self.proposition = self.generateStruct(toks)
 
                     elif tok.c == 'ASSUMPTION':
-                        toks = self.tokens[idx: previous_idx]
+                        toks = self.tokens[idx:previous_idx]
                         self.assumption = self.generateStruct(toks)
 
                     elif tok.c == 'ARGUMENT':
-                        toks = self.tokens[idx: previous_idx]
+                        toks = self.tokens[idx:previous_idx]
                         self.argument = self.generateStruct(toks)
 
                     elif tok.c == 'PARAMETER':
-                        toks = self.tokens[idx: previous_idx]
+                        toks = self.tokens[idx:previous_idx]
                         self.parameter = self.generateStruct(toks)
 
                     elif tok.c == 'ISSUE':
-                        toks = self.tokens[idx: previous_idx]
+                        toks = self.tokens[idx:previous_idx]
                         self.issue = self.generateStruct(toks)
 
                     elif tok.c == 'PROOFSTANDARD':
-                        toks = self.tokens[idx: previous_idx]
+                        toks = self.tokens[idx:previous_idx]
                         self.proofstandard = self.generateStruct(toks)
 
                     previous_idx = idx  # update the index so that the next header's indices will not include those of the previous header
@@ -114,11 +118,13 @@ class Parser(object):
                 elif tok.c in found:
                     # prevent multiple usage of headers!
                     raise ParseError(
-                        'More than one header of {} is found. Check that you only have one of each headers: {}'.format(tok.c, headers))
+                        'More than one header of {} is found. Check that you only have one of each headers: {}'.
+                        format(tok.c, headers))
 
         if len(found) != len(headers):
             raise ParseError(
-                'Expected labels are: {}. However, only {} found.'.format(headers, found))
+                'Expected labels are: {}. However, only {} found.'.format(
+                    headers, found))
 
     def generateStruct(self, toks):
         """
@@ -155,8 +161,9 @@ class Parser(object):
                 if t_next.tok_type is 'MAPPING_VALUE':
                     root = Node(longsentence)  # create the root node
                 else:
-                    raise ParseError('MAPPING_VALUE (:) is expected at line {} col {} `{}`. Instead, {} is found!'.format(
-                        t_next.lineIdx, t_next.colIdx, t.c, t_next.c))
+                    raise ParseError(
+                        'MAPPING_VALUE (:) is expected at line {} col {} `{}`. Instead, {} is found!'.
+                        format(t_next.lineIdx, t_next.colIdx, t.c, t_next.c))
 
                 # ----------------------------------------------------------
                 #       And find the children of the root:
@@ -168,7 +175,9 @@ class Parser(object):
                 try:
                     t_next = toks.popleft()
                 except IndexError:
-                    raise ParseError("Incomplete syntax found at line {} col {}".format(t_next.lineIdx, t_next.colIdx))
+                    raise ParseError(
+                        "Incomplete syntax found at line {} col {}".format(
+                            t_next.lineIdx, t_next.colIdx))
 
                 if t_next.tok_type == 'SEQUENCE_OPEN':
                     # a sequence list is given
@@ -202,6 +211,7 @@ class Parser(object):
                     for chunk in chunks:
                         root.add_child(self.generateStruct(chunk))
         return root
+
 
 # ---------------------------------------------------------------------------
 
@@ -242,7 +252,9 @@ class Node(object):
         if type(child_data) is Node:
             self.children.append(child_data)
         else:
-            if type(child_data) is list:  # if it is already a list, extend the list of children
+            if type(
+                    child_data
+            ) is list:  # if it is already a list, extend the list of children
                 self.children.extend(child_data)
             else:
                 # otherwise if is just a word/statement, add it to the list
@@ -268,8 +280,7 @@ class Node(object):
                 queue.appendleft(child_node)
 
         # throw error if not found
-        raise ParseError('{} not found in {}'.format(
-            value, self))
+        raise ParseError('{} not found in {}'.format(value, self))
 
     def __str__(self):
         return str(self.data)
@@ -432,24 +443,27 @@ def find_SEQUENCE(toks):
                 if num == 0:
                     if len(the_List) > 1:
                         raise ParseError(
-                            '{} SEQUENCE_SEPARATOR is found but none is expected'.format(str(num)))
+                            '{} SEQUENCE_SEPARATOR is found but none is expected'.
+                            format(str(num)))
                     else:
                         return toks, the_List  # empty list!
                 else:  # a separator found
                     expectation = len(the_List) - 1
                     if expectation != num:
                         raise ParseError(
-                            '{} SEQUENCE_SEPARATOR is found but none is expected'.format(num))
+                            '{} SEQUENCE_SEPARATOR is found but none is expected'.
+                            format(num))
                     else:
                         return toks, the_List  # empty list!
 
             elif t.tok_type == 'SEQUENCE_OPEN':
-                raise ParseError('[ found at line {} col {} before closing. Nesting of list is not allowed'.format(
-                    t.lineIdx, t.colIdx))
+                raise ParseError(
+                    '[ found at line {} col {} before closing. Nesting of list is not allowed'.
+                    format(t.lineIdx, t.colIdx))
 
             elif t.tok_type == 'MAPPING_VALUE':
-                raise ParseError(
-                    ': found at line {} col {} before closing.'.format(t.lineIdx, t.colIdx))
+                raise ParseError(': found at line {} col {} before closing.'.
+                                 format(t.lineIdx, t.colIdx))
 
             elif t.tok_type == 'STMT':
                 toks.appendleft(t)
@@ -459,8 +473,8 @@ def find_SEQUENCE(toks):
             elif t.tok_type == 'SEQUENCE_SEPARATOR':
                 num += 1
 
-        raise ParseError(
-            'Unable to parse the stream at line {}'.format(t.lineIdx))
+        raise ParseError('Unable to parse the stream at line {}'.format(
+            t.lineIdx))
 
 
 def infer_depth(toks):
@@ -513,6 +527,7 @@ def find_STMT(toks):
     # append white space between tokens to form a string.
     longsentence = ' '.join(longsentence)
     return toks, longsentence
+
 
 # ---------------------------------------------------------------------------
 # MAIN

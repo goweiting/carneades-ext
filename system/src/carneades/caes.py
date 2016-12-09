@@ -5,7 +5,6 @@
 # Based on: https://hackage.haskell.org/package/CarneadesDSL
 #
 # For license information, see LICENSE
-
 """
 ==========
  Overview
@@ -154,7 +153,6 @@ False
 False
 """
 
-
 from collections import namedtuple, defaultdict
 import logging
 import os
@@ -234,8 +232,8 @@ class Reader(object):
         # ---------------------------------------------------------------
         logging.info('\tTokenizing file...')
         # read the file and store it as a list of lines!
-        stream = open(path_to_file, 'r',
-                      buffering=self.buffer_size).readlines()
+        stream = open(
+            path_to_file, 'r', buffering=self.buffer_size).readlines()
         # call tokenizer will call tokenize() when initialised
         t = Tokenizer(stream, self.indent_size)
 
@@ -256,7 +254,8 @@ class Reader(object):
             text = proplit.children[0].data
             if prop_id[0] == '-':
                 raise ReaderError(
-                    '"-" found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.format(p))
+                    '"-" found in {}. Name of propositions are assumed to be True, and no polarity sign is need!'.
+                    format(p))
             # here, added prop_id as a field in PropLierals!
             # polarity is set to True by defailt
             self.caes_propliteral[prop_id] = PropLiteral(text)
@@ -291,9 +290,8 @@ class Reader(object):
 
             # check the weight
             if weight < 0 or weight > 1:
-                raise ValueError(
-                    'weight for {} ({}) is not in range [0,1]'.format(
-                        arg_id, weight))
+                raise ValueError('weight for {} ({}) is not in range [0,1]'.
+                                 format(arg_id, weight))
             else:
                 # store the weight in the dictionary for CAES
                 self.caes_weight[arg_id] = weight
@@ -301,21 +299,19 @@ class Reader(object):
             # check that the literals are in the PROPOSITION.
             # the checker returns the PropLiteral, so there's no need to
             # convert it again
-            ok_c, conclusion = self.check_prop(
-                self.caes_propliteral, conclusion)
-            ok_e, exception = self.check_prop(
-                self.caes_propliteral, exception)
-            ok_p, premise = self.check_prop(
-                self.caes_propliteral, premise)
+            ok_c, conclusion = self.check_prop(self.caes_propliteral,
+                                               conclusion)
+            ok_e, exception = self.check_prop(self.caes_propliteral, exception)
+            ok_p, premise = self.check_prop(self.caes_propliteral, premise)
 
             if ok_c and ok_e and ok_p:
                 # store the arguments
                 self.caes_argument[arg_id] = \
-                    Argument(conclusion=conclusion,
-                             premises=premise,
-                             exceptions=exception,
-                             weight=weight,
-                             arg_id=arg_id)
+                    Argument(conclusion = conclusion,
+                             premises   = premise,
+                             exceptions = exception,
+                             weight     = weight,
+                             arg_id     = arg_id)
 
                 # add to argset, the state of the argument is treated as None
                 # when it is added
@@ -330,19 +326,22 @@ class Reader(object):
                 # check that they are within range
                 if self.caes_alpha > 1 or self.caes_alpha < 0:
                     raise ValueError(
-                        'alpha must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_alpha))
+                        'alpha must be within the range of 0 and 1 inclusive. {} given'.
+                        format(self.caes_alpha))
 
             elif param.data == 'beta':
                 self.caes_beta = float(param.children[0].data)
                 if self.caes_beta > 1 or self.caes_beta < 0:
                     raise ValueError(
-                        'beta must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_beta))
+                        'beta must be within the range of 0 and 1 inclusive. {} given'.
+                        format(self.caes_beta))
 
             elif param.data == 'gamma':
                 self.caes_gamma = float(param.children[0].data)
                 if self.caes_gamma > 1 or self.caes_gamma < 0:
                     raise ValueError(
-                        'gamma must be within the range of 0 and 1 inclusive. {} given'.format(self.caes_gamma))
+                        'gamma must be within the range of 0 and 1 inclusive. {} given'.
+                        format(self.caes_gamma))
 
         # -----------------------------------------------------------------
         logging.info('\tAdding proofstandard to CAES')
@@ -387,10 +386,9 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         # Create file specific directory for graphing
-        dot_dir = '../../dot/{}/'.format(
-            path_to_file.split('/')[-1][:-4])  # remove the `.yml` extension too
-        g_dir = '../../graph/{}/'.format(
-            path_to_file.split('/')[-1][:-4])
+        dot_dir = '../../dot/{}/'.format(path_to_file.split('/')[
+            -1][:-4])  # remove the `.yml` extension too
+        g_dir = '../../graph/{}/'.format(path_to_file.split('/')[-1][:-4])
 
         if not os.path.exists(dot_dir):
             os.makedirs(dot_dir)
@@ -412,7 +410,8 @@ class Reader(object):
             # Go through each issue and generate a dialogue each
             for i, issue in enumerate(self.caes_issue):
                 logging.info(
-                '********************************************************************************\nISSUE {}: "{}"\n********************************************************************************'.format(i, issue))
+                    '********************************************************************************\nISSUE {}: "{}"\n********************************************************************************'.
+                    format(i, issue))
                 # define the filename for write_to_graphviz
                 dot_filename = dot_dir + '{}_'.format(i + 1)
                 g_filename = g_dir + '{}_'.format(i + 1)
@@ -420,16 +419,24 @@ class Reader(object):
                 dialogue_state_argset, summary, turn_num = \
                     self.dialogue(issue, g_filename, dot_filename)
                 logging.info(
-                    '\n\n\n********************************************************************************')
+                    '\n\n\n********************************************************************************'
+                )
                 logging.info(
-                    'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.format(summary))
+                    'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.
+                    format(summary))
                 logging.info(
-                    '********************************************************************************')
+                    '********************************************************************************'
+                )
 
         else:
             raise ValueError('Argument dialogue takes only boolean value')
 
-    def run(self, g_filename=None, dot_filename=None, proofstandard=None, argset=None, issues=None):
+    def run(self,
+            g_filename=None,
+            dot_filename=None,
+            proofstandard=None,
+            argset=None,
+            issues=None):
         """
         Check if the given argumentation graph is acceptable in the parameters
         parsed - i.e. evaluate in CAES using the proofstandards and the Audience
@@ -452,20 +459,19 @@ class Reader(object):
         # ------------------------------------------------------------
         #       Evaluate the issues using CAES
         # ------------------------------------------------------------
-        caes = CAES(argset=argset,
-                    audience=Audience(
-                        self.caes_assumption, self.caes_weight),
-                    proofstandard=proofstandard,
-                    alpha=self.caes_alpha,
-                    beta=self.caes_beta,
-                    gamma=self.caes_gamma)
+        caes = CAES(
+            argset=argset,
+            audience=Audience(self.caes_assumption, self.caes_weight),
+            proofstandard=proofstandard,
+            alpha=self.caes_alpha,
+            beta=self.caes_beta,
+            gamma=self.caes_gamma)
 
         if issues is None:
             # Evaluate all the issues that has been parsed
             issues = self.caes_issue
             for issue in issues:
-                logging.info(
-                    '\n\nEvaluating issue: "{}"'.format(issue))
+                logging.info('\n\nEvaluating issue: "{}"'.format(issue))
                 # use the aceptablility standard in CAES
                 acceptability = caes.acceptable(issue)
                 logging.info('------ "{}" {} acceptable ------'.format(
@@ -476,8 +482,7 @@ class Reader(object):
         elif isinstance(issues, PropLiteral):
             # evaluating a single statement usually based on the current
             # argumentation graph
-            logging.info(
-                'Evaluating issue: {}'.format(issues))
+            logging.info('Evaluating issue: {}'.format(issues))
             acceptability = caes.acceptable(issues)
             logging.info('------ {} {} acceptable ------'.format(
                 issues, ['IS NOT', 'IS'][acceptability]))
@@ -487,7 +492,13 @@ class Reader(object):
             return acceptability
 
     # @TraceCalls()
-    def dialogue(self, issue, g_filename, dot_filename, turn_num=None, dialogue_state_argset=None, summary=None):
+    def dialogue(self,
+                 issue,
+                 g_filename,
+                 dot_filename,
+                 turn_num=None,
+                 dialogue_state_argset=None,
+                 summary=None):
         """
         ** In dialogue, the proponent and respondent of the issue is not the
         same as the proponent (such as prosecution) and opponent (such as
@@ -542,7 +553,8 @@ class Reader(object):
         try:
             args_pro_dialogue = dialogue_state_argset.get_arguments(issue)
             args_pro = [
-                arg for arg in args_pro if arg not in args_pro_dialogue]
+                arg for arg in args_pro if arg not in args_pro_dialogue
+            ]
         except KeyError:
             pass
 
@@ -557,18 +569,17 @@ class Reader(object):
             g_file = g_filename + 'final.pdf'
             dot_file = dot_filename + 'final.dot'
             logging.info(
-                'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.format(issue))
+                'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.
+                format(issue))
             logging.info('Evaluating on the full argumentation set')
             self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
             return dialogue_state_argset, summary, turn_num
 
         # Add the first argument pro the issue into the argset:
-        dialogue_state_argset.add_argument(best_arg_pro,
-                                           state='claimed',
-                                           claimer=self.actors[turn_num % 2])
-        summary += self.dialogue_state(dialogue_state_argset, issue,
-                                       turn_num, '?',
-                                       g_filename, dot_filename)
+        dialogue_state_argset.add_argument(
+            best_arg_pro, state='claimed', claimer=self.actors[turn_num % 2])
+        summary += self.dialogue_state(dialogue_state_argset, issue, turn_num,
+                                       '?', g_filename, dot_filename)
 
         # check that the proponent of issue have met her burden of proof
         # The evaluation of the Burden of Proof is using scintilla of evidence
@@ -576,18 +587,17 @@ class Reader(object):
             self.burden_met(issue, best_arg_pro,
                             dialogue_state_argset, ps_SE, turn_num, summary)
 
-        summary += self.dialogue_state(dialogue_state_argset, issue,
-                                       turn_num, burden_status,
-                                       g_filename, dot_filename)
+        summary += self.dialogue_state(dialogue_state_argset, issue, turn_num,
+                                       burden_status, g_filename, dot_filename)
         # the proponent's Burden of proof must first be met; otherwise she
         # has lost the argument
         # TODO: TEST WHAT IF DOWNSTREAM THE BURDEN OF PROOF IS NOT SATISFIABLE?
         if not burden_status:
-            logging.info('{} did not met the Burden of Proof for issue \'{}\''.format(
-                self.actors[turn_num % 2], issue))
+            logging.info('{} did not met the Burden of Proof for issue \'{}\''.
+                         format(self.actors[turn_num % 2], issue))
             # raise Exception("Burden of Proof not met!")
             return dialogue_state_argset, summary, turn_num
-            
+
         else:
 
             # the respondent turn's to raise an issue
@@ -598,8 +608,8 @@ class Reader(object):
                     self.find_best_con_argument(
                         issue, dialogue_state_argset)
             except TypeError:
-                logging.info('No arguments found by {} for issue \'{}\''.format(
-                    self.actors[turn_num % 2], issue))
+                logging.info('No arguments found by {} for issue \'{}\''.
+                             format(self.actors[turn_num % 2], issue))
                 return dialogue_state_argset, summary, turn_num
 
             # if there's a arg_con found, create a issue to be debated
@@ -611,16 +621,18 @@ class Reader(object):
                 self.dialogue(sub_issue, g_filename, dot_filename,
                               turn_num, dialogue_state_argset, summary)
             summary += self.dialogue_state(dialogue_state_argset, issue,
-                                           turn_num, burden_status,
-                                           g_filename, dot_filename)
+                                           turn_num, burden_status, g_filename,
+                                           dot_filename)
         # ----------------------------------------------------------------
         #   NO LONGER DEBATABLE?
         # ----------------------------------------------------------------
         g_file = g_filename + 'final.pdf'
         dot_file = dot_filename + 'final.dot'
         # Do acceptability test using the the PS defined:
-        acceptability = self.run(g_filename=g_file, dot_filename=dot_file,
-                                 argset=dialogue_state_argset, issues=[issue])
+        acceptability = self.run(g_filename=g_file,
+                                 dot_filename=dot_file,
+                                 argset=dialogue_state_argset,
+                                 issues=[issue])
 
         while not acceptability:
             if len(args_pro):
@@ -631,7 +643,8 @@ class Reader(object):
                                   turn_num, dialogue_state_argset, summary)
                 acceptability = self.run(g_filename=g_file,
                                          dot_filename=dot_file,
-                                         argset=dialogue_state_argset, issues=issue)
+                                         argset=dialogue_state_argset,
+                                         issues=issue)
             else:
                 logging.info('No arguments found')
                 return dialogue_state_argset, summary, turn_num
@@ -648,12 +661,12 @@ class Reader(object):
         :param ps : proofstandard for the arguments. If ps is an empty list,
         then the default scintilla of evidence is used for all the statement.
         """
-        logging.info('Checking burden of proof for {}'.format(
-            self.actors[turn_num % 2]))
-        caes = CAES(argset=argset,
-                    proofstandard=ps,
-                    audience=Audience(
-                        self.caes_assumption, self.caes_weight))
+        logging.info('Checking burden of proof for {}'.format(self.actors[
+            turn_num % 2]))
+        caes = CAES(
+            argset=argset,
+            proofstandard=ps,
+            audience=Audience(self.caes_assumption, self.caes_weight))
         burden_status = caes.acceptable(issue)
         logging.debug("CHECKING THE BURDEN OF PROOF")
 
@@ -666,10 +679,12 @@ class Reader(object):
                     try:
                         # prevent repeated argument from being added into
                         # argset
-                        argset.add_argument(arg, state='claimed',
-                                            claimer=self.actors[turn_num % 2])
-                        argset.set_argument_status(arg.conclusion,
-                                                   state='claimed')
+                        argset.add_argument(
+                            arg,
+                            state='claimed',
+                            claimer=self.actors[turn_num % 2])
+                        argset.set_argument_status(
+                            arg.conclusion, state='claimed')
                     except ValueError:
                         return argset, summary, False
 
@@ -682,7 +697,8 @@ class Reader(object):
             # proponent cant satisfy the Burden
             if not burden_status:
                 logging.info(
-                    "{} did not manage to satisfy her burden of proof".format(self.actors[turn_num % 2]))
+                    "{} did not manage to satisfy her burden of proof".format(
+                        self.actors[turn_num % 2]))
                 logging.info('{}'.format(summary))
 
         return argset, summary, burden_status
@@ -742,8 +758,13 @@ class Reader(object):
 
         return False
 
-    def dialogue_state(self, argset, issue, turn_num, burden_status,
-                       g_filename=None, dot_filename=None):
+    def dialogue_state(self,
+                       argset,
+                       issue,
+                       turn_num,
+                       burden_status,
+                       g_filename=None,
+                       dot_filename=None):
         """
         1) print and log the current dialogue status
             - Which party have the burden of proof
@@ -754,14 +775,14 @@ class Reader(object):
         """
 
         # CURRENT STAUS
-        logging.info(
-            '================== turn {} =================='.format(turn_num))
+        logging.info('================== turn {} =================='.format(
+            turn_num))
         summary = '================== turn {} =================='.format(
             turn_num) + '\n'
         # print Where the BOP lies in for this turn
         logging.info('BURDEN OF PROOF @ {}'.format(self.actors[turn_num % 2]))
-        summary += 'BURDEN OF PROOF @ {}'.format(
-            self.actors[turn_num % 2]) + '\n'
+        summary += 'BURDEN OF PROOF @ {}'.format(self.actors[turn_num %
+                                                             2]) + '\n'
 
         #  ARGUMENTS
         logging.info('ARGUMENTS:')
@@ -770,10 +791,12 @@ class Reader(object):
             logging.info(arg.__str__())
             summary += '\n' + arg.__str__()
 
-        logging.info("-----------------------------------------\nBurden of proof met by {} : {}".format(
-            self.actors[turn_num % 2], burden_status))
-        summary += ("\n-----------------------------------------\nBurden of proof met by {} : {}".format(
-            self.actors[turn_num % 2], burden_status))
+        logging.info(
+            "-----------------------------------------\nBurden of proof met by {} : {}".
+            format(self.actors[turn_num % 2], burden_status))
+        summary += (
+            "\n-----------------------------------------\nBurden of proof met by {} : {}".
+            format(self.actors[turn_num % 2], burden_status))
 
         # Top issue acceptable??
         logging.info('-----------------------------------------')
@@ -783,19 +806,22 @@ class Reader(object):
             # evaluate the conclusion of these arguments from proofstandards
             # parsed
             concl = arg.conclusion
-            ps.extend([(prop_id, prop_ps) for (prop_id, prop_ps)
-                       in self.caes_proofstandard if prop_id == concl])
+            ps.extend([(prop_id, prop_ps)
+                       for (prop_id, prop_ps) in self.caes_proofstandard
+                       if prop_id == concl])
         logging.debug(ps)
         ps = ProofStandard(ps)
         acceptability = self.run(argset=argset, issues=issue, proofstandard=ps)
         summary += (
-            "\n-----------------------------------------\n\t\tISSUE \"{}\" acceptable? -> {}".format(issue, acceptability))
+            "\n-----------------------------------------\n\t\tISSUE \"{}\" acceptable? -> {}".
+            format(issue, acceptability))
 
         if self.top_issue != issue:
-            acceptability_top = self.run(
-                argset=argset, issues=self.top_issue, proofstandard=ps)
-            summary += (
-                "\nTOP ISSUE \"{}\" acceptable? -> {}".format(self.top_issue, acceptability_top))
+            acceptability_top = self.run(argset=argset,
+                                         issues=self.top_issue,
+                                         proofstandard=ps)
+            summary += ("\nTOP ISSUE \"{}\" acceptable? -> {}".format(
+                self.top_issue, acceptability_top))
 
         # GRAPHS
         if g_filename is not None and dot_filename is not None:
@@ -839,9 +865,10 @@ class Reader(object):
                 prop_id = prop_id[1:]
                 negate = 1
 
-            if prop_id not in caes_propliteral.keys():  # throw error if the key doesnt exists in the dictionary
-                raise ValueError(
-                    '"{}" is not defined in PROPOSITION'.format(prop_id))
+            if prop_id not in caes_propliteral.keys(
+            ):  # throw error if the key doesnt exists in the dictionary
+                raise ValueError('"{}" is not defined in PROPOSITION'.format(
+                    prop_id))
                 return False
             else:
                 if negate:
@@ -854,17 +881,19 @@ class Reader(object):
         check if the proofstandard user input is a valid input.
         Return the CAES's version of the similar proofstandard
         """
-        standards = {'scintilla': "scintilla",
-                     'preponderance': "preponderance",
-                     'clear and convincing': "clear_and_convincing",
-                     'beyond reasonable doubt': "beyond_reasonable_doubt",
-                     'dialectical validitys': "dialectical_validity"}
+        standards = {
+            'scintilla': "scintilla",
+            'preponderance': "preponderance",
+            'clear and convincing': "clear_and_convincing",
+            'beyond reasonable doubt': "beyond_reasonable_doubt",
+            'dialectical validitys': "dialectical_validity"
+        }
 
         if query in standards.keys():
             return True, standards[query]
         else:
-            raise ValueError(
-                'Invalid proof standard "{}" found'.format(query))
+            raise ValueError('Invalid proof standard "{}" found'.format(query))
+
 
 # class dialogue(object):
 #     """
@@ -928,7 +957,6 @@ class Reader(object):
 #
 #
 #
-
 
 # ========================================================================
 #       CAES
@@ -1003,7 +1031,12 @@ class Argument(object):
     :class:`ArgumentSet`.
     """
 
-    def __init__(self, conclusion, premises=set(), exceptions=set(), weight=0, arg_id=None):
+    def __init__(self,
+                 conclusion,
+                 premises=set(),
+                 exceptions=set(),
+                 weight=0,
+                 arg_id=None):
         """
         :param conclusion: The conclusion of the argument.
         :type conclusion: :class:`PropLiteral`
@@ -1093,21 +1126,21 @@ class ArgumentSet(object):
         """
         if isinstance(proposition, PropLiteral):
             if proposition in self.propset():
-                logging.debug(
-                    "Proposition '{}' is already in graph".format(proposition))
+                logging.debug("Proposition '{}' is already in graph".format(
+                    proposition))
 
             else:
                 # add the proposition as a vertex attribute, recovered via the
                 # key 'prop'
                 self.graph.add_vertex(prop=proposition, state=state)
-                logging.debug(
-                    "Added proposition '{}' to graph with state {}".format(proposition, state))
+                logging.debug("Added proposition '{}' to graph with state {}".
+                              format(proposition, state))
             # return the vertex
             return self.graph.vs.select(prop=proposition)[0]
 
         else:
-            raise TypeError('Input {} should be PropLiteral'.
-                            format(proposition))
+            raise TypeError('Input {} should be PropLiteral'.format(
+                proposition))
 
     def add_argument(self, argument, state=None, claimer=None):
         """
@@ -1130,8 +1163,8 @@ class ArgumentSet(object):
         """
         g = self.graph
         if argument in self.arguments:
-            raise ValueError(
-                '"{}" is already in the argument set'.format(argument))
+            raise ValueError('"{}" is already in the argument set'.format(
+                argument))
         self.arguments.append(argument)  # store a list of arguments
         # -----------------------------------------------------------
         #   VERTICES
@@ -1150,11 +1183,13 @@ class ArgumentSet(object):
         # automatically add the negated state for conclusion
         self.add_proposition(argument.conclusion.negate())
         # premise:
-        premise_vs = [self.add_proposition(prop)
-                      for prop in sorted(argument.premises)]
+        premise_vs = [
+            self.add_proposition(prop) for prop in sorted(argument.premises)
+        ]
         # exception:
-        exception_vs = [self.add_proposition(prop)
-                        for prop in sorted(argument.exceptions)]
+        exception_vs = [
+            self.add_proposition(prop) for prop in sorted(argument.exceptions)
+        ]
         # -----------------------------------------------------------
         #   EDGES
         # -----------------------------------------------------------
@@ -1232,8 +1267,10 @@ class ArgumentSet(object):
             args = []
             for i in range(len(vs.indices)):
                 conc_v_index = vs[i].index
-                target_IDs = [e.target for e in self.graph.es.select(
-                    _source=conc_v_index)]
+                target_IDs = [
+                    e.target
+                    for e in self.graph.es.select(_source=conc_v_index)
+                ]
                 out_vs = [self.graph.vs[i] for i in target_IDs]
                 arg_IDs = [v['arg'] for v in out_vs]
                 args.extend(
@@ -1246,8 +1283,8 @@ class ArgumentSet(object):
         {claimed, questioned}
         """
         self.graph.vs.select(prop=concl)['state'] = state
-        logging.info(
-            'proposition "{}" state updated to {}'.format(concl, state))
+        logging.info('proposition "{}" state updated to {}'.format(concl,
+                                                                   state))
 
     def draw(self, g_filename, debug=False):
         """
@@ -1299,7 +1336,8 @@ class ArgumentSet(object):
         plot_style['vertex_size'] = 30
         # use thicker lines if the node is an exception of the argument
         plot_style["edge_width"] = [
-            1 + 2 * int(is_exception) for is_exception in g.es["is_exception"]]
+            1 + 2 * int(is_exception) for is_exception in g.es["is_exception"]
+        ]
         # rotation, 0 is right of the vertex
         plot_style['vertex_label_angle'] = 1.5
         plot_style['vertex_label_dist'] = -2
@@ -1359,8 +1397,8 @@ class ArgumentSet(object):
             target_label = "\\n".join(wrap(repr(target_label), 40))
             # if edge is an exception, use a dot instead of arrow
             if edge.attributes()['is_exception']:
-                result += '"{}" -> "{}" [arrowhead=dot]'.format(
-                    source_label, target_label)
+                result += '"{}" -> "{}" [arrowhead=dot]'.format(source_label,
+                                                                target_label)
             else:
                 result += '"{}" -> "{}"'.format(source_label, target_label)
             dot_str = " ; \n"
@@ -1400,10 +1438,10 @@ class ProofStandard(object):
         each proposition under consideration.
         :type propstandards: list(tuple(:class:`PropLiteral`, str))
         """
-        self.proof_standards = ["scintilla", "preponderance",
-                                "clear_and_convincing",
-                                "beyond_reasonable_doubt",
-                                "dialectical_validity"]
+        self.proof_standards = [
+            "scintilla", "preponderance", "clear_and_convincing",
+            "beyond_reasonable_doubt", "dialectical_validity"
+        ]
         self.default = default
         self.config = defaultdict(lambda: self.default)
         self._set_standard(propstandards)
@@ -1411,8 +1449,8 @@ class ProofStandard(object):
     def _set_standard(self, propstandards):
         for (prop, standard) in propstandards:
             if standard not in self.proof_standards:
-                raise ValueError("{} is not a valid proof standard".
-                                 format(standard))
+                raise ValueError("{} is not a valid proof standard".format(
+                    standard))
             self.config[prop] = standard
 
     def get_proofstandard(self, proposition):
@@ -1445,7 +1483,6 @@ assigns weights to arguments.
 :type weights: dict
 """
 
-
 # ========================================================================
 
 
@@ -1455,7 +1492,12 @@ class CAES(object):
 
     """
 
-    def __init__(self, argset, audience, proofstandard, alpha=0.4, beta=0.3,
+    def __init__(self,
+                 argset,
+                 audience,
+                 proofstandard,
+                 alpha=0.4,
+                 beta=0.3,
                  gamma=0.2):
         """
         :parameter argset: the argument set used in the CAES
@@ -1529,23 +1571,25 @@ class CAES(object):
         :type _acceptable: LambdaType
         :rtype: bool
         """
-        logging.debug(
-            'Checking applicability of {}...'.format(argument.arg_id))
+        logging.debug('Checking applicability of {}...'.format(
+            argument.arg_id))
         logging.debug('Current assumptions: {}'.format(self.assumptions))
         logging.debug('Current premises: {}'.format(argument.premises))
 
         # Checking the applicablility of the premises
         #
-        b1 = all(p in self.assumptions or
-                 (p.negate() not in self.assumptions and
-                  _acceptable(p)) for p in argument.premises)
+        b1 = all(
+            p in self.assumptions or
+            (p.negate() not in self.assumptions and _acceptable(p))
+            for p in argument.premises)
 
         #  Checking applicablility of exceptions
         if argument.exceptions:
             logging.debug('Current exception: {}'.format(argument.exceptions))
-        b2 = all(e not in self.assumptions and
-                 (e.negate() in self.assumptions or
-                  not _acceptable(e)) for e in argument.exceptions)
+        b2 = all(
+            e not in self.assumptions and (e.negate() in self.assumptions or
+                                           not _acceptable(e))
+            for e in argument.exceptions)
 
         return b1 and b2
 
@@ -1565,8 +1609,8 @@ class CAES(object):
 
         standard = self.standard.get_proofstandard(proposition)
         logging.debug("Checking whether proposition '{}'"
-                      "meets proof standard '{}'.".
-                      format(proposition, standard))
+                      "meets proof standard '{}'.".format(proposition,
+                                                          standard))
         return self.meets_proof_standard(proposition, standard)
 
     @TraceCalls()
@@ -1611,10 +1655,10 @@ class CAES(object):
             diff_exceeds_gamma = (mwp - mwc) > self.gamma
             logging.debug("max weight pro '{}' is {}".format(proposition, mwp))
             logging.debug("max weight con '{}' is {}".format(proposition, mwc))
-            logging.debug("max weight pro '{}' >  alpha '{}': {}".
-                          format(mwp, self.alpha, exceeds_alpha))
-            logging.debug("diff between pro and con = {} > gamma: {}".
-                          format(mwp - mwc, diff_exceeds_gamma))
+            logging.debug("max weight pro '{}' >  alpha '{}': {}".format(
+                mwp, self.alpha, exceeds_alpha))
+            logging.debug("diff between pro and con = {} > gamma: {}".format(
+                mwp - mwc, diff_exceeds_gamma))
 
             result = (mwp > self.alpha) and (mwp - mwc > self.gamma)
         elif standard == 'beyond_reasonable_doubt':
@@ -1641,8 +1685,8 @@ class CAES(object):
         try:
             return self.weight[arg_id]
         except KeyError:
-            raise ValueError("No weight assigned to argument '{}'.".
-                             format(arg_id))
+            raise ValueError("No weight assigned to argument '{}'.".format(
+                arg_id))
 
     def max_weight_applicable(self, arguments):
         """
@@ -1662,8 +1706,8 @@ class CAES(object):
             return 0.0
 
         applic_arg_ids = [arg.arg_id for arg in applicable_args]
-        logging.debug('Checking applicability and weights of {}'.
-                      format(applic_arg_ids))
+        logging.debug('Checking applicability and weights of {}'.format(
+            applic_arg_ids))
         weights = [self.weight_of(argument) for argument in applicable_args]
         logging.debug('Weights of {} are {}'.format(applic_arg_ids, weights))
         return max(weights)
@@ -1695,6 +1739,7 @@ class CAES(object):
         args = self.argset.get_arguments(con)
         return self.max_weight_applicable(args)
 
+
 # -----------------------------------------------------------------------------
 #       MAIN
 # -----------------------------------------------------------------------------
@@ -1710,34 +1755,43 @@ if __name__ == '__main__':
         import argparse
         argparser = argparse.ArgumentParser(
             description="Welcome to Carneades Argument Evaluation System.\n")
-        argparser.add_argument('pathname',
-                               nargs='+',
-                               default='"../../samples/example.yml"',
-                               help='path to each of your .yml file(s). At least one must be given (example: %(default)s)')
-        argparser.add_argument('-d', '--dialogue',
-                               dest='dialogue',
-                               help='shows the shifting burden of proof while the arguments are evaluated in CAES. If the flag is used, dialogue mode will be used for all the files',
-                               action='store_true')
-        argparser.add_argument('-logger',
-                               dest='logger',
-                               help='logging level (default: %(default)s)',
-                               choices=['DEBUG', 'INFO'],
-                               default='DEBUG',
-                               type=str,
-                               action='store')
-        argparser.add_argument('-buffer', '--buffer_size',
-                               dest='buffer_size',
-                               help='set the buffer size of the reader (default: %(default)s)',
-                               required=False,
-                               action='store',
-                               default=4096,
-                               type=int)
-        argparser.add_argument('-indent', '--indent_size',
-                               dest='indent_size',
-                               help='set the indent_size used in the .yml files (default: %(default)s)',
-                               action='store',
-                               default=2,
-                               type=int)
+        argparser.add_argument(
+            'pathname',
+            nargs='+',
+            default='"../../samples/example.yml"',
+            help='path to each of your .yml file(s). At least one must be given (example: %(default)s)'
+        )
+        argparser.add_argument(
+            '-d',
+            '--dialogue',
+            dest='dialogue',
+            help='shows the shifting burden of proof while the arguments are evaluated in CAES. If the flag is used, dialogue mode will be used for all the files',
+            action='store_true')
+        argparser.add_argument(
+            '-logger',
+            dest='logger',
+            help='logging level (default: %(default)s)',
+            choices=['DEBUG', 'INFO'],
+            default='DEBUG',
+            type=str,
+            action='store')
+        argparser.add_argument(
+            '-buffer',
+            '--buffer_size',
+            dest='buffer_size',
+            help='set the buffer size of the reader (default: %(default)s)',
+            required=False,
+            action='store',
+            default=4096,
+            type=int)
+        argparser.add_argument(
+            '-indent',
+            '--indent_size',
+            dest='indent_size',
+            help='set the indent_size used in the .yml files (default: %(default)s)',
+            action='store',
+            default=2,
+            type=int)
 
         args = vars(argparser.parse_args())
         # print(args)
@@ -1750,7 +1804,8 @@ if __name__ == '__main__':
 
         if os.path.isdir(str(file_check)):
             print(
-                'You have given a directory!\nUsage: $ python caes.py path_to_file | [path_to_file]+')
+                'You have given a directory!\nUsage: $ python caes.py path_to_file | [path_to_file]+'
+            )
             exit()
 
         elif len(filenames) > 1:  # if user gave a list of filenames
@@ -1760,18 +1815,21 @@ if __name__ == '__main__':
             for filename in filenames:
                 logger_file = '../../log/{}.log'.format(
                     filename.split('/')[-1])
-                logging.basicConfig(format='%(message)s',
-                                    level=args['logger'],
-                                    filemode='w',
-                                    filename=logger_file)
+                logging.basicConfig(
+                    format='%(message)s',
+                    level=args['logger'],
+                    filemode='w',
+                    filename=logger_file)
 
                 # check that the filename parsed are all files
                 assert os.path.isfile(filename), logging.exception(
                     '{} is not a file'.format(filename))
                 print('\nProcessing {}'.format(filename))
 
-                Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(
-                    filename, dialogue=args['dialogue'])
+                Reader(
+                    buffer_size=args['buffer_size'],
+                    indent_size=args['indent_size']).load(
+                        filename, dialogue=args['dialogue'])
 
                 logger = logging.getLogger()
                 logger.removeHandler(logger.handlers[0])
@@ -1780,18 +1838,21 @@ if __name__ == '__main__':
             if os.path.isfile(file_check):
                 logger_file = '../../log/{}.log'.format(
                     file_check.split('/')[-1])
-                logging.basicConfig(format='%(message)s',
-                                    level=args['logger'],
-                                    filemode='w',
-                                    filename=logger_file)
+                logging.basicConfig(
+                    format='%(message)s',
+                    level=args['logger'],
+                    filemode='w',
+                    filename=logger_file)
 
                 # check that the filename parsed are all files
                 assert os.path.isfile(file_check), logging.exception(
                     '{} is not a file'.format(filename))
                 print('\nProcessing {}'.format(file_check))
 
-                Reader(buffer_size=args['buffer_size'], indent_size=args['indent_size']).load(
-                    file_check, dialogue=args['dialogue'])
+                Reader(
+                    buffer_size=args['buffer_size'],
+                    indent_size=args['indent_size']).load(
+                        file_check, dialogue=args['dialogue'])
 
             else:
                 logging.error('Cannot find file {}'.format(filenames))

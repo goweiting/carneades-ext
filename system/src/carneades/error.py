@@ -24,9 +24,9 @@ class TokenizerError(Error):  # extend the Error class
         self.message = message
 
     def __str__(self):
-        s = '{} at line {}, column {}'.format(
-            self.message, self.lineIdx, self.colIdx)
-        return(s)
+        s = '{} at line {}, column {}'.format(self.message, self.lineIdx,
+                                              self.colIdx)
+        return (s)
 
 
 # ------------------------------------------------

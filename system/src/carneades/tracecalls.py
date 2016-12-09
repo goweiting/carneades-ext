@@ -4,7 +4,6 @@
 # License: in public domain
 # See
 # http://eli.thegreenplace.net/2012/08/22/easy-tracing-of-nested-function-calls-in-python
-
 """
 Module to see what calls actually occurred during execution, their arguments
 and return values, when executing algorithms with complex function call
@@ -41,12 +40,11 @@ class TraceCalls(object):
         @wraps(fn)
         def wrapper(*args, **kwargs):
             indent = ' ' * TraceCalls.cur_indent
-            argstr = ', '.join(
-                [str(a) for a in args][1:])
-            self.stream.write("\n{}Calling {}({})".format(
-                indent, fn.__name__, argstr))
-            logging.info("{}Calling {}({})".format(
-                indent, fn.__name__, argstr))
+            argstr = ', '.join([str(a) for a in args][1:])
+            self.stream.write("\n{}Calling {}({})".format(indent, fn.__name__,
+                                                          argstr))
+            logging.info("{}Calling {}({})".format(indent, fn.__name__,
+                                                   argstr))
 
             TraceCalls.cur_indent += self.indent_step
             ret = fn(*args, **kwargs)
@@ -58,4 +56,5 @@ class TraceCalls(object):
                 logging.info("{}{}({})-->{}".format(indent, fn.__name__,
                                                     argstr, ret))
                 return ret
+
         return wrapper
