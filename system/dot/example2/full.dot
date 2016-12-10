@@ -23,9 +23,6 @@ digraph G{
 "-an act of self-defense" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "Witness1 testified 'attack'" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "-Witness1 is credible" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg4" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
-"Witness2 saw testified 'time to run\naway'" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"-Witness2 is credible" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "killing" -> "arg01" ; 
 "arg01" -> "evidence 1 supports killing" ; 
 "arg01" -> "tampering of evidence 1" [arrowhead=dot] ; 
@@ -44,7 +41,4 @@ digraph G{
 "an act of self-defense" -> "arg3" ; 
 "arg3" -> "Witness1 testified 'attack'" ; 
 "arg3" -> "-Witness1 is credible" [arrowhead=dot] ; 
-"-an act of self-defense" -> "arg4" ; 
-"arg4" -> "Witness2 saw testified 'time to run\naway'" ; 
-"arg4" -> "-Witness2 is credible" [arrowhead=dot] ; 
 }

@@ -4,39 +4,24 @@
 	Adding assumptions to CAES
 	Adding arguments to CAES
 Added argument 'is there an intent to murder?' to graph by claimer 'None'
+Added proposition 'accused committed murder' to graph with state None
+Added proposition '-accused committed murder' to graph with state None
+Added proposition 'accused have the intent' to graph with state None
+Added proposition 'accused killed the victim' to graph with state None
 Added argument 'is witness1 sufficient to proof intent?' to graph by claimer 'None'
+Proposition 'accused have the intent' is already in graph
+Added proposition '-accused have the intent' to graph with state None
+Added proposition 'first witness' to graph with state None
+Added proposition 'first witness is unreliable' to graph with state None
 Added argument 'is witness2 sufficient to proof intent?' to graph by claimer 'None'
+Proposition '-accused have the intent' is already in graph
+Proposition 'accused have the intent' is already in graph
+Added proposition 'second witness' to graph with state None
+Added proposition 'second witness is unreliable' to graph with state None
 	Adding parameter to CAES
 	Adding proofstandard to CAES
 	Adding issues to CAES
+Dialogue Mode: On
 ********************************************************************************
-ISSUE: "-accused committed murder"
+ISSUE 0: "-accused committed murder"
 ********************************************************************************
-ISSUE "-accused committed murder" cannot be evaluated because there are insufficient arguments to form an argumentation graph
-Evaluating on the full argumentation set
-Calling acceptable(-accused committed murder)
-  Calling meets_proof_standard(-accused committed murder, scintilla)
-  meets_proof_standard(-accused committed murder, scintilla)-->False
-acceptable(-accused committed murder)-->False
-
-
-Evaluating issue: -accused committed murder
------- -accused committed murder IS NOT acceptable ------
-********************************************************************************
-ISSUE: "accused committed murder"
-********************************************************************************
-Added argument 'is there an intent to murder?' to graph by claimer 'PROPONENT'
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[accused have the intent, accused killed the victim], ~[] => accused committed murder
------------------------------------------
-Burden of proof met by PROPONENT : ?
------------------------------------------
-
-Calling acceptable(accused committed murder)
-  Calling meets_proof_standard(accused committed murder, scintilla)
-    Calling applicable([accused have the intent, accused killed the victim], ~[] => accused committed murder)
-      Calling acceptable(accused have the intent)
-        Calling meets_proof_standard(accused have the intent, beyond_reasonable_doubt)
-          Calling meets_proof_standard(accused have the intent, clear_and_convincing)

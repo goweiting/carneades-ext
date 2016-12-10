@@ -163,10 +163,10 @@ from igraph import Graph, plot
 # fix to ensure that package is loaded properly on system path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from carneades.tracecalls import TraceCalls
-from carneades.tokenizer import Tokenizer
-from carneades.parser import Parser, Node
-from carneades.error import ReaderError
+from tracecalls import TraceCalls
+from tokenizer import Tokenizer
+from parser import Parser, Node
+from error import ReaderError
 
 # ========================================================================
 #           READER
@@ -213,10 +213,6 @@ class Reader(object):
         self.caes_gamma = float()
         self.caes_issue = set()
         self.argset = ArgumentSet()
-
-        # For dialogue:
-        self.actors = ['PROPONENT', 'RESPONDENT']
-        self.top_issue = None
 
     def load(self, path_to_file, dialogue):
         """
@@ -386,8 +382,7 @@ class Reader(object):
 
         # -----------------------------------------------------------------
         # Create file specific directory for graphing
-        dot_dir = '../../dot/{}/'.format(path_to_file.split('/')[
-            -1][:-4])  # remove the `.yml` extension too
+        dot_dir = '../../dot/{}/'.format(path_to_file.split('/')[-1][:-4])
         g_dir = '../../graph/{}/'.format(path_to_file.split('/')[-1][:-4])
 
         if not os.path.exists(dot_dir):
@@ -409,27 +404,20 @@ class Reader(object):
 
             # Go through each issue and generate a dialogue each
             for i, issue in enumerate(self.caes_issue):
-                logging.info(
-                    '********************************************************************************\nISSUE {}: "{}"\n********************************************************************************'.
-                    format(i, issue))
                 # define the filename for write_to_graphviz
                 dot_filename = dot_dir + '{}_'.format(i + 1)
                 g_filename = g_dir + '{}_'.format(i + 1)
-                self.top_issue = issue
-                dialogue_state_argset, summary, turn_num = \
-                    self.dialogue(issue, g_filename, dot_filename)
+                # # self.top_issue = issue
+                # dialogue_state_argset, summary, turn_num = \
+                #     self.dialogue(issue, g_filename, dot_filename)
                 logging.info(
-                    '\n\n\n********************************************************************************'
-                )
-                logging.info(
-                    'DIALOGUE SUMMARY:\n********************************************************************************\n{}'.
-                    format(summary))
-                logging.info(
-                    '********************************************************************************'
-                )
+                    '********************************************************************************\nISSUE {}: "{}"\n********************************************************************************'.
+                    format(i, issue))
 
-        else:
-            raise ValueError('Argument dialogue takes only boolean value')
+                # Call dialogue class to start the conversation
+                Dialogue(issue, self.argset, self.caes_assumption,
+                         self.caes_weight, self.caes_proofstandard,
+                         dot_filename, g_filename, self.run)
 
     def run(self,
             g_filename=None,
@@ -491,7 +479,108 @@ class Reader(object):
 
             return acceptability
 
-    # @TraceCalls()
+    # ------------------------------------------------------------
+    #       Additional Functions to help check
+    #       propositions and proofstandards keyed in by the user
+    # ------------------------------------------------------------
+
+    def check_prop(self, caes_propliteral, prop_id):
+        """
+        given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
+        If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
+
+        :rtype: bool - return True if the prop_id is in caes_propliteral
+        :rtype: prop - the PropLiteral of the given prop_id; if a set of prop_id is given, then prop will be a set of PropLiteral
+        """
+
+        if type(prop_id) is set:
+            props = list(prop_id)
+            checker = True
+            set_props = set()
+
+            for p in props:
+                # recursively calls itself on the all the propliteral in the set
+                yes, prop = self.check_prop(caes_propliteral, p)
+                checker = checker and yes
+                # if no, the function would already had raised an error
+                set_props.add(prop)
+
+            return checker, set_props
+
+        elif type(prop_id) is str:
+            # check for negation first
+            if prop_id[0] == '-':
+                prop_id = prop_id[1:]
+                negate = 1
+            else:
+                negate = 0
+
+            # throw error if the key doesnt exists in the dictionary
+            if prop_id not in caes_propliteral.keys():
+                raise ValueError('"{}" is not defined in PROPOSITION'.format(
+                    prop_id))
+                return False
+            else:
+                if negate:
+                    return True, caes_propliteral[prop_id].negate()
+                else:
+                    return True, caes_propliteral[prop_id]
+
+    def check_proofstandard(self, query):
+        """
+        check if the proofstandard user input is a valid input.
+        Return the CAES's version of the similar proofstandard
+        """
+        standards = {
+            'scintilla': "scintilla",
+            'preponderance': "preponderance",
+            'clear and convincing': "clear_and_convincing",
+            'beyond reasonable doubt': "beyond_reasonable_doubt",
+            'dialectical validitys': "dialectical_validity"
+        }
+
+        if query in standards.keys():
+            return True, standards[query]
+        else:
+            raise ValueError('Invalid proof standard "{}" found'.format(query))
+
+
+# ========================================================================
+#       EXTENSION FOR DIALOGUE
+# ========================================================================
+
+
+class Dialogue(object):
+    """
+    Dialogue simulates the conversation between the proponent and opponent in
+    the courthouse
+    """
+
+    def __init__(self, issue, caes_argset, caes_assumption, caes_weight,
+                 caes_proofstandard, dot_filename, g_filename, run):
+        """
+        """
+        self.actors = ['PROPONENT', 'RESPONDENT']
+        self.dot_filename = dot_filename
+        self.g_filename = g_filename
+        self.top_issue = issue
+        self.caes_weight = caes_weight
+        self.argset = caes_argset
+        self.caes_proofstandard = caes_proofstandard
+        self.caes_assumption = caes_assumption
+        self.run = run
+
+        # -----------------------------------------------------------------
+        # RUN the dialogue
+        # -----------------------------------------------------------------
+        dialogue_state_argset, summary, turn_num = \
+            self.dialogue(self.top_issue, self.g_filename, self.dot_filename)
+
+        # Print the dialogue summary
+        logging.info(
+            '\n\n\n********************************************************************************DIALOGUE SUMMARY:\n********************************************************************************\n{}********************************************************************************'.
+            format(summary))
+
     def dialogue(self,
                  issue,
                  g_filename,
@@ -524,7 +613,6 @@ class Reader(object):
         printed, and the current view of the arguments (in an argumentation
         graph will be printed)
 
-
         :param issue : the issue :type PropLiteral that the propnent and opponent are arguing about
         :param g_filename : the filename for the graph to be drawn.
             For each state in a dialogue, a graph will be output.
@@ -551,16 +639,19 @@ class Reader(object):
         # -----------------------------------------------------------------
         args_pro = self.argset.get_arguments(issue)
         try:
+            # Compare the arguments in the full set and the current dialogue
+            # state. If there are additional arguments, continue the dialogue
             args_pro_dialogue = dialogue_state_argset.get_arguments(issue)
-            args_pro = [
-                arg for arg in args_pro if arg not in args_pro_dialogue
-            ]
+            args_pro = \
+                [arg for arg in args_pro if arg not in args_pro_dialogue]
         except KeyError:
+            # If there are no arguments leading to the issue in the current
+            # argset, continue
             pass
 
-        # start with the best argument, i.e. the one with the highest weight
         args_pro = sorted(args_pro, key=lambda args: args.weight)
         try:
+            # start with the best argument, i.e. the one with the highest weight
             best_arg_pro = args_pro.pop()
         except IndexError:
             # If the argument cannot be reached as there is nothing to argue
@@ -575,20 +666,24 @@ class Reader(object):
             self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
             return dialogue_state_argset, summary, turn_num
 
-        # Add the first argument pro the issue into the argset:
+        # ------------------------------------------------------------------
+        #   Add an argument pro the issue into the argset:
+        # ------------------------------------------------------------------
         dialogue_state_argset.add_argument(
             best_arg_pro, state='claimed', claimer=self.actors[turn_num % 2])
         summary += self.dialogue_state(dialogue_state_argset, issue, turn_num,
                                        '?', g_filename, dot_filename)
 
+        # ------------------------------------------------------------------
         # check that the proponent of issue have met her burden of proof
         # The evaluation of the Burden of Proof is using scintilla of evidence
+        # ------------------------------------------------------------------
         dialogue_state_argset, summary, burden_status = \
             self.burden_met(issue, best_arg_pro,
                             dialogue_state_argset, ps_SE, turn_num, summary)
-
         summary += self.dialogue_state(dialogue_state_argset, issue, turn_num,
                                        burden_status, g_filename, dot_filename)
+
         # the proponent's Burden of proof must first be met; otherwise she
         # has lost the argument
         # TODO: TEST WHAT IF DOWNSTREAM THE BURDEN OF PROOF IS NOT SATISFIABLE?
@@ -599,24 +694,35 @@ class Reader(object):
             return dialogue_state_argset, summary, turn_num
 
         else:
-
-            # the respondent turn's to raise an issue
+            # ----------------------------------------------------------------
+            #   the respondent turn's to raise an issue
+            # ----------------------------------------------------------------
             turn_num += 1
-
             try:
+                # Finding an argument to attack the issue
                 (arg_con, arg_attacked) = \
                     self.find_best_con_argument(
                         issue, dialogue_state_argset)
             except TypeError:
+                # If no arguments found, then the respondent lost the argument
+                # here
                 logging.info('No arguments found by {} for issue \'{}\''.
                              format(self.actors[turn_num % 2], issue))
                 return dialogue_state_argset, summary, turn_num
 
-            # if there's a arg_con found, create a issue to be debated
+            # ----------------------------------------------------------------
+            # if there's an arg_con found, create a sub-dialogue on the issue
+            # (premise) to be debated upon
+            # ----------------------------------------------------------------
+            # Update the status of the argument, so that we know that this
+            # issue has already been attacked
+            # TODO: What if i have more than 1 premise to be attacked?
             dialogue_state_argset.set_argument_status(
                 concl=arg_attacked.conclusion, state='questioned')
             sub_issue = arg_con.conclusion
             logging.info('SUB ISSUE: "{}"'.format(sub_issue))
+
+            # Run a dialogue for this issue:
             dialogue_state_argset, summary, turn_num = \
                 self.dialogue(sub_issue, g_filename, dot_filename,
                               turn_num, dialogue_state_argset, summary)
@@ -708,16 +814,17 @@ class Reader(object):
         The respondent to the argument have the burden of production of any
         exceptions. First, we find the list of claims put forth by the
         proponent. If there are multiple claims, we rank the claims according
-        to their weights. For each claim:
-        1) check if there are exceptions
-            2) for each exceptions, check if there are arguments that will lead
-            to the exception being true
-            3) return the argument with the highest weight
+        to their weights.
 
-        if there are NO argument to support the exceptions in the claims, then
-        we have to find a rebuttal to the claims
-        This is done as:
-        1) find any argument that is `con` of the claim
+        For each claim:
+        First, check if there are *exceptions*
+        for each exceptions, check if there are arguments that will lead
+        to the exception being true
+        if so, return the argument with the highest weight
+
+        if there are **NO arguments** to support the exceptions in the claims,
+        then we have to find a rebuttal to the claims
+        A rbuttal is any argument that is `con` of the claim
         """
         # first, find the arguments that are claimed by the proponent, and sort
         # it according to their weight
@@ -833,130 +940,6 @@ class Reader(object):
         summary += '\n============================================\n'
         return summary
 
-    # ------------------------------------------------------------
-    #       Additional Functions to help check
-    #       propositions and proofstandards keyed in by the user
-    # ------------------------------------------------------------
-
-    def check_prop(self, caes_propliteral, prop_id):
-        """
-        given the dictionary of caes_propliteral, check if a propliteral with prop_id exists
-        If :param: prop_id is a set of strings, iteratively call check_prop on each element in the set.
-
-        :rtype: bool - return True if the prop_id is in caes_propliteral
-        :rtype: prop - the PropLiteral of the given prop_id; if a set of prop_id is given, then prop will be a set of PropLiteral
-        """
-
-        if type(prop_id) is set:
-            props = list(prop_id)
-            checker = True
-            set_props = set()
-
-            for p in props:
-                yes, prop = self.check_prop(caes_propliteral, p)
-                checker = checker and yes  # if no, the function would already had raised an error
-                set_props.add(prop)
-
-            return checker, set_props
-
-        elif type(prop_id) is str:
-            negate = 0  # check for negation first
-            if prop_id[0] == '-':
-                prop_id = prop_id[1:]
-                negate = 1
-
-            if prop_id not in caes_propliteral.keys(
-            ):  # throw error if the key doesnt exists in the dictionary
-                raise ValueError('"{}" is not defined in PROPOSITION'.format(
-                    prop_id))
-                return False
-            else:
-                if negate:
-                    return True, caes_propliteral[prop_id].negate()
-                else:
-                    return True, caes_propliteral[prop_id]
-
-    def check_proofstandard(self, query):
-        """
-        check if the proofstandard user input is a valid input.
-        Return the CAES's version of the similar proofstandard
-        """
-        standards = {
-            'scintilla': "scintilla",
-            'preponderance': "preponderance",
-            'clear and convincing': "clear_and_convincing",
-            'beyond reasonable doubt': "beyond_reasonable_doubt",
-            'dialectical validitys': "dialectical_validity"
-        }
-
-        if query in standards.keys():
-            return True, standards[query]
-        else:
-            raise ValueError('Invalid proof standard "{}" found'.format(query))
-
-
-# class dialogue(object):
-#     """
-#     Given a set of arguments, create a dialogue between the Proponent and
-#     Respondent (the parties) of the issue of contention.
-#
-#     The shifting of the burden of proof is emulated here too. A party
-#     satisfy her burden of proof if the current arguments put forward for the
-#     argument is acceptable by a proofstandard - the default being scintilla of
-#     evidence
-#
-#     In each of the dialogue, the argumentation graph will be stored in the
-#     respectively directories.
-#
-#
-#     """
-#
-#     def __init__(self, issue, full_argset, current_argset=None, g_filename, dot_filename, issue_num=None, turn_num=None):
-#         self.toplevelissue = issue
-#         self.issue_num = issue_num
-#         self.argset = full_argset
-#         # self.proofstandard = proofstandard
-#         self.ps_BOP = ProofStandard([])  # use scintilla of evidence for BOP checking
-#         self.g_filename = g_filename
-#         self.dot_filename = dot_filename
-#         self.issue_num = issue_num
-#         self.actors = ['PROPONENT', 'RESPONDENT']
-#
-#         if turn_num is None:
-#             self.turn_num = 0
-#         else:
-#             self.turn_num = turn_num
-#         if current_argset is None:
-#             self.dialogue_state_argset = ArgumentSet()
-#         else:
-#             self.dialogue_state_argset = current_argset
-#         self.summary = ""
-#
-#         # Start the conversation between the actors
-#         self.debate()
-#
-#     def debate(self):
-#         """
-#         Runs the debate between the actors
-#         """
-#         args_pro = self.argset.get_arguments(issue)
-#         try:
-#             args_pro_dialogue = self.dialogue_state_argset.get_arguments(issue)
-#             args_pro = [arg for arg in args_pro if arg not in args_pro_dialogue]
-#         except KeyError:
-#             pass
-#
-#         args_pro = sorted(args_pro, key=lambda arg: arg.weight)
-#         try:
-#             best_arg_pro = args_pro.pop()
-#         except IndexError:
-#             g_file = self.g_filename + 'final.pdf'
-#             dot_file = self.dot_filename + 'final.dot'
-#             return (False, issue, g_file, dot_file)
-#
-#
-#
-#
 
 # ========================================================================
 #       CAES
