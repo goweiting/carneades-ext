@@ -154,9 +154,7 @@ False
 """
 
 from collections import namedtuple, defaultdict
-import logging
-import os
-import sys
+import logging, os, re, sys
 from textwrap import wrap
 from igraph import Graph, plot
 
@@ -560,34 +558,34 @@ class Dialogue(object):
                  caes_proofstandard, dot_filename, g_filename, run):
         """
         """
-        self.actors = ['PROPONENT', 'RESPONDENT']
-        self.dot_filename = dot_filename
-        self.g_filename = g_filename
         self.top_issue = issue
         self.caes_weight = caes_weight
         self.argset = caes_argset
         self.caes_proofstandard = caes_proofstandard
         self.caes_assumption = caes_assumption
-        self.run = run
+
+        # variables for the dialogue
+        self.dialogue_state_argset = ArgumentSet()
+        self.burden_status = None
+        self.turn_num = 0
+        self.actors = ['PROPONENT', 'RESPONDENT']
+        self.summary = ""
+        self.dot_filename = dot_filename
+        self.g_filename = g_filename
+        self.run = run  # function for evaluation
 
         # -----------------------------------------------------------------
         # RUN the dialogue
         # -----------------------------------------------------------------
-        dialogue_state_argset, summary, turn_num = \
-            self.dialogue(self.top_issue, self.g_filename, self.dot_filename)
+        self.dialogue(self.top_issue)
 
         # Print the dialogue summary
         logging.info(
             '\n\n\n********************************************************************************DIALOGUE SUMMARY:\n********************************************************************************\n{}********************************************************************************'.
-            format(summary))
+            format(self.summary))
 
-    def dialogue(self,
-                 issue,
-                 g_filename,
-                 dot_filename,
-                 turn_num=None,
-                 dialogue_state_argset=None,
-                 summary=None):
+    @TraceCalls()
+    def dialogue(self, issue):
         """
         ** In dialogue, the proponent and respondent of the issue is not the
         same as the proponent (such as prosecution) and opponent (such as
@@ -622,18 +620,6 @@ class Dialogue(object):
         :return summary: the dialogue traces
         :return dialogue_state_argset: the argset of the dialogue
         """
-
-        # -----------------------------------------------------------------
-        # Set up the arena:
-        # -----------------------------------------------------------------
-        ps_SE = ProofStandard([])  # use scintilla of evidence for BOP checking
-        if summary is None:
-            summary = ""
-        if turn_num is None:
-            turn_num = 0  # always starts with the proponent
-        if dialogue_state_argset is None:
-            dialogue_state_argset = ArgumentSet()  # store the dialogue
-
         # -----------------------------------------------------------------
         # Start the dialogue by finding the best pro argument by the proponent
         # -----------------------------------------------------------------
@@ -641,7 +627,8 @@ class Dialogue(object):
         try:
             # Compare the arguments in the full set and the current dialogue
             # state. If there are additional arguments, continue the dialogue
-            args_pro_dialogue = dialogue_state_argset.get_arguments(issue)
+            args_pro_dialogue = \
+                self.dialogue_state_argset.get_arguments(issue)
             args_pro = \
                 [arg for arg in args_pro if arg not in args_pro_dialogue]
         except KeyError:
@@ -657,58 +644,55 @@ class Dialogue(object):
             # If the argument cannot be reached as there is nothing to argue
             # about, then we will just evaluate it according to the full
             # argumentaion set available.
-            g_file = g_filename + 'final.pdf'
-            dot_file = dot_filename + 'final.dot'
+            g_file = self.g_filename + 'final.pdf'
+            dot_file = self.dot_filename + 'final.dot'
             logging.info(
                 'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.
                 format(issue))
             logging.info('Evaluating on the full argumentation set')
             self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
-            return dialogue_state_argset, summary, turn_num
+            return
 
         # ------------------------------------------------------------------
         #   Add an argument pro the issue into the argset:
         # ------------------------------------------------------------------
-        dialogue_state_argset.add_argument(
-            best_arg_pro, state='claimed', claimer=self.actors[turn_num % 2])
-        summary += self.dialogue_state(dialogue_state_argset, issue, turn_num,
-                                       '?', g_filename, dot_filename)
+        self.dialogue_state_argset.add_argument(
+            best_arg_pro,
+            state='claimed',
+            claimer=self.actors[self.turn_num % 2])
+        self.burden_status = '?'
+        # logs the current dialogue state
+        self.dialogue_log(issue)
 
         # ------------------------------------------------------------------
         # check that the proponent of issue have met her burden of proof
         # The evaluation of the Burden of Proof is using scintilla of evidence
         # ------------------------------------------------------------------
-        dialogue_state_argset, summary, burden_status = \
-            self.burden_met(issue, best_arg_pro,
-                            dialogue_state_argset, ps_SE, turn_num, summary)
-        summary += self.dialogue_state(dialogue_state_argset, issue, turn_num,
-                                       burden_status, g_filename, dot_filename)
+        self.burden_met(issue, best_arg_pro)
 
         # the proponent's Burden of proof must first be met; otherwise she
         # has lost the argument
         # TODO: TEST WHAT IF DOWNSTREAM THE BURDEN OF PROOF IS NOT SATISFIABLE?
-        if not burden_status:
+        if not self.burden_status:
             logging.info('{} did not met the Burden of Proof for issue \'{}\''.
                          format(self.actors[turn_num % 2], issue))
             # raise Exception("Burden of Proof not met!")
-            return dialogue_state_argset, summary, turn_num
+            return
 
         else:
             # ----------------------------------------------------------------
             #   the respondent turn's to raise an issue
             # ----------------------------------------------------------------
-            turn_num += 1
+            self.turn_num += 1
             try:
                 # Finding an argument to attack the issue
-                (arg_con, arg_attacked) = \
-                    self.find_best_con_argument(
-                        issue, dialogue_state_argset)
+                (arg_con, arg_attacked) = self.find_best_con_argument(issue)
             except TypeError:
                 # If no arguments found, then the respondent lost the argument
                 # here
                 logging.info('No arguments found by {} for issue \'{}\''.
-                             format(self.actors[turn_num % 2], issue))
-                return dialogue_state_argset, summary, turn_num
+                             format(self.actors[self.turn_num % 2], issue))
+                return
 
             # ----------------------------------------------------------------
             # if there's an arg_con found, create a sub-dialogue on the issue
@@ -717,99 +701,108 @@ class Dialogue(object):
             # Update the status of the argument, so that we know that this
             # issue has already been attacked
             # TODO: What if i have more than 1 premise to be attacked?
-            dialogue_state_argset.set_argument_status(
+            self.dialogue_state_argset.set_argument_status(
                 concl=arg_attacked.conclusion, state='questioned')
             sub_issue = arg_con.conclusion
             logging.info('SUB ISSUE: "{}"'.format(sub_issue))
 
             # Run a dialogue for this issue:
-            dialogue_state_argset, summary, turn_num = \
-                self.dialogue(sub_issue, g_filename, dot_filename,
-                              turn_num, dialogue_state_argset, summary)
-            summary += self.dialogue_state(dialogue_state_argset, issue,
-                                           turn_num, burden_status, g_filename,
-                                           dot_filename)
+            self.dialogue(sub_issue)
+            self.dialogue_log(issue)
         # ----------------------------------------------------------------
         #   NO LONGER DEBATABLE?
         # ----------------------------------------------------------------
-        g_file = g_filename + 'final.pdf'
-        dot_file = dot_filename + 'final.dot'
+        g_file = self.g_filename + 'final.pdf'
+        dot_file = self.dot_filename + 'final.dot'
         # Do acceptability test using the the PS defined:
         acceptability = self.run(g_filename=g_file,
                                  dot_filename=dot_file,
-                                 argset=dialogue_state_argset,
-                                 issues=[issue])
+                                 argset=self.dialogue_state_argset,
+                                 issues=issue)
 
         while not acceptability:
             if len(args_pro):
                 # If there are other arguments that can help with the issue,
                 # add them in:
-                dialogue_state_argset, summary, turn_num = \
-                    self.dialogue(issue, g_filename, dot_filename,
-                                  turn_num, dialogue_state_argset, summary)
+                self.dialogue(issue)
                 acceptability = self.run(g_filename=g_file,
                                          dot_filename=dot_file,
-                                         argset=dialogue_state_argset,
+                                         argset=self.dialogue_state_argset,
                                          issues=issue)
             else:
                 logging.info('No arguments found')
-                return dialogue_state_argset, summary, turn_num
+                return
 
-        return dialogue_state_argset, summary, turn_num
+        return
 
-    def burden_met(self, issue, argument, argset, ps, turn_num, summary):
+    @TraceCalls()
+    def burden_met(self,
+                   issue,
+                   current_argument,
+                   alpha=None,
+                   beta=None,
+                   gamma=None):
         """
         Checks that the burden of proof of the proponent or opponent is met
-        using the CAES acceptability function. If it is not met, try to find
-        support for the premises, and adding them to the argset.
+        using the CAES acceptability function. The CAES function typically uses
+        the 'scintilla of evidence' to evaluate the current argset. Since
+        'scintilla of evidence' ensures that every statement is well-supported
+        by having at least one *applicable* argument pro the statement. Here,
+        applicable follows CAES definition - i.e. the premises of the argument
+        must be acceptable - i.e. in caes_assumptions; and none of the
+        exceptions is in the assumptions.
 
-        :param argset: the current arguments that are being considered
-        :param ps : proofstandard for the arguments. If ps is an empty list,
-        then the default scintilla of evidence is used for all the statement.
+        If the burden of proof is not met for the party, the function
+        recurisvely finds evidence to support the premises, such that it is accceptable by CAES.
+
+        When there are NO available arguments in support of the premise, the burden of proof cannot be shifted, and the dialogue will fail.
         """
         logging.info('Checking burden of proof for {}'.format(self.actors[
-            turn_num % 2]))
-        caes = CAES(
-            argset=argset,
-            proofstandard=ps,
-            audience=Audience(self.caes_assumption, self.caes_weight))
-        burden_status = caes.acceptable(issue)
-        logging.debug("CHECKING THE BURDEN OF PROOF")
+            self.turn_num % 2]))
 
-        # if the burden is not met due to the premises not supported,
-        # find arguments to support the premises
-        if not burden_status:
-            for premise in argument.premises:
+        # Define evaluation system for checking if burden of proof have been
+        # shifted
+        caes = CAES(
+            argset=self.dialogue_state_argset,
+            proofstandard=ProofStandard([]),
+            audience=Audience(self.caes_assumption, self.caes_weight),
+            alpha=alpha,
+            beta=beta,
+            gamma=gamma)
+        self.burden_status = caes.acceptable(issue)
+
+        # if the burden is not met, support the premises to the argument
+        if not self.burden_status:
+            logging.info("")
+            for premise in current_argument.premises:
                 # find arguments that support the premises
                 for arg in self.argset.get_arguments(premise):
                     try:
                         # prevent repeated argument from being added into
                         # argset
-                        argset.add_argument(
+                        self.dialogue_state_argset.add_argument(
                             arg,
                             state='claimed',
-                            claimer=self.actors[turn_num % 2])
-                        argset.set_argument_status(
+                            claimer=self.actors[self.turn_num % 2])
+                        self.dialogue_state_argset.set_argument_status(
                             arg.conclusion, state='claimed')
-                    except ValueError:
-                        return argset, summary, False
 
-            # Check if the burden is met after adding the arguments
-            # to support the premises
-            logging.debug('HAHSDHASDHASHDASHASDH')
-            argset, summary, burden_status = \
-                self.burden_met(issue, argument, argset, ps, turn_num, summary)
+                        # Localised checking of the argument:
+                        # The recurive bit for checking burden of proof
+                        self.burden_met(issue, arg)
+                        self.dialogue_log(issue)
+                        continue
+                    except ValueError:
+                        return self.burden_status
 
             # proponent cant satisfy the Burden
-            if not burden_status:
+            if not self.burden_status:
                 logging.info(
                     "{} did not manage to satisfy her burden of proof".format(
-                        self.actors[turn_num % 2]))
-                logging.info('{}'.format(summary))
+                        self.actors[self.turn_num % 2]))
+        return self.burden_status
 
-        return argset, summary, burden_status
-
-    def find_best_con_argument(self, issue, argset):
+    def find_best_con_argument(self, issue):
         """
         The respondent to the argument have the burden of production of any
         exceptions. First, we find the list of claims put forth by the
@@ -826,52 +819,55 @@ class Dialogue(object):
         then we have to find a rebuttal to the claims
         A rbuttal is any argument that is `con` of the claim
         """
-        # first, find the arguments that are claimed by the proponent, and sort
-        # it according to their weight
-        args_claimed_ = argset.get_arguments_status(issue, 'claimed')
+        # first, find the arguments that are claimed by the proponent,
+        # and sort the arguments according to their weight
+        args_claimed_ = self.dialogue_state_argset.get_arguments_status(
+            issue, 'claimed')
         args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
 
         while len(args_claimed_sorted):
-            # the argument with the hgihest weightage
+            # the argument with the highest weight
             arg = args_claimed_sorted.pop()
-            if len(arg.exceptions):  # if there are exceptions
+            if len(arg.exceptions):
+                # if there are exceptions
                 for exception in arg.exceptions:
                     # iterate through the exceptions and find arguments that
                     # can be used to claim the exceptions
                     args_con = self.argset.get_arguments(exception)
                     if len(args_con):
                         args_con = sorted(args_con, key=lambda arg: arg.weight)
-                        # return the argument that supports the exception with the
-                        # largest weight and the argument this argument is
-                        # attacking
+                        # return the argument that supports the exception and
+                        # have the largest weight;
+                        # and the argument that it is attacking
                         return (args_con.pop(), arg)
             else:
                 # consider the next claim by the proponent
                 continue
 
+        # ----------------------------------------------------------------
         # if ever reached here, there are no arguments to attacked the
         # exceptions. Hence, a rebuttal is needed
+        logging.debug('No exceptions found for any of the claims made!')
         args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
         while len(args_claimed_sorted):
+            # once again, consider the claim with the largest weight first
             arg = args_claimed_sorted.pop()
             arg_con = self.argset.get_arguments_con(arg.conclusion)
             if len(arg_con):
-                # there';s at least one argument that is avaliable for rebuttal
+                # there is at least one argument that is avaliable for rebuttal
                 arg_con = sorted(arg_con, key=lambda arg: arg.weight)
                 return (arg_con.pop(), arg)
             else:
                 # consider the net claim by proponent
                 continue
 
+        # ----------------------------------------------------------------
+        # If ever reached here, means that no rebuttal found as well, i.e. the
+        # respondent to the claim has lost!
+        logging.debug('No rebuttal found as well!')
         return False
 
-    def dialogue_state(self,
-                       argset,
-                       issue,
-                       turn_num,
-                       burden_status,
-                       g_filename=None,
-                       dot_filename=None):
+    def dialogue_log(self, issue, draw=1):
         """
         1) print and log the current dialogue status
             - Which party have the burden of proof
@@ -880,35 +876,43 @@ class Dialogue(object):
             - the acceptability of the top level issue at the curent level
         2) output the graph for viewing at this turn!
         """
-
-        # CURRENT STAUS
+        # --------------------------------------------------------------------
+        #   CURRENT STAUS
+        # --------------------------------------------------------------------
         logging.info('================== turn {} =================='.format(
-            turn_num))
-        summary = '================== turn {} =================='.format(
-            turn_num) + '\n'
+            self.turn_num))
+        self.summary += '================== turn {} =================='.format(
+            self.turn_num) + '\n'
         # print Where the BOP lies in for this turn
-        logging.info('BURDEN OF PROOF @ {}'.format(self.actors[turn_num % 2]))
-        summary += 'BURDEN OF PROOF @ {}'.format(self.actors[turn_num %
-                                                             2]) + '\n'
-
-        #  ARGUMENTS
+        logging.info('BURDEN OF PROOF @ {}'.format(self.actors[self.turn_num %
+                                                               2]))
+        self.summary += 'BURDEN OF PROOF @ {}'.format(self.actors[self.turn_num
+                                                                  % 2]) + '\n'
+        # --------------------------------------------------------------------
+        #   ARGUMENTS
+        # --------------------------------------------------------------------
         logging.info('ARGUMENTS:')
-        summary += 'ARGUMENTS:'
-        for arg in argset.arguments:
+        self.summary += 'ARGUMENTS:'
+        for arg in self.dialogue_state_argset.arguments:
             logging.info(arg.__str__())
-            summary += '\n' + arg.__str__()
+            self.summary += '\n' + arg.__str__()
 
+        # --------------------------------------------------------------------
+        #   BURDEN OF PROOF
+        # --------------------------------------------------------------------
         logging.info(
             "-----------------------------------------\nBurden of proof met by {} : {}".
-            format(self.actors[turn_num % 2], burden_status))
-        summary += (
+            format(self.actors[self.turn_num % 2], self.burden_status))
+        self.summary += (
             "\n-----------------------------------------\nBurden of proof met by {} : {}".
-            format(self.actors[turn_num % 2], burden_status))
+            format(self.actors[self.turn_num % 2], self.burden_status))
 
-        # Top issue acceptable??
+        # --------------------------------------------------------------------
+        # TOP ISSUE:
+        # --------------------------------------------------------------------
         logging.info('-----------------------------------------')
         ps = []  # store all the relevant proofstandard
-        for arg in argset.arguments:
+        for arg in self.dialogue_state_argset.arguments:
             # iterate through the arguments, and find the proofstandard used to
             # evaluate the conclusion of these arguments from proofstandards
             # parsed
@@ -917,28 +921,43 @@ class Dialogue(object):
                        for (prop_id, prop_ps) in self.caes_proofstandard
                        if prop_id == concl])
         logging.debug(ps)
-        ps = ProofStandard(ps)
-        acceptability = self.run(argset=argset, issues=issue, proofstandard=ps)
-        summary += (
+        acceptability = self.run(argset=self.dialogue_state_argset,
+                                 issues=issue,
+                                 proofstandard=ProofStandard(ps))
+        self.summary += (
             "\n-----------------------------------------\n\t\tISSUE \"{}\" acceptable? -> {}".
             format(issue, acceptability))
 
         if self.top_issue != issue:
-            acceptability_top = self.run(argset=argset,
+            acceptability_top = self.run(argset=self.dialogue_state_argset,
                                          issues=self.top_issue,
-                                         proofstandard=ps)
-            summary += ("\nTOP ISSUE \"{}\" acceptable? -> {}".format(
+                                         proofstandard=ProofStandard(ps))
+            self.summary += ("\nTOP ISSUE \"{}\" acceptable? -> {}".format(
                 self.top_issue, acceptability_top))
 
+        # --------------------------------------------------------------------
         # GRAPHS
-        if g_filename is not None and dot_filename is not None:
-            g_file = g_filename + str(turn_num) + '.pdf'
-            dot_file = dot_filename + str(turn_num) + '.dot'
-            argset.draw(g_file)
-            argset.write_to_graphviz(dot_file)
+        # --------------------------------------------------------------------
+        if draw:
+
+            g_file = self.g_filename + str(self.turn_num) + '.pdf'
+            dot_file = self.dot_filename + str(self.turn_num) + '.dot'
+            num = 1
+            if os.path.isfile(g_file):
+                g_file = self.g_filename + str(self.turn_num) + '-' + str(
+                    num) + '.pdf'
+                while os.path.isfile(g_file):
+                    num += 1
+                    g_file = self.g_filename + str(self.turn_num) + '-' + str(
+                        num) + '.pdf'
+
+                dot_file = self.dot_filename + str(self.turn_num) + '-' + str(
+                    num) + '.dot'
+            self.dialogue_state_argset.draw(g_file)
+            self.dialogue_state_argset.write_to_graphviz(dot_file)
         logging.info('============================================')
-        summary += '\n============================================\n'
-        return summary
+        self.summary += '\n============================================\n'
+        return
 
 
 # ========================================================================
