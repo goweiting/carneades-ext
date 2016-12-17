@@ -1,0 +1,80 @@
+# a very nested dialogue
+PROPOSITION:
+  i: issue
+  p11: p11
+  p12: p12
+  p21: p21
+  e21: e21
+  p31: p31
+  e31: e31
+  p41: p41
+  e41: e41
+  p42: p42
+  e41: e41
+  p43: p43
+  p44: p44
+  p45: p45
+
+
+ASSUMPTION: [p41, p43, p12, p45]
+
+ARGUMENT:
+  arg0:
+    premise: [p11, p12]
+    exception: []
+    conclusion: i
+    weight: 0.5
+
+  arg1:
+    premise: [p21]
+    exception: [e21]
+    conclusion: p11
+    weight: 0.22
+
+  arg2:
+    premise: [p31]
+    exception: [e31]
+    conclusion: p21
+    weight: 0.22
+
+  arg3:
+    premise: [p41]
+    exception: [e41]
+    conclusion: p31
+    weight: 0.23
+
+# opponents:
+# we want to see which arguments the opponent will choose!
+# TODO: i think it is the one with the largest weight.....???
+  arg4:
+    premise: [p42]
+    exception: []
+    conclusion: e31
+    weight: 0.1
+
+  arg5:
+    premise: [p43]
+    exception: []
+    conclusion: p42
+    weight: 0.01
+
+# arg6:
+#   premise: [p44]
+#   exception: []
+#   conclusion: e41
+#   weight: 0.1
+#
+# arg7:
+#   premise: [p45]
+#   exception: []
+#   conclusion: p44
+#   weight: 0.01
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

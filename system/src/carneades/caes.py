@@ -659,6 +659,8 @@ class Dialogue(object):
             best_arg_pro,
             state='claimed',
             claimer=self.actors[self.turn_num % 2])
+        self.dialogue_state_argset.set_argument_status(
+            best_arg_pro.conclusion, state='claimed')
         self.burden_status = '?'
         # logs the current dialogue state
         self.dialogue_log(issue)
@@ -668,46 +670,54 @@ class Dialogue(object):
         # The evaluation of the Burden of Proof is using scintilla of evidence
         # ------------------------------------------------------------------
         self.burden_met(issue, best_arg_pro)
+        self.dialogue_log(issue)
 
         # the proponent's Burden of proof must first be met; otherwise she
         # has lost the argument
         # TODO: TEST WHAT IF DOWNSTREAM THE BURDEN OF PROOF IS NOT SATISFIABLE?
         if not self.burden_status:
             logging.info('{} did not met the Burden of Proof for issue \'{}\''.
-                         format(self.actors[turn_num % 2], issue))
+                         format(self.actors[self.turn_num % 2], issue))
             # raise Exception("Burden of Proof not met!")
-            return
+            return False
 
         else:
             # ----------------------------------------------------------------
             #   the respondent turn's to raise an issue
             # ----------------------------------------------------------------
             self.turn_num += 1
+            logging.debug("Turn num = {}".format(self.turn_num))
             try:
                 # Finding an argument to attack the issue
                 (arg_con, arg_attacked) = self.find_best_con_argument(issue)
+                # -------------------------------------------------------------
+                # if there's an arg_con found, create a sub-dialogue on the
+                # issue (premise) to be debated upon
+                # -------------------------------------------------------------
+                # Update the status of the argument, so that we know that this
+                # issue has already been attacked
+                # TODO: What if i have more than 1 premise to be attacked?
+                self.dialogue_state_argset.set_argument_status(
+                    concl=arg_attacked.conclusion, state='questioned')
+                sub_issue = arg_con.conclusion
+                logging.info(
+                    '--------------\nSUB ISSUE: "{}""\n--------------'.format(
+                        sub_issue))
+
+                # Run a dialogue for this issue:
+                endmeets = self.dialogue(sub_issue)
+                # self.dialogue_log(issue)
+                # dialogue return False when the BOP is not met or when there
+                # is no more argument for this issue
+                if not endmeets:
+                    return
             except TypeError:
                 # If no arguments found, then the respondent lost the argument
                 # here
                 logging.info('No arguments found by {} for issue \'{}\''.
                              format(self.actors[self.turn_num % 2], issue))
-                return
+                return False
 
-            # ----------------------------------------------------------------
-            # if there's an arg_con found, create a sub-dialogue on the issue
-            # (premise) to be debated upon
-            # ----------------------------------------------------------------
-            # Update the status of the argument, so that we know that this
-            # issue has already been attacked
-            # TODO: What if i have more than 1 premise to be attacked?
-            self.dialogue_state_argset.set_argument_status(
-                concl=arg_attacked.conclusion, state='questioned')
-            sub_issue = arg_con.conclusion
-            logging.info('SUB ISSUE: "{}"'.format(sub_issue))
-
-            # Run a dialogue for this issue:
-            self.dialogue(sub_issue)
-            self.dialogue_log(issue)
         # ----------------------------------------------------------------
         #   NO LONGER DEBATABLE?
         # ----------------------------------------------------------------
@@ -729,18 +739,13 @@ class Dialogue(object):
                                          argset=self.dialogue_state_argset,
                                          issues=issue)
             else:
-                logging.info('No arguments found')
+                logging.info('No arguments left')
                 return
 
         return
 
     @TraceCalls()
-    def burden_met(self,
-                   issue,
-                   current_argument,
-                   alpha=None,
-                   beta=None,
-                   gamma=None):
+    def burden_met(self, issue, current_argument):
         """
         Checks that the burden of proof of the proponent or opponent is met
         using the CAES acceptability function. The CAES function typically uses
@@ -761,17 +766,16 @@ class Dialogue(object):
         caes = CAES(
             argset=self.dialogue_state_argset,
             proofstandard=ProofStandard([]),
-            audience=Audience(self.caes_assumption, self.caes_weight),
-            alpha=alpha,
-            beta=beta,
-            gamma=gamma)
+            audience=Audience(self.caes_assumption, self.caes_weight))
         logging.info('Checking burden of proof for {}'.format(self.actors[
             self.turn_num % 2]))
         self.burden_status = caes.acceptable(issue)
+        logging.info("Burden of Proof: {}".format(self.burden_status))
 
         # if the burden is not met, support the premises to the argument
-        if not self.burden_status:
-            logging.info("Burden of Proof: {}".format(self.burden_status))
+        if self.burden_status:
+            return self.burden_status
+        else:
             for premise in current_argument.premises:
                 # find arguments that support the premises
                 logging.info('Current Premise: "{}"'.format(premise))
@@ -785,9 +789,11 @@ class Dialogue(object):
                             arg,
                             state='claimed',
                             claimer=self.actors[self.turn_num % 2])
-                        # self.dialogue_state_argset.set_argument_status(
-                        #     arg.conclusion, state='claimed')
-                        # TODO: Required to update the coonclusion status?
+                        # Needs to manually update the conclusion status
+                        # because the node is already in the graph; and adding
+                        # its argument will not change the status
+                        self.dialogue_state_argset.set_argument_status(
+                            arg.conclusion, state='claimed')
 
                         # Localised checking of the argument:
                         # The recurive bit for checking burden of proof
@@ -795,6 +801,7 @@ class Dialogue(object):
                         self.burden_met(issue, arg)
                         logging.info('')
                         continue
+
                     except ValueError:
                         logging.info('Nothing to add')
                         return self.burden_status
@@ -805,7 +812,7 @@ class Dialogue(object):
                 logging.info(
                     "{} did not manage to satisfy her burden of proof".format(
                         self.actors[self.turn_num % 2]))
-        return self.burden_status
+            return self.burden_status
 
     def find_best_con_argument(self, issue):
         """
@@ -828,6 +835,13 @@ class Dialogue(object):
         # and sort the arguments according to their weight
         args_claimed_ = self.dialogue_state_argset.get_arguments_status(
             issue, 'claimed')
+        logging.debug('arguments claimed: {}'.format(
+            [arg.__str__() for arg in args_claimed_]))
+        logging.debug('arguments questioned: {}'.format([
+            arg.__str__()
+            for arg in self.dialogue_state_argset.get_arguments_status(
+                issue, 'questioned')
+        ]))
         args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
 
         while len(args_claimed_sorted):
@@ -853,6 +867,7 @@ class Dialogue(object):
         # if ever reached here, there are no arguments to attacked the
         # exceptions. Hence, a rebuttal is needed
         logging.debug('No exceptions found for any of the claims made!')
+
         args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
         while len(args_claimed_sorted):
             # once again, consider the claim with the largest weight first
@@ -925,7 +940,9 @@ class Dialogue(object):
             ps.extend([(prop_id, prop_ps)
                        for (prop_id, prop_ps) in self.caes_proofstandard
                        if prop_id == concl])
-        logging.debug(ps)
+
+        # TODO: not sure if this works for the  full name
+        logging.debug('proofstandard: {}'.format(ps))
         acceptability = self.run(argset=self.dialogue_state_argset,
                                  issues=issue,
                                  proofstandard=ProofStandard(ps))
@@ -1180,7 +1197,7 @@ class ArgumentSet(object):
             assert state == 'claimed' or state == 'questioned'
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
         self.graph.add_vertex(arg=argument.arg_id, claimer=claimer)
-        logging.info('Added argument \'{}\' to graph by claimer \'{}\''.format(
+        logging.info('Added argument \'{}\' to graph by \'{}\''.format(
             argument.arg_id, claimer))
         # returns the vertex that goes to the argument
         arg_v = g.vs.select(arg=argument.arg_id)[0]
@@ -1290,8 +1307,8 @@ class ArgumentSet(object):
         {claimed, questioned}
         """
         self.graph.vs.select(prop=concl)['state'] = state
-        logging.info('proposition "{}" state updated to {}'.format(concl,
-                                                                   state))
+        logging.info('proposition "{}" state updated to "{}"'.format(concl,
+                                                                     state))
 
     def draw(self, g_filename, debug=False):
         """
@@ -1615,7 +1632,7 @@ class CAES(object):
         """
 
         standard = self.standard.get_proofstandard(proposition)
-        logging.debug("Checking whether proposition '{}'"
+        logging.debug("Checking whether proposition '{}' "
                       "meets proof standard '{}'.".format(proposition,
                                                           standard))
         return self.meets_proof_standard(proposition, standard)

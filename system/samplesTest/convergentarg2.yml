@@ -8,6 +8,8 @@
 # CAES automatically finds another argument to support the issue by searching
 # for remaining arguments that have yet to added into the argumentation graph.
 
+# Also showed that if it is a convergent argument style; CAES may be better off choosing one that doesnt require it to iterate through all the arguments. Here, we did not consider that as much, since we basically uses niave and greedy way of doing things!
+
 PROPOSITION:
   i: issue
   s1: support 1
