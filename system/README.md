@@ -60,7 +60,7 @@ system
 └───samples ( all the test examples are here! )
 |   |   example.yml
 |   |   template.yml
-|      
+|   |   ...
 └───dot
 |   ( contains all the .dot files generated from write_to_graphviz() function )
 └───graph

@@ -1,0 +1,62 @@
+# Toy example to illistrate:
+# Linked arguments have 2 or more premises jointly support the conclusion,
+# i.e., they are part of one and the same argument that justifies the conclusion.
+# Hence, one parties's burden of proof is only satisfied when each of the
+# premises are acceptable
+
+# In this example:
+# We have three premises (s1,s2,s3) that supports the issue
+# Any exception or con arguments is left out for ease of understanding
+# the recursive approach :func burden_met uses to satisfy the burden of proof
+
+PROPOSITION:
+  i: issue
+  s1: support 1
+  s2: support 2
+  s3: support 3
+  p1: premise1
+  p2: premise2
+  p3: premise3
+
+ASSUMPTION: [p1, p2, p3]
+
+ARGUMENT:
+# Linked argument made explicit here where all the premises must be satisfied
+  arg0:
+    premise: [s1, s2, s3]
+    exception: []
+    conclusion: i
+    weight: 0.5
+
+  arg1:
+    premise: [p1]
+    exception: []
+    conclusion: s1
+    weight: 0.2
+
+  arg2:
+    premise: [p2]
+    exception: []
+    conclusion: s2
+    weight: 0.1
+
+  arg3:
+    premise: [p3]
+    exception: []
+    conclusion: s3
+    weight: 0.1
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3
+
+
+# when run with dialogue mode:
+# `(ailp_env)$ python caes.py -d '../../samplesTest/linkedarg.yml' `
+# Three graphs will be generated to show that while trying to satisfy the BOP,
+# arguments are added into the argset iteratively.

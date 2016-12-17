@@ -9,6 +9,8 @@ PROPOSITION:
   unreliable1: first witness is unreliable
   unreliable2: second witness is unreliable
 
+ASSUMPTION: [kill , witness1 , witness2]
+
 ARGUMENT:
 # a list of map (dictionary) mapping the argument id to its fields - premise,
 # exception, conclusion and weight
@@ -34,8 +36,6 @@ ARGUMENT:
 
 PROOFSTANDARD :
   intent : beyond reasonable doubt
-
-ASSUMPTION: [kill , witness1 , witness2]
 
 ISSUE: [-murder, murder]
 

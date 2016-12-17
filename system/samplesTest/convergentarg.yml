@@ -1,0 +1,59 @@
+# Toy example to illistrate:
+# convergent arguments are independent arguments that leads to the same
+# conclusion.
+# In CAES, accpetability of the issue is dependent on the arguments pro and con
+# the issue at a 'timestep'.
+
+# Also, since proofstandards uses the maximum and minimum weight of arguments to
+# evaluate the issue, we always choose arguments with the maximum
+# weight to start the dialogue. And if the maxmimum weight of the pro
+# argument can alreadu lead to the burden of proof being shifted, then there
+# is no need to consider other arguments.
+# In the second example - 'convergentarg2.yml', we will see that if the best
+# pro argument is defeated (hence not applicable) the CAES will consider the
+# next best pro argument to be put forth
+
+PROPOSITION:
+  i: issue
+  s1: support 1
+  s2: support 2
+  p1: premise1
+  p2: premise2
+
+ASSUMPTION: [p1, p2]
+
+ARGUMENT:
+# 'arg1' and 'arg2' both leads to 'i'. However, since both have the same
+# weight, the sequence of considering them does not matter
+  arg1:
+    premise: [s1]
+    exception: []
+    conclusion: i
+    weight: 0.5 # if weight is increased, this will be preferred; otherwise it doesnt really matter
+
+  arg2:
+    premise: [s2]
+    exception: []
+    conclusion: i
+    weight: 0.5
+
+  arg4:
+    premise: [p1]
+    exception: []
+    conclusion: s1
+    weight: 0.2
+
+  arg5:
+    premise: [p2]
+    exception: []
+    conclusion: s2
+    weight: 0.2
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

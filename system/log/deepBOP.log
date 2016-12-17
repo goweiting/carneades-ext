@@ -1,0 +1,431 @@
+	Tokenizing file...
+	Parsing tokens...
+	Adding propositions to CAES
+	Adding assumptions to CAES
+	Adding arguments to CAES
+Added argument 'arg0' to graph by claimer 'None'
+Added argument 'arg1' to graph by claimer 'None'
+Added argument 'arg2' to graph by claimer 'None'
+Added argument 'arg3' to graph by claimer 'None'
+Added argument 'arg4' to graph by claimer 'None'
+Added argument 'arg5' to graph by claimer 'None'
+	Adding parameter to CAES
+	Adding proofstandard to CAES
+	Adding issues to CAES
+********************************************************************************
+ISSUE 0: "issue"
+********************************************************************************
+Calling dialogue(issue)
+Added argument 'arg0' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+    Calling meets_proof_standard(issue, scintilla)
+      Calling applicable([s1], ~[] => issue)
+        Calling acceptable(s1)
+          Calling meets_proof_standard(s1, scintilla)
+          meets_proof_standard(s1, scintilla)-->False
+        acceptable(s1)-->False
+      applicable([s1], ~[] => issue)-->False
+    meets_proof_standard(issue, scintilla)-->False
+  acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+  Calling burden_met(issue, [s1], ~[] => issue)
+Checking burden of proof for PROPONENT
+    Calling acceptable(issue)
+      Calling meets_proof_standard(issue, scintilla)
+        Calling applicable([s1], ~[] => issue)
+          Calling acceptable(s1)
+            Calling meets_proof_standard(s1, scintilla)
+            meets_proof_standard(s1, scintilla)-->False
+          acceptable(s1)-->False
+        applicable([s1], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "s1"
+Adding arguments for "s1"
+Added argument 'arg1' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+      Calling meets_proof_standard(issue, scintilla)
+        Calling applicable([s1], ~[] => issue)
+          Calling acceptable(s1)
+            Calling meets_proof_standard(s1, scintilla)
+              Calling applicable([s11], ~[s12] => s1)
+                Calling acceptable(s11)
+                  Calling meets_proof_standard(s11, scintilla)
+                  meets_proof_standard(s11, scintilla)-->False
+                acceptable(s11)-->False
+                Calling acceptable(s12)
+                  Calling meets_proof_standard(s12, scintilla)
+                  meets_proof_standard(s12, scintilla)-->False
+                acceptable(s12)-->False
+              applicable([s11], ~[s12] => s1)-->False
+            meets_proof_standard(s1, scintilla)-->False
+          acceptable(s1)-->False
+        applicable([s1], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+    Calling burden_met(issue, [s11], ~[s12] => s1)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+        Calling meets_proof_standard(issue, scintilla)
+          Calling applicable([s1], ~[] => issue)
+            Calling acceptable(s1)
+              Calling meets_proof_standard(s1, scintilla)
+                Calling applicable([s11], ~[s12] => s1)
+                  Calling acceptable(s11)
+                    Calling meets_proof_standard(s11, scintilla)
+                    meets_proof_standard(s11, scintilla)-->False
+                  acceptable(s11)-->False
+                  Calling acceptable(s12)
+                    Calling meets_proof_standard(s12, scintilla)
+                    meets_proof_standard(s12, scintilla)-->False
+                  acceptable(s12)-->False
+                applicable([s11], ~[s12] => s1)-->False
+              meets_proof_standard(s1, scintilla)-->False
+            acceptable(s1)-->False
+          applicable([s1], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "s11"
+Adding arguments for "s11"
+Added argument 'arg3' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+[s111], ~[] => s11
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+Evaluating issue: "issue"
+      Calling acceptable(issue)
+        Calling meets_proof_standard(issue, scintilla)
+          Calling applicable([s1], ~[] => issue)
+            Calling acceptable(s1)
+              Calling meets_proof_standard(s1, scintilla)
+                Calling applicable([s11], ~[s12] => s1)
+                  Calling acceptable(s11)
+                    Calling meets_proof_standard(s11, scintilla)
+                      Calling applicable([s111], ~[] => s11)
+                        Calling acceptable(s111)
+                          Calling meets_proof_standard(s111, scintilla)
+                          meets_proof_standard(s111, scintilla)-->False
+                        acceptable(s111)-->False
+                      applicable([s111], ~[] => s11)-->False
+                    meets_proof_standard(s11, scintilla)-->False
+                  acceptable(s11)-->False
+                  Calling acceptable(s12)
+                    Calling meets_proof_standard(s12, scintilla)
+                    meets_proof_standard(s12, scintilla)-->False
+                  acceptable(s12)-->False
+                applicable([s11], ~[s12] => s1)-->False
+              meets_proof_standard(s1, scintilla)-->False
+            acceptable(s1)-->False
+          applicable([s1], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+      Calling burden_met(issue, [s111], ~[] => s11)
+Checking burden of proof for PROPONENT
+        Calling acceptable(issue)
+          Calling meets_proof_standard(issue, scintilla)
+            Calling applicable([s1], ~[] => issue)
+              Calling acceptable(s1)
+                Calling meets_proof_standard(s1, scintilla)
+                  Calling applicable([s11], ~[s12] => s1)
+                    Calling acceptable(s11)
+                      Calling meets_proof_standard(s11, scintilla)
+                        Calling applicable([s111], ~[] => s11)
+                          Calling acceptable(s111)
+                            Calling meets_proof_standard(s111, scintilla)
+                            meets_proof_standard(s111, scintilla)-->False
+                          acceptable(s111)-->False
+                        applicable([s111], ~[] => s11)-->False
+                      meets_proof_standard(s11, scintilla)-->False
+                    acceptable(s11)-->False
+                    Calling acceptable(s12)
+                      Calling meets_proof_standard(s12, scintilla)
+                      meets_proof_standard(s12, scintilla)-->False
+                    acceptable(s12)-->False
+                  applicable([s11], ~[s12] => s1)-->False
+                meets_proof_standard(s1, scintilla)-->False
+              acceptable(s1)-->False
+            applicable([s1], ~[] => issue)-->False
+          meets_proof_standard(issue, scintilla)-->False
+        acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "s111"
+Adding arguments for "s111"
+Added argument 'arg4' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+[s111], ~[] => s11
+[s1111], ~[] => s111
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+Evaluating issue: "issue"
+        Calling acceptable(issue)
+          Calling meets_proof_standard(issue, scintilla)
+            Calling applicable([s1], ~[] => issue)
+              Calling acceptable(s1)
+                Calling meets_proof_standard(s1, scintilla)
+                  Calling applicable([s11], ~[s12] => s1)
+                    Calling acceptable(s11)
+                      Calling meets_proof_standard(s11, scintilla)
+                        Calling applicable([s111], ~[] => s11)
+                          Calling acceptable(s111)
+                            Calling meets_proof_standard(s111, scintilla)
+                              Calling applicable([s1111], ~[] => s111)
+                                Calling acceptable(s1111)
+                                  Calling meets_proof_standard(s1111, scintilla)
+                                  meets_proof_standard(s1111, scintilla)-->False
+                                acceptable(s1111)-->False
+                              applicable([s1111], ~[] => s111)-->False
+                            meets_proof_standard(s111, scintilla)-->False
+                          acceptable(s111)-->False
+                        applicable([s111], ~[] => s11)-->False
+                      meets_proof_standard(s11, scintilla)-->False
+                    acceptable(s11)-->False
+                    Calling acceptable(s12)
+                      Calling meets_proof_standard(s12, scintilla)
+                      meets_proof_standard(s12, scintilla)-->False
+                    acceptable(s12)-->False
+                  applicable([s11], ~[s12] => s1)-->False
+                meets_proof_standard(s1, scintilla)-->False
+              acceptable(s1)-->False
+            applicable([s1], ~[] => issue)-->False
+          meets_proof_standard(issue, scintilla)-->False
+        acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+        Calling burden_met(issue, [s1111], ~[] => s111)
+Checking burden of proof for PROPONENT
+          Calling acceptable(issue)
+            Calling meets_proof_standard(issue, scintilla)
+              Calling applicable([s1], ~[] => issue)
+                Calling acceptable(s1)
+                  Calling meets_proof_standard(s1, scintilla)
+                    Calling applicable([s11], ~[s12] => s1)
+                      Calling acceptable(s11)
+                        Calling meets_proof_standard(s11, scintilla)
+                          Calling applicable([s111], ~[] => s11)
+                            Calling acceptable(s111)
+                              Calling meets_proof_standard(s111, scintilla)
+                                Calling applicable([s1111], ~[] => s111)
+                                  Calling acceptable(s1111)
+                                    Calling meets_proof_standard(s1111, scintilla)
+                                    meets_proof_standard(s1111, scintilla)-->False
+                                  acceptable(s1111)-->False
+                                applicable([s1111], ~[] => s111)-->False
+                              meets_proof_standard(s111, scintilla)-->False
+                            acceptable(s111)-->False
+                          applicable([s111], ~[] => s11)-->False
+                        meets_proof_standard(s11, scintilla)-->False
+                      acceptable(s11)-->False
+                      Calling acceptable(s12)
+                        Calling meets_proof_standard(s12, scintilla)
+                        meets_proof_standard(s12, scintilla)-->False
+                      acceptable(s12)-->False
+                    applicable([s11], ~[s12] => s1)-->False
+                  meets_proof_standard(s1, scintilla)-->False
+                acceptable(s1)-->False
+              applicable([s1], ~[] => issue)-->False
+            meets_proof_standard(issue, scintilla)-->False
+          acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "s1111"
+Adding arguments for "s1111"
+Added argument 'arg5' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+[s111], ~[] => s11
+[s1111], ~[] => s111
+[p1111], ~[] => s1111
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+Evaluating issue: "issue"
+          Calling acceptable(issue)
+            Calling meets_proof_standard(issue, scintilla)
+              Calling applicable([s1], ~[] => issue)
+                Calling acceptable(s1)
+                  Calling meets_proof_standard(s1, scintilla)
+                    Calling applicable([s11], ~[s12] => s1)
+                      Calling acceptable(s11)
+                        Calling meets_proof_standard(s11, scintilla)
+                          Calling applicable([s111], ~[] => s11)
+                            Calling acceptable(s111)
+                              Calling meets_proof_standard(s111, scintilla)
+                                Calling applicable([s1111], ~[] => s111)
+                                  Calling acceptable(s1111)
+                                    Calling meets_proof_standard(s1111, scintilla)
+                                      Calling applicable([p1111], ~[] => s1111)
+                                      applicable([p1111], ~[] => s1111)-->True
+                                    meets_proof_standard(s1111, scintilla)-->True
+                                  acceptable(s1111)-->True
+                                applicable([s1111], ~[] => s111)-->True
+                              meets_proof_standard(s111, scintilla)-->True
+                            acceptable(s111)-->True
+                          applicable([s111], ~[] => s11)-->True
+                        meets_proof_standard(s11, scintilla)-->True
+                      acceptable(s11)-->True
+                      Calling acceptable(s12)
+                        Calling meets_proof_standard(s12, scintilla)
+                        meets_proof_standard(s12, scintilla)-->False
+                      acceptable(s12)-->False
+                    applicable([s11], ~[s12] => s1)-->True
+                  meets_proof_standard(s1, scintilla)-->True
+                acceptable(s1)-->True
+              applicable([s1], ~[] => issue)-->True
+            meets_proof_standard(issue, scintilla)-->True
+          acceptable(issue)-->True
+------ issue IS acceptable ------
+============================================
+
+          Calling burden_met(issue, [p1111], ~[] => s1111)
+Checking burden of proof for PROPONENT
+            Calling acceptable(issue)
+              Calling meets_proof_standard(issue, scintilla)
+                Calling applicable([s1], ~[] => issue)
+                  Calling acceptable(s1)
+                    Calling meets_proof_standard(s1, scintilla)
+                      Calling applicable([s11], ~[s12] => s1)
+                        Calling acceptable(s11)
+                          Calling meets_proof_standard(s11, scintilla)
+                            Calling applicable([s111], ~[] => s11)
+                              Calling acceptable(s111)
+                                Calling meets_proof_standard(s111, scintilla)
+                                  Calling applicable([s1111], ~[] => s111)
+                                    Calling acceptable(s1111)
+                                      Calling meets_proof_standard(s1111, scintilla)
+                                        Calling applicable([p1111], ~[] => s1111)
+                                        applicable([p1111], ~[] => s1111)-->True
+                                      meets_proof_standard(s1111, scintilla)-->True
+                                    acceptable(s1111)-->True
+                                  applicable([s1111], ~[] => s111)-->True
+                                meets_proof_standard(s111, scintilla)-->True
+                              acceptable(s111)-->True
+                            applicable([s111], ~[] => s11)-->True
+                          meets_proof_standard(s11, scintilla)-->True
+                        acceptable(s11)-->True
+                        Calling acceptable(s12)
+                          Calling meets_proof_standard(s12, scintilla)
+                          meets_proof_standard(s12, scintilla)-->False
+                        acceptable(s12)-->False
+                      applicable([s11], ~[s12] => s1)-->True
+                    meets_proof_standard(s1, scintilla)-->True
+                  acceptable(s1)-->True
+                applicable([s1], ~[] => issue)-->True
+              meets_proof_standard(issue, scintilla)-->True
+            acceptable(issue)-->True
+          burden_met(issue, [p1111], ~[] => s1111)-->True
+
+        burden_met(issue, [s1111], ~[] => s111)-->True
+
+      burden_met(issue, [s111], ~[] => s11)-->True
+
+    burden_met(issue, [s11], ~[s12] => s1)-->True
+
+  burden_met(issue, [s1], ~[] => issue)-->True
+No arguments found by RESPONDENT for issue 'issue'
+dialogue(issue)-->None
+
+
+
+********************************************************************************DIALOGUE SUMMARY:
+********************************************************************************
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+[s111], ~[] => s11
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+[s111], ~[] => s11
+[s1111], ~[] => s111
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[s1], ~[] => issue
+[s11], ~[s12] => s1
+[s111], ~[] => s11
+[s1111], ~[] => s111
+[p1111], ~[] => s1111
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> True
+============================================
+********************************************************************************

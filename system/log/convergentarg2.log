@@ -1,0 +1,469 @@
+	Tokenizing file...
+	Parsing tokens...
+	Adding propositions to CAES
+	Adding assumptions to CAES
+	Adding arguments to CAES
+Added argument 'arg1' to graph by claimer 'None'
+Added argument 'arg2' to graph by claimer 'None'
+Added argument 'arg3' to graph by claimer 'None'
+Added argument 'arg4' to graph by claimer 'None'
+Added argument 'defeat arg1' to graph by claimer 'None'
+	Adding parameter to CAES
+	Adding proofstandard to CAES
+	Adding issues to CAES
+********************************************************************************
+ISSUE 0: "issue"
+********************************************************************************
+Calling dialogue(issue)
+Added argument 'arg1' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+    Calling meets_proof_standard(issue, scintilla)
+      Calling applicable([support 1], ~[negative 1] => issue)
+        Calling acceptable(support 1)
+          Calling meets_proof_standard(support 1, scintilla)
+          meets_proof_standard(support 1, scintilla)-->False
+        acceptable(support 1)-->False
+        Calling acceptable(negative 1)
+          Calling meets_proof_standard(negative 1, scintilla)
+          meets_proof_standard(negative 1, scintilla)-->False
+        acceptable(negative 1)-->False
+      applicable([support 1], ~[negative 1] => issue)-->False
+    meets_proof_standard(issue, scintilla)-->False
+  acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+  Calling burden_met(issue, [support 1], ~[negative 1] => issue)
+Checking burden of proof for PROPONENT
+    Calling acceptable(issue)
+      Calling meets_proof_standard(issue, scintilla)
+        Calling applicable([support 1], ~[negative 1] => issue)
+          Calling acceptable(support 1)
+            Calling meets_proof_standard(support 1, scintilla)
+            meets_proof_standard(support 1, scintilla)-->False
+          acceptable(support 1)-->False
+          Calling acceptable(negative 1)
+            Calling meets_proof_standard(negative 1, scintilla)
+            meets_proof_standard(negative 1, scintilla)-->False
+          acceptable(negative 1)-->False
+        applicable([support 1], ~[negative 1] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "support 1"
+Adding arguments for "support 1"
+Added argument 'arg3' to graph by claimer 'PROPONENT'
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+      Calling meets_proof_standard(issue, scintilla)
+        Calling applicable([support 1], ~[negative 1] => issue)
+          Calling acceptable(support 1)
+            Calling meets_proof_standard(support 1, scintilla)
+              Calling applicable([premise1], ~[] => support 1)
+              applicable([premise1], ~[] => support 1)-->True
+            meets_proof_standard(support 1, scintilla)-->True
+          acceptable(support 1)-->True
+          Calling acceptable(negative 1)
+            Calling meets_proof_standard(negative 1, scintilla)
+            meets_proof_standard(negative 1, scintilla)-->False
+          acceptable(negative 1)-->False
+        applicable([support 1], ~[negative 1] => issue)-->True
+      meets_proof_standard(issue, scintilla)-->True
+    acceptable(issue)-->True
+------ issue IS acceptable ------
+============================================
+
+    Calling burden_met(issue, [premise1], ~[] => support 1)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+        Calling meets_proof_standard(issue, scintilla)
+          Calling applicable([support 1], ~[negative 1] => issue)
+            Calling acceptable(support 1)
+              Calling meets_proof_standard(support 1, scintilla)
+                Calling applicable([premise1], ~[] => support 1)
+                applicable([premise1], ~[] => support 1)-->True
+              meets_proof_standard(support 1, scintilla)-->True
+            acceptable(support 1)-->True
+            Calling acceptable(negative 1)
+              Calling meets_proof_standard(negative 1, scintilla)
+              meets_proof_standard(negative 1, scintilla)-->False
+            acceptable(negative 1)-->False
+          applicable([support 1], ~[negative 1] => issue)-->True
+        meets_proof_standard(issue, scintilla)-->True
+      acceptable(issue)-->True
+    burden_met(issue, [premise1], ~[] => support 1)-->True
+
+  burden_met(issue, [support 1], ~[negative 1] => issue)-->True
+proposition "issue" state updated to questioned
+SUB ISSUE: "negative 1"
+  Calling dialogue(negative 1)
+Added argument 'defeat arg1' to graph by claimer 'RESPONDENT'
+
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+-----------------------------------------
+Evaluating issue: "negative 1"
+    Calling acceptable(negative 1)
+      Calling meets_proof_standard(negative 1, scintilla)
+        Calling applicable([premise3], ~[] => negative 1)
+        applicable([premise3], ~[] => negative 1)-->True
+      meets_proof_standard(negative 1, scintilla)-->True
+    acceptable(negative 1)-->True
+------ negative 1 IS acceptable ------
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+      Calling meets_proof_standard(issue, scintilla)
+        Calling applicable([support 1], ~[negative 1] => issue)
+          Calling acceptable(support 1)
+            Calling meets_proof_standard(support 1, scintilla)
+              Calling applicable([premise1], ~[] => support 1)
+              applicable([premise1], ~[] => support 1)-->True
+            meets_proof_standard(support 1, scintilla)-->True
+          acceptable(support 1)-->True
+          Calling acceptable(negative 1)
+            Calling meets_proof_standard(negative 1, scintilla)
+              Calling applicable([premise3], ~[] => negative 1)
+              applicable([premise3], ~[] => negative 1)-->True
+            meets_proof_standard(negative 1, scintilla)-->True
+          acceptable(negative 1)-->True
+        applicable([support 1], ~[negative 1] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+    Calling burden_met(negative 1, [premise3], ~[] => negative 1)
+Checking burden of proof for RESPONDENT
+      Calling acceptable(negative 1)
+        Calling meets_proof_standard(negative 1, scintilla)
+          Calling applicable([premise3], ~[] => negative 1)
+          applicable([premise3], ~[] => negative 1)-->True
+        meets_proof_standard(negative 1, scintilla)-->True
+      acceptable(negative 1)-->True
+    burden_met(negative 1, [premise3], ~[] => negative 1)-->True
+No arguments found by PROPONENT for issue 'negative 1'
+  dialogue(negative 1)-->None
+
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+-----------------------------------------
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+    Calling meets_proof_standard(issue, scintilla)
+      Calling applicable([support 1], ~[negative 1] => issue)
+        Calling acceptable(support 1)
+          Calling meets_proof_standard(support 1, scintilla)
+            Calling applicable([premise1], ~[] => support 1)
+            applicable([premise1], ~[] => support 1)-->True
+          meets_proof_standard(support 1, scintilla)-->True
+        acceptable(support 1)-->True
+        Calling acceptable(negative 1)
+          Calling meets_proof_standard(negative 1, scintilla)
+            Calling applicable([premise3], ~[] => negative 1)
+            applicable([premise3], ~[] => negative 1)-->True
+          meets_proof_standard(negative 1, scintilla)-->True
+        acceptable(negative 1)-->True
+      applicable([support 1], ~[negative 1] => issue)-->False
+    meets_proof_standard(issue, scintilla)-->False
+  acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+    Calling meets_proof_standard(issue, scintilla)
+      Calling applicable([support 1], ~[negative 1] => issue)
+        Calling acceptable(support 1)
+          Calling meets_proof_standard(support 1, scintilla)
+            Calling applicable([premise1], ~[] => support 1)
+            applicable([premise1], ~[] => support 1)-->True
+          meets_proof_standard(support 1, scintilla)-->True
+        acceptable(support 1)-->True
+        Calling acceptable(negative 1)
+          Calling meets_proof_standard(negative 1, scintilla)
+            Calling applicable([premise3], ~[] => negative 1)
+            applicable([premise3], ~[] => negative 1)-->True
+          meets_proof_standard(negative 1, scintilla)-->True
+        acceptable(negative 1)-->True
+      applicable([support 1], ~[negative 1] => issue)-->False
+    meets_proof_standard(issue, scintilla)-->False
+  acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+  Calling dialogue(issue)
+Added argument 'arg2' to graph by claimer 'PROPONENT'
+
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+[support 2], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+      Calling meets_proof_standard(issue, scintilla)
+        Calling applicable([support 1], ~[negative 1] => issue)
+          Calling acceptable(support 1)
+            Calling meets_proof_standard(support 1, scintilla)
+              Calling applicable([premise1], ~[] => support 1)
+              applicable([premise1], ~[] => support 1)-->True
+            meets_proof_standard(support 1, scintilla)-->True
+          acceptable(support 1)-->True
+          Calling acceptable(negative 1)
+            Calling meets_proof_standard(negative 1, scintilla)
+              Calling applicable([premise3], ~[] => negative 1)
+              applicable([premise3], ~[] => negative 1)-->True
+            meets_proof_standard(negative 1, scintilla)-->True
+          acceptable(negative 1)-->True
+        applicable([support 1], ~[negative 1] => issue)-->False
+        Calling applicable([support 2], ~[] => issue)
+          Calling acceptable(support 2)
+            Calling meets_proof_standard(support 2, scintilla)
+            meets_proof_standard(support 2, scintilla)-->False
+          acceptable(support 2)-->False
+        applicable([support 2], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+------ issue IS NOT acceptable ------
+============================================
+
+    Calling burden_met(issue, [support 2], ~[] => issue)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+        Calling meets_proof_standard(issue, scintilla)
+          Calling applicable([support 1], ~[negative 1] => issue)
+            Calling acceptable(support 1)
+              Calling meets_proof_standard(support 1, scintilla)
+                Calling applicable([premise1], ~[] => support 1)
+                applicable([premise1], ~[] => support 1)-->True
+              meets_proof_standard(support 1, scintilla)-->True
+            acceptable(support 1)-->True
+            Calling acceptable(negative 1)
+              Calling meets_proof_standard(negative 1, scintilla)
+                Calling applicable([premise3], ~[] => negative 1)
+                applicable([premise3], ~[] => negative 1)-->True
+              meets_proof_standard(negative 1, scintilla)-->True
+            acceptable(negative 1)-->True
+          applicable([support 1], ~[negative 1] => issue)-->False
+          Calling applicable([support 2], ~[] => issue)
+            Calling acceptable(support 2)
+              Calling meets_proof_standard(support 2, scintilla)
+              meets_proof_standard(support 2, scintilla)-->False
+            acceptable(support 2)-->False
+          applicable([support 2], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "support 2"
+Adding arguments for "support 2"
+Added argument 'arg4' to graph by claimer 'PROPONENT'
+
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+[support 2], ~[] => issue
+[premise2], ~[] => support 2
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+Evaluating issue: "issue"
+      Calling acceptable(issue)
+        Calling meets_proof_standard(issue, scintilla)
+          Calling applicable([support 1], ~[negative 1] => issue)
+            Calling acceptable(support 1)
+              Calling meets_proof_standard(support 1, scintilla)
+                Calling applicable([premise1], ~[] => support 1)
+                applicable([premise1], ~[] => support 1)-->True
+              meets_proof_standard(support 1, scintilla)-->True
+            acceptable(support 1)-->True
+            Calling acceptable(negative 1)
+              Calling meets_proof_standard(negative 1, scintilla)
+                Calling applicable([premise3], ~[] => negative 1)
+                applicable([premise3], ~[] => negative 1)-->True
+              meets_proof_standard(negative 1, scintilla)-->True
+            acceptable(negative 1)-->True
+          applicable([support 1], ~[negative 1] => issue)-->False
+          Calling applicable([support 2], ~[] => issue)
+            Calling acceptable(support 2)
+              Calling meets_proof_standard(support 2, scintilla)
+                Calling applicable([premise2], ~[] => support 2)
+                applicable([premise2], ~[] => support 2)-->True
+              meets_proof_standard(support 2, scintilla)-->True
+            acceptable(support 2)-->True
+          applicable([support 2], ~[] => issue)-->True
+        meets_proof_standard(issue, scintilla)-->True
+      acceptable(issue)-->True
+------ issue IS acceptable ------
+============================================
+
+      Calling burden_met(issue, [premise2], ~[] => support 2)
+Checking burden of proof for PROPONENT
+        Calling acceptable(issue)
+          Calling meets_proof_standard(issue, scintilla)
+            Calling applicable([support 1], ~[negative 1] => issue)
+              Calling acceptable(support 1)
+                Calling meets_proof_standard(support 1, scintilla)
+                  Calling applicable([premise1], ~[] => support 1)
+                  applicable([premise1], ~[] => support 1)-->True
+                meets_proof_standard(support 1, scintilla)-->True
+              acceptable(support 1)-->True
+              Calling acceptable(negative 1)
+                Calling meets_proof_standard(negative 1, scintilla)
+                  Calling applicable([premise3], ~[] => negative 1)
+                  applicable([premise3], ~[] => negative 1)-->True
+                meets_proof_standard(negative 1, scintilla)-->True
+              acceptable(negative 1)-->True
+            applicable([support 1], ~[negative 1] => issue)-->False
+            Calling applicable([support 2], ~[] => issue)
+              Calling acceptable(support 2)
+                Calling meets_proof_standard(support 2, scintilla)
+                  Calling applicable([premise2], ~[] => support 2)
+                  applicable([premise2], ~[] => support 2)-->True
+                meets_proof_standard(support 2, scintilla)-->True
+              acceptable(support 2)-->True
+            applicable([support 2], ~[] => issue)-->True
+          meets_proof_standard(issue, scintilla)-->True
+        acceptable(issue)-->True
+      burden_met(issue, [premise2], ~[] => support 2)-->True
+
+    burden_met(issue, [support 2], ~[] => issue)-->True
+No arguments found by RESPONDENT for issue 'issue'
+  dialogue(issue)-->None
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+    Calling meets_proof_standard(issue, scintilla)
+      Calling applicable([support 1], ~[negative 1] => issue)
+        Calling acceptable(support 1)
+          Calling meets_proof_standard(support 1, scintilla)
+            Calling applicable([premise1], ~[] => support 1)
+            applicable([premise1], ~[] => support 1)-->True
+          meets_proof_standard(support 1, scintilla)-->True
+        acceptable(support 1)-->True
+        Calling acceptable(negative 1)
+          Calling meets_proof_standard(negative 1, scintilla)
+            Calling applicable([premise3], ~[] => negative 1)
+            applicable([premise3], ~[] => negative 1)-->True
+          meets_proof_standard(negative 1, scintilla)-->True
+        acceptable(negative 1)-->True
+      applicable([support 1], ~[negative 1] => issue)-->False
+      Calling applicable([support 2], ~[] => issue)
+        Calling acceptable(support 2)
+          Calling meets_proof_standard(support 2, scintilla)
+            Calling applicable([premise2], ~[] => support 2)
+            applicable([premise2], ~[] => support 2)-->True
+          meets_proof_standard(support 2, scintilla)-->True
+        acceptable(support 2)-->True
+      applicable([support 2], ~[] => issue)-->True
+    meets_proof_standard(issue, scintilla)-->True
+  acceptable(issue)-->True
+------ issue IS acceptable ------
+dialogue(issue)-->None
+
+
+
+********************************************************************************DIALOGUE SUMMARY:
+********************************************************************************
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> True
+============================================
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+-----------------------------------------
+Burden of proof met by RESPONDENT : ?
+-----------------------------------------
+		ISSUE "negative 1" acceptable? -> True
+TOP ISSUE "issue" acceptable? -> False
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+[support 2], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1], ~[negative 1] => issue
+[premise1], ~[] => support 1
+[premise3], ~[] => negative 1
+[support 2], ~[] => issue
+[premise2], ~[] => support 2
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> True
+============================================
+********************************************************************************

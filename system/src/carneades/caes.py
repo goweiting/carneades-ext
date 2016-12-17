@@ -468,7 +468,7 @@ class Reader(object):
         elif isinstance(issues, PropLiteral):
             # evaluating a single statement usually based on the current
             # argumentation graph
-            logging.info('Evaluating issue: {}'.format(issues))
+            logging.info('Evaluating issue: "{}"'.format(issues))
             acceptability = caes.acceptable(issues)
             logging.info('------ {} {} acceptable ------'.format(
                 issues, ['IS NOT', 'IS'][acceptability]))
@@ -550,14 +550,12 @@ class Reader(object):
 
 class Dialogue(object):
     """
-    Dialogue simulates the conversation between the proponent and opponent in
+    :class Dialogue simulates the conversation between the proponent and opponent in
     the courthouse
     """
 
     def __init__(self, issue, caes_argset, caes_assumption, caes_weight,
                  caes_proofstandard, dot_filename, g_filename, run):
-        """
-        """
         self.top_issue = issue
         self.caes_weight = caes_weight
         self.argset = caes_argset
@@ -625,8 +623,9 @@ class Dialogue(object):
         # -----------------------------------------------------------------
         args_pro = self.argset.get_arguments(issue)
         try:
-            # Compare the arguments in the full set and the current dialogue
-            # state. If there are additional arguments, continue the dialogue
+            # Compare the arguments in the full argument set and the current
+            # dialogue state. If there are additional arguments, continue the
+            # dialogue
             args_pro_dialogue = \
                 self.dialogue_state_argset.get_arguments(issue)
             args_pro = \
@@ -757,9 +756,6 @@ class Dialogue(object):
 
         When there are NO available arguments in support of the premise, the burden of proof cannot be shifted, and the dialogue will fail.
         """
-        logging.info('Checking burden of proof for {}'.format(self.actors[
-            self.turn_num % 2]))
-
         # Define evaluation system for checking if burden of proof have been
         # shifted
         caes = CAES(
@@ -769,33 +765,42 @@ class Dialogue(object):
             alpha=alpha,
             beta=beta,
             gamma=gamma)
+        logging.info('Checking burden of proof for {}'.format(self.actors[
+            self.turn_num % 2]))
         self.burden_status = caes.acceptable(issue)
 
         # if the burden is not met, support the premises to the argument
         if not self.burden_status:
-            logging.info("")
+            logging.info("Burden of Proof: {}".format(self.burden_status))
             for premise in current_argument.premises:
                 # find arguments that support the premises
+                logging.info('Current Premise: "{}"'.format(premise))
                 for arg in self.argset.get_arguments(premise):
                     try:
                         # prevent repeated argument from being added into
                         # argset
+                        logging.info('Adding arguments for "{}"'.format(
+                            premise))
                         self.dialogue_state_argset.add_argument(
                             arg,
                             state='claimed',
                             claimer=self.actors[self.turn_num % 2])
-                        self.dialogue_state_argset.set_argument_status(
-                            arg.conclusion, state='claimed')
+                        # self.dialogue_state_argset.set_argument_status(
+                        #     arg.conclusion, state='claimed')
+                        # TODO: Required to update the coonclusion status?
 
                         # Localised checking of the argument:
                         # The recurive bit for checking burden of proof
-                        self.burden_met(issue, arg)
                         self.dialogue_log(issue)
+                        self.burden_met(issue, arg)
+                        logging.info('')
                         continue
                     except ValueError:
+                        logging.info('Nothing to add')
                         return self.burden_status
 
             # proponent cant satisfy the Burden
+            # TODO: Need to log the status of the argument here!!!!
             if not self.burden_status:
                 logging.info(
                     "{} did not manage to satisfy her burden of proof".format(
@@ -879,7 +884,7 @@ class Dialogue(object):
         # --------------------------------------------------------------------
         #   CURRENT STAUS
         # --------------------------------------------------------------------
-        logging.info('================== turn {} =================='.format(
+        logging.info('\n================== turn {} =================='.format(
             self.turn_num))
         self.summary += '================== turn {} =================='.format(
             self.turn_num) + '\n'
@@ -955,7 +960,7 @@ class Dialogue(object):
                     num) + '.dot'
             self.dialogue_state_argset.draw(g_file)
             self.dialogue_state_argset.write_to_graphviz(dot_file)
-        logging.info('============================================')
+        logging.info('============================================\n')
         self.summary += '\n============================================\n'
         return
 
@@ -1816,7 +1821,7 @@ if __name__ == '__main__':
 
             for filename in filenames:
                 logger_file = '../../log/{}.log'.format(
-                    filename.split('/')[-1])
+                    filename.split('/')[-1][:-4])
                 logging.basicConfig(
                     format='%(message)s',
                     level=args['logger'],
@@ -1839,7 +1844,7 @@ if __name__ == '__main__':
         else:  # Support if user gives a directory instead of a list of filename
             if os.path.isfile(file_check):
                 logger_file = '../../log/{}.log'.format(
-                    file_check.split('/')[-1])
+                    file_check.split('/')[-1][:-4])
                 logging.basicConfig(
                     format='%(message)s',
                     level=args['logger'],

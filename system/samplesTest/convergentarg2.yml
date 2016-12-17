@@ -1,10 +1,12 @@
 # Toy example to illistrate:
-# Here we have two arguments that suppor tthe issue; and one that does not
+# Here we have two arguments that suppor the issue; and one that does not
 # CAES will naturally choose the argument with the largest weight to support
 # the issue
-# However, this is defeated by the negative argument very well, as (using
-# preponderance of evidence) the argument pro argument is insufficient to concur
-# It is expected that
+# However, this argument (arg1) is defeated (since we can proof that the
+# exception - `neg1`, is true).
+
+# CAES automatically finds another argument to support the issue by searching
+# for remaining arguments that have yet to added into the argumentation graph.
 
 PROPOSITION:
   i: issue
@@ -23,7 +25,7 @@ ARGUMENT:
     premise: [s1]
     exception: [neg1]
     conclusion: i
-    weight: 0.5
+    weight: 0.5 # the argument that will be chosen in the first iteration
 
   arg2:
     premise: [s2]
@@ -49,7 +51,7 @@ ARGUMENT:
     conclusion: neg1
     weight: 0.6
 
-ISSUE: [-i]
+ISSUE: [i]
 
 PROOFSTANDARD: []
 

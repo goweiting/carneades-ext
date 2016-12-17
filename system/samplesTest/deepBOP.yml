@@ -1,0 +1,64 @@
+# Toy example to illistrate:
+# using the chained argument, when trying to satisfy the burden of proof, the
+# system iteratively go through all the premise of the arguments. And if the
+# premise have premises to satisfy, the function recursively checks it at every
+# stage.
+
+PROPOSITION:
+  i: issue
+  s1: s1
+  p1: p1
+  s11: s11
+  s12: s12
+  p12: p12
+  s111: s111
+  s1111: s1111
+  p1111: p1111
+
+ASSUMPTION: [p1, p12, p1111]
+
+ARGUMENT:
+  arg0:
+    premise: [s1]
+    exception: []
+    conclusion: i
+    weight: 0.5
+
+  arg1:
+    premise: [s11]
+    exception: [s12]
+    conclusion: s1
+    weight: 0.2
+
+  arg2:
+    premise: [p12]
+    exception: []
+    conclusion: s12
+    weight: 0.1
+
+  arg3:
+    premise: [s111]
+    exception: []
+    conclusion: s11
+    weight: 0.1
+
+  arg4:
+    premise: [s1111]
+    exception: []
+    conclusion: s111
+    weight: 0.2
+
+  arg5:
+    premise: [p1111]
+    exception: []
+    conclusion: s1111
+    weight: 0.3
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

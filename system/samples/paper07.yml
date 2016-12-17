@@ -3,9 +3,9 @@
 #   - The validity of a legal rule is assumed and supported with evidence only if questioned
 #   - being excluded by some other (legal) rule is an exception
 PROPOSITION:
-  murder: murder #the defendant murdered the victim
-  malice : malice #malice established (intent of murder)
-  killing: killing #established
+  murder: murder # the defendant murdered the victim
+  malice : malice # malice established (intent of murder)
+  killing: killing # established
   s187 valid: Section 187 is valid
   s187 excluded: s187 is excluded
   self-defense: an act of self-defense
