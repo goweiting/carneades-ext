@@ -530,17 +530,20 @@ class Dialogue(object):
             # start with the best argument, i.e. the one with the highest weight
             best_arg_pro = args_pro.pop()
         except IndexError:
-            # If the argument cannot be reached as there is nothing to argue
-            # about, then we will just evaluate it according to the full
-            # argumentaion set available.
-            g_file = self.g_filename + 'final.pdf'
-            dot_file = self.dot_filename + 'final.dot'
-            logging.info(
-                'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.
-                format(issue))
-            logging.info('Evaluating on the full argumentation set')
-            self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
-            return
+            if self.turn_num == 0:
+                # If the argument cannot be reached as there is nothing to argue
+                # about, then we will just evaluate it according to the full
+                # argumentaion set available.
+                g_file = self.g_filename + 'final.pdf'
+                dot_file = self.dot_filename + 'final.dot'
+                logging.info(
+                    'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.
+                    format(issue))
+                logging.info('Evaluating on the full argumentation set')
+                self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
+                return
+            else:
+                return False
 
         # ------------------------------------------------------------------
         #   Add an argument pro the issue into the argset:
@@ -608,30 +611,31 @@ class Dialogue(object):
                 logging.info('No arguments found by {} for issue \'{}\''.
                              format(self.actors[self.turn_num % 2], issue))
                 return False
-        #
-        # # ----------------------------------------------------------------
-        # #   NO LONGER DEBATABLE?
-        # # ----------------------------------------------------------------
-        # g_file = self.g_filename + 'final.pdf'
-        # dot_file = self.dot_filename + 'final.dot'
-        # # Do acceptability test using the the PS defined:
-        # acceptability = self.run(g_filename=g_file,
-        #                          dot_filename=dot_file,
-        #                          argset=self.dialogue_state_argset,
-        #                          issues=issue)
-        #
-        # while not acceptability:
-        #     if len(args_pro):
-        #         # If there are other arguments that can help with the issue,
-        #         # add them in:
-        #         self.dialogue(issue)
-        #         acceptability = self.run(g_filename=g_file,
-        #                                  dot_filename=dot_file,
-        #                                  argset=self.dialogue_state_argset,
-        #                                  issues=issue)
-        #     else:
-        #         logging.info('No arguments left')
-        #         return
+
+        # ----------------------------------------------------------------
+        #   NO LONGER DEBATABLE?
+        # ----------------------------------------------------------------
+
+        g_file = self.g_filename + 'final.pdf'
+        dot_file = self.dot_filename + 'final.dot'
+        # Do acceptability test using the the PS defined:
+        acceptability = self.run(g_filename=g_file,
+                                 dot_filename=dot_file,
+                                 argset=self.dialogue_state_argset,
+                                 issues=issue)
+
+        while not acceptability:
+            if len(args_pro):
+                # If there are other arguments that can help with the issue,
+                # add them in:
+                self.dialogue(issue)
+                acceptability = self.run(g_filename=g_file,
+                                         dot_filename=dot_file,
+                                         argset=self.dialogue_state_argset,
+                                         issues=issue)
+            else:
+                logging.info('No arguments left')
+                return
 
         return
 
@@ -716,6 +720,7 @@ class Dialogue(object):
             (args_con, arg_attacked) = self.find_best_pro_argument(issue)
             return args_con, arg_attacked
 
+    @TraceCalls()
     def find_best_con_argument(self, issue):
         """
         Recursively find the best con argument towards the issue given
@@ -758,7 +763,7 @@ class Dialogue(object):
                 # set the exception to questioned
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg_con.conclusion, state='questioned')
-                logging.debug('Found an argument to attack the exception')
+                logging.debug('Found an argument to prove the exception')
                 return (arg_con, arg)
 
             except IndexError:
@@ -774,6 +779,13 @@ class Dialogue(object):
 
             try:
                 arg_con = arg_cons.pop()
+                # prevent the same argument that is already in the argset from
+                # being added in
+                check = self.dialogue_state_argset.get_arguments(arg_con.conclusion)
+                if len(check) != 0:
+                    logging.debug('argument "{}" has already been added!'.format(arg_con))
+                    continue
+
                 # set the conclusion to questioned!
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg.conclusion, state='questioned')
@@ -801,6 +813,7 @@ class Dialogue(object):
                       format(issue))
         return False
 
+    @TraceCalls()
     def find_best_pro_argument(self, issue):
         """
         The proponent tries to find the arguments to support her stand; or find one to attack the opponent! This can be done in two ways:
@@ -811,8 +824,28 @@ class Dialogue(object):
         2)
         """
         logging.debug('find_best_pro_argument for "{}"'.format(issue))
+        arg_questioned = self.dialogue_state_argset.get_arguments_status(
+            'questioned')[0]
+        if arg_questioned != issue:
+            # the repondent put forward a con argument:
+            try:
+                (arg_con, arg_attacked) = self.find_best_con_argument(issue)
+                # reset the claim status
+                self.dialogue_state_argset.set_argument_status(
+                    concl=arg_questioned.conclusion, state='claimed')
+                return (arg_con, arg_attacked)
 
-
+            except TypeError:
+                # no con argument found
+                pass
+        else:
+            # an exception is raised previously
+            # Try to defeat the exception and make it false
+            try:
+                (arg_con, arg_attacked) = self.find_best_con_argument(issue)
+                return (arg_con, attacked)
+            except TypeError:
+                pass
 
         logging.debug('No exceptions or con arguments found for issue "{}"'.
                       format(issue))
@@ -872,7 +905,6 @@ class Dialogue(object):
                        for (prop_id, prop_ps) in self.caes_proofstandard
                        if prop_id == concl])
 
-        # TODO: not sure if this works for the  full name
         logging.debug('proofstandard: {}'.format(ps))
         acceptability = self.run(argset=self.dialogue_state_argset,
                                  issues=issue,
