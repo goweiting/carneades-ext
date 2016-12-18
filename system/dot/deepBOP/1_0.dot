@@ -1,8 +1,0 @@
-digraph G{ 
-"arg0" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
-"issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"s1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"issue" -> "arg0" ; 
-"arg0" -> "s1" ; 
-}

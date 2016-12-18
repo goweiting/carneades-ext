@@ -3,20 +3,44 @@
 	Adding propositions to CAES
 	Adding assumptions to CAES
 	Adding arguments to CAES
-Added argument 'arg0' to graph by claimer 'None'
-Added argument 'arg1' to graph by claimer 'None'
-Added argument 'arg2' to graph by claimer 'None'
-Added argument 'arg3' to graph by claimer 'None'
-Added argument 'arg4' to graph by claimer 'None'
-Added argument 'arg5' to graph by claimer 'None'
+Added argument 'arg0' to graph by 'None'
+Added proposition 'issue' to graph with state None
+Added proposition '-issue' to graph with state None
+Added proposition 's1' to graph with state None
+Added argument 'arg1' to graph by 'None'
+Proposition 's1' is already in graph
+Added proposition '-s1' to graph with state None
+Added proposition 's11' to graph with state None
+Added proposition 's12' to graph with state None
+Added argument 'arg2' to graph by 'None'
+Proposition 's12' is already in graph
+Added proposition '-s12' to graph with state None
+Added proposition 'p12' to graph with state None
+Added argument 'arg3' to graph by 'None'
+Proposition 's11' is already in graph
+Added proposition '-s11' to graph with state None
+Added proposition 's111' to graph with state None
+Added argument 'arg4' to graph by 'None'
+Proposition 's111' is already in graph
+Added proposition '-s111' to graph with state None
+Added proposition 's1111' to graph with state None
+Added argument 'arg5' to graph by 'None'
+Proposition 's1111' is already in graph
+Added proposition '-s1111' to graph with state None
+Added proposition 'p1111' to graph with state None
 	Adding parameter to CAES
 	Adding proofstandard to CAES
 	Adding issues to CAES
+Dialogue Mode: On
 ********************************************************************************
 ISSUE 0: "issue"
 ********************************************************************************
 Calling dialogue(issue)
-Added argument 'arg0' to graph by claimer 'PROPONENT'
+Added argument 'arg0' to graph by 'PROPONENT'
+Added proposition 'issue' to graph with state claimed
+Added proposition '-issue' to graph with state None
+Added proposition 's1' to graph with state None
+proposition "issue" state updated to "claimed"
 
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -25,12 +49,20 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 -----------------------------------------
+proofstandard: []
 Evaluating issue: "issue"
   Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
     Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
       Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
         Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
           Calling meets_proof_standard(s1, scintilla)
+	arguments:[] 
           meets_proof_standard(s1, scintilla)-->False
         acceptable(s1)-->False
       applicable([s1], ~[] => issue)-->False
@@ -42,10 +74,17 @@ Evaluating issue: "issue"
   Calling burden_met(issue, [s1], ~[] => issue)
 Checking burden of proof for PROPONENT
     Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
       Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
         Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
           Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
             Calling meets_proof_standard(s1, scintilla)
+	arguments:[] 
             meets_proof_standard(s1, scintilla)-->False
           acceptable(s1)-->False
         applicable([s1], ~[] => issue)-->False
@@ -54,7 +93,12 @@ Checking burden of proof for PROPONENT
 Burden of Proof: False
 Current Premise: "s1"
 Adding arguments for "s1"
-Added argument 'arg1' to graph by claimer 'PROPONENT'
+Added argument 'arg1' to graph by 'PROPONENT'
+Proposition 's1' is already in graph
+Added proposition '-s1' to graph with state None
+Added proposition 's11' to graph with state None
+Added proposition 's12' to graph with state None
+proposition "s1" state updated to "claimed"
 
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -64,19 +108,35 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
+proofstandard: []
 Evaluating issue: "issue"
     Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
       Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
         Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
           Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
             Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
               Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                 Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                   Calling meets_proof_standard(s11, scintilla)
+	arguments:[] 
                   meets_proof_standard(s11, scintilla)-->False
                 acceptable(s11)-->False
+Current exception: {s12}
                 Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                   Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                   meets_proof_standard(s12, scintilla)-->False
                 acceptable(s12)-->False
               applicable([s11], ~[s12] => s1)-->False
@@ -91,17 +151,32 @@ Evaluating issue: "issue"
     Calling burden_met(issue, [s11], ~[s12] => s1)
 Checking burden of proof for PROPONENT
       Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
         Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
           Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
             Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
               Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                 Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                   Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                     Calling meets_proof_standard(s11, scintilla)
+	arguments:[] 
                     meets_proof_standard(s11, scintilla)-->False
                   acceptable(s11)-->False
+Current exception: {s12}
                   Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                     Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                     meets_proof_standard(s12, scintilla)-->False
                   acceptable(s12)-->False
                 applicable([s11], ~[s12] => s1)-->False
@@ -113,7 +188,11 @@ Checking burden of proof for PROPONENT
 Burden of Proof: False
 Current Premise: "s11"
 Adding arguments for "s11"
-Added argument 'arg3' to graph by claimer 'PROPONENT'
+Added argument 'arg3' to graph by 'PROPONENT'
+Proposition 's11' is already in graph
+Added proposition '-s11' to graph with state None
+Added proposition 's111' to graph with state None
+proposition "s11" state updated to "claimed"
 
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -124,25 +203,46 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
+proofstandard: []
 Evaluating issue: "issue"
       Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
         Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
           Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
             Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
               Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                 Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                   Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                     Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
                       Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
                         Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
                           Calling meets_proof_standard(s111, scintilla)
+	arguments:[] 
                           meets_proof_standard(s111, scintilla)-->False
                         acceptable(s111)-->False
                       applicable([s111], ~[] => s11)-->False
                     meets_proof_standard(s11, scintilla)-->False
                   acceptable(s11)-->False
+Current exception: {s12}
                   Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                     Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                     meets_proof_standard(s12, scintilla)-->False
                   acceptable(s12)-->False
                 applicable([s11], ~[s12] => s1)-->False
@@ -157,23 +257,43 @@ Evaluating issue: "issue"
       Calling burden_met(issue, [s111], ~[] => s11)
 Checking burden of proof for PROPONENT
         Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
           Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
             Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
               Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
                 Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                   Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                     Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                       Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
                         Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
                           Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
                             Calling meets_proof_standard(s111, scintilla)
+	arguments:[] 
                             meets_proof_standard(s111, scintilla)-->False
                           acceptable(s111)-->False
                         applicable([s111], ~[] => s11)-->False
                       meets_proof_standard(s11, scintilla)-->False
                     acceptable(s11)-->False
+Current exception: {s12}
                     Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                       Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                       meets_proof_standard(s12, scintilla)-->False
                     acceptable(s12)-->False
                   applicable([s11], ~[s12] => s1)-->False
@@ -185,7 +305,11 @@ Checking burden of proof for PROPONENT
 Burden of Proof: False
 Current Premise: "s111"
 Adding arguments for "s111"
-Added argument 'arg4' to graph by claimer 'PROPONENT'
+Added argument 'arg4' to graph by 'PROPONENT'
+Proposition 's111' is already in graph
+Added proposition '-s111' to graph with state None
+Added proposition 's1111' to graph with state None
+proposition "s111" state updated to "claimed"
 
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -197,21 +321,44 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
+proofstandard: []
 Evaluating issue: "issue"
         Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
           Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
             Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
               Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
                 Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                   Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                     Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                       Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
                         Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
                           Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
                             Calling meets_proof_standard(s111, scintilla)
+	arguments:['[s1111], ~[] => s111'] 
                               Calling applicable([s1111], ~[] => s111)
+Checking applicability of arg4...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1111}
                                 Calling acceptable(s1111)
+Checking whether proposition 's1111' meets proof standard 'scintilla'.
                                   Calling meets_proof_standard(s1111, scintilla)
+	arguments:[] 
                                   meets_proof_standard(s1111, scintilla)-->False
                                 acceptable(s1111)-->False
                               applicable([s1111], ~[] => s111)-->False
@@ -220,8 +367,11 @@ Evaluating issue: "issue"
                         applicable([s111], ~[] => s11)-->False
                       meets_proof_standard(s11, scintilla)-->False
                     acceptable(s11)-->False
+Current exception: {s12}
                     Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                       Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                       meets_proof_standard(s12, scintilla)-->False
                     acceptable(s12)-->False
                   applicable([s11], ~[s12] => s1)-->False
@@ -236,19 +386,41 @@ Evaluating issue: "issue"
         Calling burden_met(issue, [s1111], ~[] => s111)
 Checking burden of proof for PROPONENT
           Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
             Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
               Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
                 Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
                   Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                     Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                       Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                         Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
                           Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
                             Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
                               Calling meets_proof_standard(s111, scintilla)
+	arguments:['[s1111], ~[] => s111'] 
                                 Calling applicable([s1111], ~[] => s111)
+Checking applicability of arg4...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1111}
                                   Calling acceptable(s1111)
+Checking whether proposition 's1111' meets proof standard 'scintilla'.
                                     Calling meets_proof_standard(s1111, scintilla)
+	arguments:[] 
                                     meets_proof_standard(s1111, scintilla)-->False
                                   acceptable(s1111)-->False
                                 applicable([s1111], ~[] => s111)-->False
@@ -257,8 +429,11 @@ Checking burden of proof for PROPONENT
                           applicable([s111], ~[] => s11)-->False
                         meets_proof_standard(s11, scintilla)-->False
                       acceptable(s11)-->False
+Current exception: {s12}
                       Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                         Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                         meets_proof_standard(s12, scintilla)-->False
                       acceptable(s12)-->False
                     applicable([s11], ~[s12] => s1)-->False
@@ -270,7 +445,11 @@ Checking burden of proof for PROPONENT
 Burden of Proof: False
 Current Premise: "s1111"
 Adding arguments for "s1111"
-Added argument 'arg5' to graph by claimer 'PROPONENT'
+Added argument 'arg5' to graph by 'PROPONENT'
+Proposition 's1111' is already in graph
+Added proposition '-s1111' to graph with state None
+Added proposition 'p1111' to graph with state None
+proposition "s1111" state updated to "claimed"
 
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
@@ -283,22 +462,48 @@ ARGUMENTS:
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
+proofstandard: []
 Evaluating issue: "issue"
           Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
             Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
               Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
                 Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
                   Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                     Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                       Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                         Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
                           Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
                             Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
                               Calling meets_proof_standard(s111, scintilla)
+	arguments:['[s1111], ~[] => s111'] 
                                 Calling applicable([s1111], ~[] => s111)
+Checking applicability of arg4...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1111}
                                   Calling acceptable(s1111)
+Checking whether proposition 's1111' meets proof standard 'scintilla'.
                                     Calling meets_proof_standard(s1111, scintilla)
+	arguments:['[p1111], ~[] => s1111'] 
                                       Calling applicable([p1111], ~[] => s1111)
+Checking applicability of arg5...
+Current assumptions: {p1, p12, p1111}
+Current premises: {p1111}
                                       applicable([p1111], ~[] => s1111)-->True
                                     meets_proof_standard(s1111, scintilla)-->True
                                   acceptable(s1111)-->True
@@ -308,8 +513,11 @@ Evaluating issue: "issue"
                           applicable([s111], ~[] => s11)-->True
                         meets_proof_standard(s11, scintilla)-->True
                       acceptable(s11)-->True
+Current exception: {s12}
                       Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                         Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                         meets_proof_standard(s12, scintilla)-->False
                       acceptable(s12)-->False
                     applicable([s11], ~[s12] => s1)-->True
@@ -324,20 +532,45 @@ Evaluating issue: "issue"
           Calling burden_met(issue, [p1111], ~[] => s1111)
 Checking burden of proof for PROPONENT
             Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
               Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
                 Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
                   Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
                     Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
                       Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
                         Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
                           Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
                             Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
                               Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
                                 Calling meets_proof_standard(s111, scintilla)
+	arguments:['[s1111], ~[] => s111'] 
                                   Calling applicable([s1111], ~[] => s111)
+Checking applicability of arg4...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1111}
                                     Calling acceptable(s1111)
+Checking whether proposition 's1111' meets proof standard 'scintilla'.
                                       Calling meets_proof_standard(s1111, scintilla)
+	arguments:['[p1111], ~[] => s1111'] 
                                         Calling applicable([p1111], ~[] => s1111)
+Checking applicability of arg5...
+Current assumptions: {p1, p12, p1111}
+Current premises: {p1111}
                                         applicable([p1111], ~[] => s1111)-->True
                                       meets_proof_standard(s1111, scintilla)-->True
                                     acceptable(s1111)-->True
@@ -347,8 +580,11 @@ Checking burden of proof for PROPONENT
                             applicable([s111], ~[] => s11)-->True
                           meets_proof_standard(s11, scintilla)-->True
                         acceptable(s11)-->True
+Current exception: {s12}
                         Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
                           Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
                           meets_proof_standard(s12, scintilla)-->False
                         acceptable(s12)-->False
                       applicable([s11], ~[s12] => s1)-->True
@@ -357,6 +593,7 @@ Checking burden of proof for PROPONENT
                 applicable([s1], ~[] => issue)-->True
               meets_proof_standard(issue, scintilla)-->True
             acceptable(issue)-->True
+Burden of Proof: True
           burden_met(issue, [p1111], ~[] => s1111)-->True
 
         burden_met(issue, [s1111], ~[] => s111)-->True
@@ -366,55 +603,7 @@ Checking burden of proof for PROPONENT
     burden_met(issue, [s11], ~[s12] => s1)-->True
 
   burden_met(issue, [s1], ~[] => issue)-->True
-No arguments found by RESPONDENT for issue 'issue'
-dialogue(issue)-->None
 
-
-
-********************************************************************************DIALOGUE SUMMARY:
-********************************************************************************
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[s1], ~[] => issue
------------------------------------------
-Burden of proof met by PROPONENT : ?
------------------------------------------
-		ISSUE "issue" acceptable? -> False
-============================================
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[s1], ~[] => issue
-[s11], ~[s12] => s1
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-		ISSUE "issue" acceptable? -> False
-============================================
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[s1], ~[] => issue
-[s11], ~[s12] => s1
-[s111], ~[] => s11
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-		ISSUE "issue" acceptable? -> False
-============================================
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[s1], ~[] => issue
-[s11], ~[s12] => s1
-[s111], ~[] => s11
-[s1111], ~[] => s111
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-		ISSUE "issue" acceptable? -> False
-============================================
 ================== turn 0 ==================
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
@@ -424,8 +613,84 @@ ARGUMENTS:
 [s1111], ~[] => s111
 [p1111], ~[] => s1111
 -----------------------------------------
-Burden of proof met by PROPONENT : False
+Burden of proof met by PROPONENT : True
 -----------------------------------------
-		ISSUE "issue" acceptable? -> True
+proofstandard: []
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+    Calling meets_proof_standard(issue, scintilla)
+	arguments:['[s1], ~[] => issue'] 
+      Calling applicable([s1], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1}
+        Calling acceptable(s1)
+Checking whether proposition 's1' meets proof standard 'scintilla'.
+          Calling meets_proof_standard(s1, scintilla)
+	arguments:['[s11], ~[s12] => s1'] 
+            Calling applicable([s11], ~[s12] => s1)
+Checking applicability of arg1...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s11}
+              Calling acceptable(s11)
+Checking whether proposition 's11' meets proof standard 'scintilla'.
+                Calling meets_proof_standard(s11, scintilla)
+	arguments:['[s111], ~[] => s11'] 
+                  Calling applicable([s111], ~[] => s11)
+Checking applicability of arg3...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s111}
+                    Calling acceptable(s111)
+Checking whether proposition 's111' meets proof standard 'scintilla'.
+                      Calling meets_proof_standard(s111, scintilla)
+	arguments:['[s1111], ~[] => s111'] 
+                        Calling applicable([s1111], ~[] => s111)
+Checking applicability of arg4...
+Current assumptions: {p1, p12, p1111}
+Current premises: {s1111}
+                          Calling acceptable(s1111)
+Checking whether proposition 's1111' meets proof standard 'scintilla'.
+                            Calling meets_proof_standard(s1111, scintilla)
+	arguments:['[p1111], ~[] => s1111'] 
+                              Calling applicable([p1111], ~[] => s1111)
+Checking applicability of arg5...
+Current assumptions: {p1, p12, p1111}
+Current premises: {p1111}
+                              applicable([p1111], ~[] => s1111)-->True
+                            meets_proof_standard(s1111, scintilla)-->True
+                          acceptable(s1111)-->True
+                        applicable([s1111], ~[] => s111)-->True
+                      meets_proof_standard(s111, scintilla)-->True
+                    acceptable(s111)-->True
+                  applicable([s111], ~[] => s11)-->True
+                meets_proof_standard(s11, scintilla)-->True
+              acceptable(s11)-->True
+Current exception: {s12}
+              Calling acceptable(s12)
+Checking whether proposition 's12' meets proof standard 'scintilla'.
+                Calling meets_proof_standard(s12, scintilla)
+	arguments:[] 
+                meets_proof_standard(s12, scintilla)-->False
+              acceptable(s12)-->False
+            applicable([s11], ~[s12] => s1)-->True
+          meets_proof_standard(s1, scintilla)-->True
+        acceptable(s1)-->True
+      applicable([s1], ~[] => issue)-->True
+    meets_proof_standard(issue, scintilla)-->True
+  acceptable(issue)-->True
+------ issue IS acceptable ------
 ============================================
-********************************************************************************
+
+Turn num = 1
+find_best_con_argument for "issue"
+arg: [s1], ~[] => issue
+exceptions []
+arg_cons []
+args_to_consider: ['[s11], ~[s12] => s1']
+arg: [s11], ~[s12] => s1
+exceptions ['[p12], ~[] => s12']
+proposition "s12" state updated to "questioned"
+Found an argument to attack the exception
+Found the following argument "[p12], ~[] => s12" attacking "[s11], ~[s12] => s1"
+found args with status "questioned": []

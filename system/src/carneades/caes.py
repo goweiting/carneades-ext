@@ -5,153 +5,6 @@
 # Based on: https://hackage.haskell.org/package/CarneadesDSL
 #
 # For license information, see LICENSE
-"""
-==========
- Overview
-==========
-
-Propositions
-============
-
-First, let's create some propositions using the :class:`PropLiteral`
-constructor. All propositions are atomic, that is, either positive or
-negative literals.
-
->>> kill = PropLiteral('kill')
->>> kill.polarity
-True
->>> intent = PropLiteral('intent')
->>> murder = PropLiteral('murder')
->>> witness1 = PropLiteral('witness1')
->>> unreliable1 = PropLiteral('unreliable1')
->>> witness2 = PropLiteral('witness2')
->>> unreliable2 = PropLiteral('unreliable2')
-
-The :meth:`negate` method allows us to introduce negated propositions.
-
->>> neg_intent = intent.negate()
->>> print(neg_intent)
--intent
->>> neg_intent.polarity
-False
->>> neg_intent == intent
-False
->>> neg_intent.negate() == intent
-True
-
-Arguments
-=========
-
-Arguments are built with the :class:`Argument` constructor. They are required
-to have a conclusion, and may aiulso have premises and exceptions.
-
->>> arg1 = Argument(murder, premises={kill, intent})
->>> arg2 = Argument(intent, premises={witness1}, exceptions={unreliable1})
->>> arg3 = Argument(neg_intent, premises={witness2}, exceptions={unreliable2})
->>> print(arg1)
-[intent, kill], ~[] => murder
-
-In order to organise the dependencies between the conclusion of an argument
-and its premises and exceptions, we model them using a directed graph called
-an :class:`ArgumentSet`. Notice that the premise of one argument (e.g., the
-``intent`` premise of ``arg1``) can be the conclusion of another argument (i.e.,
-``arg2``)).
-
->>> argset = ArgumentSet()
->>> argset.add_argument(arg1, arg_id='arg1')
->>> argset.add_argument(arg2, arg_id='arg2')
->>> argset.add_argument(arg3, arg_id='arg3')
-
-There is a :func:`draw` method which allows us to view the resulting graph.
-
->>> argset.draw() # doctest: +SKIP
-
-Proof Standards
-===============
-
-In evaluating the relative value of arguments for a particular conclusion
-``p``, we need to determine what standard of *proof* is required to establish
-``p``. The notion of proof used here is not formal proof in a logical
-system. Instead, it tries to capture how substantial the arguments are
-in favour of, or against, a particular conclusion.
-
-The :class:`ProofStandard` constructor is initialised with a list of
-``(proposition, name-of-proof-standard)`` pairs. The default proof standard,
-viz., ``'scintilla'``, is the weakest level.  Different
-propositions can be assigned different proof standards that they need
-to attain.
-
->>> ps = ProofStandard([(intent, "beyond_reasonable_doubt")],
-... default='scintilla')
-
-Carneades Argument Evaluation Structure
-=======================================
-
-The core of the argumentation model is a data structure plus set of
-rules for evaluating arguments; this is called a Carneades Argument
-Evaluation Structure (CAES). A CAES consists of a set of arguments,
-an audience (or jury), and a method for determining whether propositions
-satisfy the relevant proof standards.
-
-The role of the audience is modeled as an :class:`Audience`, consisting
-of a set of assumed propositions, and an assignment of weights to
-arguments.
-
->>> assumptions = {kill, witness1, witness2, unreliable2}
->>> weights = {'arg1': 0.8, 'arg2': 0.3, 'arg3': 0.8}
->>> audience = Audience(assumptions, weights)
-
-Once an audience has been defined, we can use it to initialise a
-:class:`CAES`, together with instances of :class:`ArgumentSet` and
-:class:`ProofStandard`:
-
->>> caes = CAES(argset, audience, ps)
->>> caes.get_all_arguments()
-[intent, kill], ~[] => murder
-[witness1], ~[unreliable1] => intent
-[witness2], ~[unreliable2] => -intent
-
-The :meth:`get_arguments` method returns the list of arguments in an
-:class:`ArgumentSet` which support a given proposition.
-
-A proposition is said to be *acceptable* in a CAES if it meets its required
-proof standard. The process of checking whether a proposition meets its proof
-standard requires another notion: namely, whether the arguments that support
-it are *applicable*. An argument ``arg`` is applicable if and only if all its
-premises either belong to the audience's assumptions or are acceptable;
-moreover, the exceptions of ``arg`` must not belong to the assumptions or be
-acceptable. For example, `arg2`, which supports the conclusion `intent`, is
-acceptable since `witness1` is an assumption, while the exception
-`unreliable1` is neither an assumption nor acceptable.
-
->>> arg_for_intent = argset.get_arguments(intent)[0]
->>> print(arg_for_intent)
-[witness1], ~[unreliable1] => intent
->>> caes.applicable(arg_for_intent)
-True
-
->>> caes.acceptable(intent)
-False
-
-Although there is an argument (``arg3``) for `-intent`, it is not applicable,
-since the exception `unreliable2` does belong to the audience's assumptions.
-
->>> any(caes.applicable(arg) for arg in argset.get_arguments(neg_intent))
-False
-
-This in turn has the consequence that `-intent` is not acceptable.
-
->>> caes.acceptable(neg_intent)
-False
-
-Despite the fact that the argument `arg2` for `murder` is applicable,
-the conclusion `murder` is not acceptable, since
-
->>> caes.acceptable(murder)
-False
->>> caes.acceptable(murder.negate())
-False
-"""
 
 from collections import namedtuple, defaultdict
 import logging, os, re, sys
@@ -177,12 +30,54 @@ class Reader(object):
     ---
     DOCTEST:
     >>> reader = Reader(); # use default buffer_size
-    >>> reader.load('../../samples/example.yml', dialogue=False)
+    >>> reader.load('../../samples/caes_org.yml', dialogue=False)
     <BLANKLINE>
-    ------ accused committed murder IS NOT acceptable ------
     <BLANKLINE>
-    ------ -accused committed murder IS NOT acceptable ------
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    ------ "accused committed murder" IS NOT acceptable ------
 
+    >>> r = Reader()
+    >>> d_arg = r.load('../../samplesTest/convergentarg.yml', dialogue=True)
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    <BLANKLINE>
+    dialogue mode on
+    <BLANKLINE>
+    ------ "issue" IS NOT acceptable ------
+    <BLANKLINE>
+    ------ "issue" IS acceptable ------
+    <BLANKLINE>
+    ------ "issue" IS acceptable ------
+
+    >>> g = d_arg.graph
+    >>> vs_claimed = g.vs.select(state='claimed')
+    >>> for i in vs_claimed.indices: print(g.vs[i]['prop'])
+    issue
+    support 2
+
+    >>> claimed_args = d_arg.get_arguments_status('claimed')
+    >>> for a in claimed_args: print(a)
+    [support 2], ~[] => issue
+    [premise2], ~[] => support 2
+
+    >>> d_arg.set_argument_status(g.vs[i]['prop'], 'questioned')
+    >>> args = d_arg.get_arguments_status('questioned')
+    >>> for a in args: print(a)
+    [premise2], ~[] => support 2
     """
 
     def __init__(self, buffer_size=4096, indent_size=2):
@@ -214,11 +109,17 @@ class Reader(object):
 
     def load(self, path_to_file, dialogue):
         """
-        load the file of interest, tokenize and parse it. Using the information given by the user in the file(s), call CAES to evaluate the arguments
+        load the file of interest, tokenize and parse it. Using the information
+        given by the user in the file(s), call CAES to evaluate the arguments
         -----
         :param path_to_file : the path to the file to be opened
-        :param dialogue : If `dialogue = False`, the acceptability check be shown. Otherwise, if `dialogue = True`, a dialogue version of the arguments will be shown. The class:dialogue illustrates the shifting BOP between the
-        proponent and opponent at each class:stage. At each stage, the best argument is put forth so as to attack the claim by the based on the party with the burden of proof.
+        :param dialogue : If `dialogue = False`, the acceptability check be
+        shown. Otherwise, if `dialogue = True`, a dialogue version of the
+        arguments will be shown. The class:dialogue illustrates the shifting
+        BOP between the
+        proponent and opponent at each class:stage. At each stage, the best
+        argument is put forth so as to attack the claim by the based on the
+        party with the burden of proof.
         """
 
         # ---------------------------------------------------------------
@@ -402,7 +303,8 @@ class Reader(object):
 
             # Go through each issue and generate a dialogue each
             for i, issue in enumerate(self.caes_issue):
-                # define the filename for write_to_graphviz
+                # define the filenames, the number indicates the issue number
+                # starting from 1
                 dot_filename = dot_dir + '{}_'.format(i + 1)
                 g_filename = g_dir + '{}_'.format(i + 1)
                 # # self.top_issue = issue
@@ -413,9 +315,11 @@ class Reader(object):
                     format(i, issue))
 
                 # Call dialogue class to start the conversation
-                Dialogue(issue, self.argset, self.caes_assumption,
+                d = Dialogue(issue, self.argset, self.caes_assumption,
                          self.caes_weight, self.caes_proofstandard,
                          dot_filename, g_filename, self.run)
+                d_argset = d.initialise_dialogue()
+                return d_argset
 
     def run(self,
             g_filename=None,
@@ -470,9 +374,9 @@ class Reader(object):
             # argumentation graph
             logging.info('Evaluating issue: "{}"'.format(issues))
             acceptability = caes.acceptable(issues)
-            logging.info('------ {} {} acceptable ------'.format(
+            logging.info('------ "{}" {} acceptable ------'.format(
                 issues, ['IS NOT', 'IS'][acceptability]))
-            print('\n------ {} {} acceptable ------'.format(
+            print('\n------ "{}" {} acceptable ------'.format(
                 issues, ['IS NOT', 'IS'][acceptability]))
 
             return acceptability
@@ -572,6 +476,7 @@ class Dialogue(object):
         self.g_filename = g_filename
         self.run = run  # function for evaluation
 
+    def initialise_dialogue(self):
         # -----------------------------------------------------------------
         # RUN the dialogue
         # -----------------------------------------------------------------
@@ -581,6 +486,7 @@ class Dialogue(object):
         logging.info(
             '\n\n\n********************************************************************************DIALOGUE SUMMARY:\n********************************************************************************\n{}********************************************************************************'.
             format(self.summary))
+        return self.dialogue_state_argset
 
     @TraceCalls()
     def dialogue(self, issue):
@@ -689,17 +595,19 @@ class Dialogue(object):
             logging.debug("Turn num = {}".format(self.turn_num))
             try:
                 # Finding an argument to attack the issue
-                (arg_con, arg_attacked) = self.find_best_con_argument(issue)
+                (arg_con, arg_attacked) = self.find_argument(issue)
+                logging.debug(
+                    'Found the following argument "{}" attacking "{}"'.format(
+                        arg_con, arg_attacked))
                 # -------------------------------------------------------------
                 # if there's an arg_con found, create a sub-dialogue on the
-                # issue (premise) to be debated upon
+                # issue to be debated upon
+                # If
                 # -------------------------------------------------------------
-                # Update the status of the argument, so that we know that this
-                # issue has already been attacked
-                # TODO: What if i have more than 1 premise to be attacked?
-                self.dialogue_state_argset.set_argument_status(
-                    concl=arg_attacked.conclusion, state='questioned')
-                sub_issue = arg_con.conclusion
+                arg_questioned = self.dialogue_state_argset.get_arguments_status(
+                    'questioned')
+                sub_issue = arg_questioned.conclusion
+                print(arg_questioned)
                 logging.info(
                     '--------------\nSUB ISSUE: "{}""\n--------------'.format(
                         sub_issue))
@@ -814,77 +722,114 @@ class Dialogue(object):
                         self.actors[self.turn_num % 2]))
             return self.burden_status
 
+    def find_argument(self, issue):
+        """
+        Based on the turn number and the current status of the argument set, search for argument is suitable for the issue
+        """
+        if (self.turn_num % 2 == 1):  # odd
+            (args_con, arg_attacked) = self.find_best_con_argument(issue)
+            return args_con, arg_attacked
+        elif (self.turn_num % 2 == 0):  # even
+            (args_con, arg_attacked) = self.find_best_pro_argument(issue)
+            return args_con, arg_attacked
+
     def find_best_con_argument(self, issue):
         """
-        The respondent to the argument have the burden of production of any
-        exceptions. First, we find the list of claims put forth by the
-        proponent. If there are multiple claims, we rank the claims according
-        to their weights.
+        Recursively find the best con argument towards the issue given
 
-        For each claim:
-        First, check if there are *exceptions*
-        for each exceptions, check if there are arguments that will lead
-        to the exception being true
-        if so, return the argument with the highest weight
-
-        if there are **NO arguments** to support the exceptions in the claims,
-        then we have to find a rebuttal to the claims
-        A rbuttal is any argument that is `con` of the claim
+        if attacking an exception, then the sub-issue will be the exception itself
+        however, for a con argument, then the sub-issue will be the conclusion of the argument.
         """
-        # first, find the arguments that are claimed by the proponent,
-        # and sort the arguments according to their weight
-        args_claimed_ = self.dialogue_state_argset.get_arguments_status(
-            issue, 'claimed')
-        logging.debug('arguments claimed: {}'.format(
-            [arg.__str__() for arg in args_claimed_]))
-        logging.debug('arguments questioned: {}'.format([
-            arg.__str__()
-            for arg in self.dialogue_state_argset.get_arguments_status(
-                issue, 'questioned')
-        ]))
-        args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
+        logging.debug('find_best_con_argument for "{}"'.format(issue))
+        args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
+        # Consider the args with largest weight first:
+        args_to_consider = sorted(
+            args_to_consider_, key=lambda arg: arg.weight)
+        # args_claimed_ = self.dialogue_state_argset.get_arguments_status(
+        #     issue, 'claimed')
 
-        while len(args_claimed_sorted):
-            # the argument with the highest weight
-            arg = args_claimed_sorted.pop()
-            if len(arg.exceptions):
-                # if there are exceptions
-                for exception in arg.exceptions:
-                    # iterate through the exceptions and find arguments that
-                    # can be used to claim the exceptions
-                    args_con = self.argset.get_arguments(exception)
-                    if len(args_con):
-                        args_con = sorted(args_con, key=lambda arg: arg.weight)
-                        # return the argument that supports the exception and
-                        # have the largest weight;
-                        # and the argument that it is attacking
-                        return (args_con.pop(), arg)
-            else:
-                # consider the next claim by the proponent
-                continue
+        while len(args_to_consider):
+            # iterate through the args
+            arg = args_to_consider.pop()
+            logging.debug('arg: {}'.format(arg))
 
-        # ----------------------------------------------------------------
-        # if ever reached here, there are no arguments to attacked the
-        # exceptions. Hence, a rebuttal is needed
-        logging.debug('No exceptions found for any of the claims made!')
+            # ----------------------------------------------------------------_
+            # first: try to establish the exception:
+            exceptions = arg.exceptions
 
-        args_claimed_sorted = sorted(args_claimed_, key=lambda arg: arg.weight)
-        while len(args_claimed_sorted):
-            # once again, consider the claim with the largest weight first
-            arg = args_claimed_sorted.pop()
-            arg_con = self.argset.get_arguments_con(arg.conclusion)
-            if len(arg_con):
-                # there is at least one argument that is avaliable for rebuttal
-                arg_con = sorted(arg_con, key=lambda arg: arg.weight)
-                return (arg_con.pop(), arg)
-            else:
-                # consider the net claim by proponent
-                continue
+            # get a list of arguments that support the exceptions
+            # here, we use the full argset instead of the dialogue argset!
+            args_for_exceptions_ = []
+            for e in exceptions:
+                args_for_exceptions_.extend(self.argset.get_arguments(e))
 
-        # ----------------------------------------------------------------
-        # If ever reached here, means that no rebuttal found as well, i.e. the
-        # respondent to the claim has lost!
-        logging.debug('No rebuttal found as well!')
+            # sorted by weight:
+            args_for_exceptions = sorted(
+                args_for_exceptions_, key=lambda arg: arg.weight)
+            logging.debug('exceptions {}'.format(
+                [arg.__str__() for arg in args_for_exceptions_]))
+
+            try:
+                arg_con = args_for_exceptions.pop()
+                # set the exception to questioned
+                self.dialogue_state_argset.set_argument_status(
+                    concl=arg_con.conclusion, state='questioned')
+                logging.debug('Found an argument to attack the exception')
+                return (arg_con, arg)
+
+            except IndexError:
+                # an empty list
+                pass
+
+            # ----------------------------------------------------------------_
+            # second: find a con argument suing using the full argset
+            arg_cons_ = self.argset.get_arguments_con(issue)
+            arg_cons = sorted(arg_cons_, key=lambda a: a.weight)
+            logging.debug('arg_cons {}'.format(
+                [arg.__str__() for arg in arg_cons]))
+
+            try:
+                arg_con = arg_cons.pop()
+                # set the conclusion to questioned!
+                self.dialogue_state_argset.set_argument_status(
+                    concl=arg.conclusion, state='questioned')
+                logging.deug('Found a con argument')
+                return (arg_con, arg)
+
+            except IndexError:
+                pass
+
+            # ----------------------------------------------------------------_
+            # add arguments for subissues to the list of arguments to be
+            # considered - similar to Breadth First Search
+            premises = arg.premises
+            for p in premises:
+                args_to_consider.extend(
+                    self.dialogue_state_argset.get_arguments(p))
+
+            args_to_consider = sorted(
+                args_to_consider, key=lambda arg: arg.weight)
+            logging.debug('args_to_consider: {}'.format(
+                [arg.__str__() for arg in args_to_consider]))
+            continue
+
+        logging.debug('No exceptions or con arguments found for issue "{}"'.
+                      format(issue))
+        return False
+
+    def find_best_pro_argument(self, issue):
+        """
+        The proponent tries to find the arguments to support her stand; or find one to attack the opponent! This can be done in two ways:
+
+        1) check if she can do anything to the exceptions for all the arguments
+        that are being questioned - i.e. using the :func find_best_con_argument to find arguments to attack these exceptions
+
+        2)
+        """
+        logging.debug('find_best_pro_argument for "{}"'.format(issue))
+
+        logging.debug('No exceptions or con arguments found for issue "{}"'.
+                      format(issue))
         return False
 
     def dialogue_log(self, issue, draw=1):
@@ -1225,6 +1170,7 @@ class ArgumentSet(object):
             g.add_edge(arg_v.index, target.index, is_exception=False)
         for target in exception_vs:
             g.add_edge(arg_v.index, target.index, is_exception=True)
+        return
 
     def get_arguments(self, proposition):
         """
@@ -1271,7 +1217,7 @@ class ArgumentSet(object):
         """
         return self.get_arguments(proposition.negate())
 
-    def get_arguments_status(self, issue, status):
+    def get_arguments_status(self, status):
         """
         Find the argument(s) whose conclusion is of `questioned` or `claimed`
         which leads to the issue
@@ -1289,17 +1235,16 @@ class ArgumentSet(object):
                 return []
 
             args = []
-            for i in range(len(vs.indices)):
-                conc_v_index = vs[i].index
-                target_IDs = [
-                    e.target
-                    for e in self.graph.es.select(_source=conc_v_index)
-                ]
-                out_vs = [self.graph.vs[i] for i in target_IDs]
-                arg_IDs = [v['arg'] for v in out_vs]
-                args.extend(
-                    [arg for arg in self.arguments if arg.arg_id in arg_IDs])
-            return args
+            for i in vs.indices:
+                # iterate through the conclusion vertices and call
+                # get_arguments to find the Arguments
+                concl = self.graph.vs[i]['prop']
+                args_concl = self.get_arguments(concl)
+                args.extend(args_concl)
+
+        logging.debug('found args with status "{}": {}'.format(
+            status, [str(arg) for arg in args]))
+        return args
 
     def set_argument_status(self, concl, state):
         """
@@ -1309,6 +1254,7 @@ class ArgumentSet(object):
         self.graph.vs.select(prop=concl)['state'] = state
         logging.info('proposition "{}" state updated to "{}"'.format(concl,
                                                                      state))
+        return
 
     def draw(self, g_filename, debug=False):
         """
@@ -1372,6 +1318,7 @@ class ArgumentSet(object):
         plot_style['layout'] = layout
         # execute the plot
         plot(g, g_filename, autocurve=True, **plot_style)
+        return
 
     def write_to_graphviz(self, fname=None):
         g = self.graph
@@ -1436,6 +1383,7 @@ class ArgumentSet(object):
 
         with open(fname, 'w') as f:
             print(result, file=f)
+        return
 
 
 # ========================================================================
@@ -1768,7 +1716,7 @@ class CAES(object):
 #       MAIN
 # -----------------------------------------------------------------------------
 # Set the DOCTEST to True, if want to run doctests
-DOCTEST = False
+DOCTEST = True
 
 if __name__ == '__main__':
 

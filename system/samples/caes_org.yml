@@ -37,7 +37,7 @@ ARGUMENT:
 PROOFSTANDARD :
   intent : beyond reasonable doubt
 
-ISSUE: [-murder, murder]
+ISSUE: [murder]
 
 PARAMETER:
 # define the parameters use for the proofstandard
