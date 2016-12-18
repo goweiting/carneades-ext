@@ -316,8 +316,8 @@ class Reader(object):
 
                 # Call dialogue class to start the conversation
                 d = Dialogue(issue, self.argset, self.caes_assumption,
-                         self.caes_weight, self.caes_proofstandard,
-                         dot_filename, g_filename, self.run)
+                             self.caes_weight, self.caes_proofstandard,
+                             dot_filename, g_filename, self.run)
                 d_argset = d.initialise_dialogue()
                 return d_argset
 
@@ -494,28 +494,12 @@ class Dialogue(object):
         ** In dialogue, the proponent and respondent of the issue is not the
         same as the proponent (such as prosecution) and opponent (such as
         defendant) in the setting. A proponent to the issue can be the
-        defendant, and the respondent will hence be the prosecutor. This is modelled in this function as the turn_num. A odd turn number is the proponent of the issue, and the even the respondent.
+        defendant, and the respondent will hence be the prosecutor. This is
+        modelled in this function as the turn_num. A odd turn number is the
+        proponent of the issue, and the even the respondent.
 
-        This function:
-        1. Keeps track of the dialogue status for the issue - and output it
-        when the dialogue is futile - `summary`
-        2. For each proponent and opponent at every start of the turn find the
-        'best argument to attack' each other.
-        3. Once the party has presented their argument(s) and the Burden of
-        Proof has been met, the process will repeat for the next party
-        4. all these terminates when:
-            a) there are no more arguments defined, OR
-            b) there are no more "best arguments" by either party to attak each
-            other - i.e. reached a stalemate
-        5. When termination happens:
-            a) the summary will be printed,
-            b) with the acceptability of the issue evaluated using the PS
-            defined by the users
-        6) At each step of the argument, the status of the argument set will be
-        printed, and the current view of the arguments (in an argumentation
-        graph will be printed)
-
-        :param issue : the issue :type PropLiteral that the propnent and opponent are arguing about
+        :param issue : the issue :type PropLiteral that the propnent and
+        opponent are arguing about
         :param g_filename : the filename for the graph to be drawn.
             For each state in a dialogue, a graph will be output.
         :param dot_filename : the filename for the dot file.
@@ -565,8 +549,6 @@ class Dialogue(object):
             best_arg_pro,
             state='claimed',
             claimer=self.actors[self.turn_num % 2])
-        self.dialogue_state_argset.set_argument_status(
-            best_arg_pro.conclusion, state='claimed')
         self.burden_status = '?'
         # logs the current dialogue state
         self.dialogue_log(issue)
@@ -602,53 +584,54 @@ class Dialogue(object):
                 # -------------------------------------------------------------
                 # if there's an arg_con found, create a sub-dialogue on the
                 # issue to be debated upon
-                # If
                 # -------------------------------------------------------------
-                arg_questioned = self.dialogue_state_argset.get_arguments_status(
-                    'questioned')
-                sub_issue = arg_questioned.conclusion
-                print(arg_questioned)
+                try:
+                    # is a con argument
+                    arg_questioned = self.dialogue_state_argset.get_arguments_status(
+                        'questioned')[0]
+                    sub_issue = arg_questioned.conclusion.negate()
+                except IndexError:
+                    # this is an exception
+                    sub_issue = arg_con.conclusion
+                    pass
+
                 logging.info(
                     '--------------\nSUB ISSUE: "{}""\n--------------'.format(
                         sub_issue))
 
                 # Run a dialogue for this issue:
                 endmeets = self.dialogue(sub_issue)
-                # self.dialogue_log(issue)
-                # dialogue return False when the BOP is not met or when there
-                # is no more argument for this issue
-                if not endmeets:
-                    return
+
             except TypeError:
                 # If no arguments found, then the respondent lost the argument
                 # here
                 logging.info('No arguments found by {} for issue \'{}\''.
                              format(self.actors[self.turn_num % 2], issue))
                 return False
-
-        # ----------------------------------------------------------------
-        #   NO LONGER DEBATABLE?
-        # ----------------------------------------------------------------
-        g_file = self.g_filename + 'final.pdf'
-        dot_file = self.dot_filename + 'final.dot'
-        # Do acceptability test using the the PS defined:
-        acceptability = self.run(g_filename=g_file,
-                                 dot_filename=dot_file,
-                                 argset=self.dialogue_state_argset,
-                                 issues=issue)
-
-        while not acceptability:
-            if len(args_pro):
-                # If there are other arguments that can help with the issue,
-                # add them in:
-                self.dialogue(issue)
-                acceptability = self.run(g_filename=g_file,
-                                         dot_filename=dot_file,
-                                         argset=self.dialogue_state_argset,
-                                         issues=issue)
-            else:
-                logging.info('No arguments left')
-                return
+        #
+        # # ----------------------------------------------------------------
+        # #   NO LONGER DEBATABLE?
+        # # ----------------------------------------------------------------
+        # g_file = self.g_filename + 'final.pdf'
+        # dot_file = self.dot_filename + 'final.dot'
+        # # Do acceptability test using the the PS defined:
+        # acceptability = self.run(g_filename=g_file,
+        #                          dot_filename=dot_file,
+        #                          argset=self.dialogue_state_argset,
+        #                          issues=issue)
+        #
+        # while not acceptability:
+        #     if len(args_pro):
+        #         # If there are other arguments that can help with the issue,
+        #         # add them in:
+        #         self.dialogue(issue)
+        #         acceptability = self.run(g_filename=g_file,
+        #                                  dot_filename=dot_file,
+        #                                  argset=self.dialogue_state_argset,
+        #                                  issues=issue)
+        #     else:
+        #         logging.info('No arguments left')
+        #         return
 
         return
 
@@ -771,6 +754,7 @@ class Dialogue(object):
 
             try:
                 arg_con = args_for_exceptions.pop()
+                print(arg_con)
                 # set the exception to questioned
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg_con.conclusion, state='questioned')
@@ -783,7 +767,7 @@ class Dialogue(object):
 
             # ----------------------------------------------------------------_
             # second: find a con argument suing using the full argset
-            arg_cons_ = self.argset.get_arguments_con(issue)
+            arg_cons_ = self.argset.get_arguments_con(arg.conclusion)
             arg_cons = sorted(arg_cons_, key=lambda a: a.weight)
             logging.debug('arg_cons {}'.format(
                 [arg.__str__() for arg in arg_cons]))
@@ -793,7 +777,7 @@ class Dialogue(object):
                 # set the conclusion to questioned!
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg.conclusion, state='questioned')
-                logging.deug('Found a con argument')
+                logging.debug('Found a con argument')
                 return (arg_con, arg)
 
             except IndexError:
@@ -827,6 +811,8 @@ class Dialogue(object):
         2)
         """
         logging.debug('find_best_pro_argument for "{}"'.format(issue))
+
+
 
         logging.debug('No exceptions or con arguments found for issue "{}"'.
                       format(issue))
@@ -1194,7 +1180,6 @@ class ArgumentSet(object):
             # IDs of vertices reachable in one hop from the proposition's
             # vertex (i.e. the argument vertices)
             target_IDs = [e.target for e in g.es.select(_source=conc_v_index)]
-
             # the vertices indexed by target_IDs
             out_vs = [g.vs[i] for i in target_IDs]
 
@@ -1229,6 +1214,7 @@ class ArgumentSet(object):
             raise ValueError('{} is not a valid status'.format(status))
         else:
             vs = self.graph.vs.select(state=status)
+            print(vs.indices)
             try:
                 conc_v_index = vs[0].index
             except IndexError:
@@ -1236,10 +1222,13 @@ class ArgumentSet(object):
 
             args = []
             for i in vs.indices:
+                print(i)
                 # iterate through the conclusion vertices and call
                 # get_arguments to find the Arguments
                 concl = self.graph.vs[i]['prop']
+                print(type(concl))
                 args_concl = self.get_arguments(concl)
+                print(args_concl)
                 args.extend(args_concl)
 
         logging.debug('found args with status "{}": {}'.format(
@@ -1254,7 +1243,9 @@ class ArgumentSet(object):
         self.graph.vs.select(prop=concl)['state'] = state
         logging.info('proposition "{}" state updated to "{}"'.format(concl,
                                                                      state))
-        return
+        # DEBUG
+        for i in self.graph.vs.indices:
+            print(self.graph.vs[i])
 
     def draw(self, g_filename, debug=False):
         """
@@ -1716,7 +1707,7 @@ class CAES(object):
 #       MAIN
 # -----------------------------------------------------------------------------
 # Set the DOCTEST to True, if want to run doctests
-DOCTEST = True
+DOCTEST = False
 
 if __name__ == '__main__':
 

@@ -14,9 +14,9 @@ PROPOSITION:
   p43: p43
   p44: p44
   p45: p45
+  p06: p06
 
-
-ASSUMPTION: [p41, p43, p12, p45]
+ASSUMPTION: [p41, p43, p45, p06]
 
 ARGUMENT:
   arg0:
@@ -43,9 +43,6 @@ ARGUMENT:
     conclusion: p31
     weight: 0.23
 
-# opponents:
-# we want to see which arguments the opponent will choose!
-# TODO: i think it is the one with the largest weight.....???
   arg4:
     premise: [p42]
     exception: []
@@ -58,21 +55,29 @@ ARGUMENT:
     conclusion: p42
     weight: 0.01
 
-# arg6:
-#   premise: [p44]
-#   exception: []
-#   conclusion: e41
-#   weight: 0.1
-#
-# arg7:
-#   premise: [p45]
-#   exception: []
-#   conclusion: p44
-#   weight: 0.01
+  arg6:
+    premise: [p44]
+    exception: []
+    conclusion: -p12
+    weight: 0.2
+
+  arg7:
+    premise: [p45]
+    exception: []
+    conclusion: p44
+    weight: 0.01
+
+  arg8:
+    premise: [p06]
+    exception: []
+    conclusion: p12
+    weight: 0.3 # higher than con argument, hence winning in preponderance
 
 ISSUE: [i]
 
-PROOFSTANDARD: []
+PROOFSTANDARD:
+  p11: preponderance
+  p12: preponderance
 
 PARAMETER:
   alpha: 0.4
