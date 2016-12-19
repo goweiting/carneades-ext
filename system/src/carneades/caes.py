@@ -269,15 +269,15 @@ class Reader(object):
             self.caes_issue.add(prop)
 
         # # -----------------------------------------------------------------
-        # logging.debug('\talpha:{}, beta:{}, gamme:{}'.format(
-        #     self.caes_alpha, self.caes_beta, self.caes_gamma))
-        # logging.debug('\tpropliterals: {} '.format(self.caes_propliteral))
-        # logging.debug('\targuments:{} '.format(
-        #     [arg.__str__() for k, arg in self.caes_argument.items()]))
-        # logging.debug('\tweights : {}'.format(self.caes_weight))
-        # logging.debug('\tassumptions: {} '.format(self.caes_assumption))
-        # logging.debug('\tissues: {} '.format(self.caes_issue))
-        # logging.debug('\tproofstandard: {}'.format(self.caes_proofstandard))
+        logging.debug('\talpha:{}, beta:{}, gamme:{}'.format(
+            self.caes_alpha, self.caes_beta, self.caes_gamma))
+        logging.debug('\tpropliterals: {} '.format(self.caes_propliteral))
+        logging.debug('\targuments:{} '.format(
+            [arg.__str__() for k, arg in self.caes_argument.items()]))
+        logging.debug('\tweights : {}'.format(self.caes_weight))
+        logging.debug('\tassumptions: {} '.format(self.caes_assumption))
+        logging.debug('\tissues: {} '.format(self.caes_issue))
+        logging.debug('\tproofstandard: {}'.format(self.caes_proofstandard))
 
         # -----------------------------------------------------------------
         # Create file specific directory for graphing
@@ -509,7 +509,9 @@ class Dialogue(object):
         :return dialogue_state_argset: the argset of the dialogue
         """
         # -----------------------------------------------------------------
-        # Start the dialogue by finding the best pro argument by the proponent
+        # Start the dialogue by finding the best pro argument for the issue
+        # Note here that the pro argument is not necessarily by the proponent
+        # Since it is relative to the issue
         # -----------------------------------------------------------------
         args_pro = self.argset.get_arguments(issue)
         try:
@@ -540,10 +542,16 @@ class Dialogue(object):
                     'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.
                     format(issue))
                 logging.info('Evaluating on the full argumentation set')
-                self.run(issues=issue, g_filename=g_file, dot_filename=dot_file)
+                self.run(issues=issue,
+                         g_filename=g_file,
+                         dot_filename=dot_file)
                 return
+
             else:
-                return False
+                # all arguments pro the issue has been exhausted
+                logging.debug(
+                    'All pro argument for issue "{}" exhausted'.fromat(issue))
+                return True
 
         # ------------------------------------------------------------------
         #   Add an argument pro the issue into the argset:
@@ -563,81 +571,76 @@ class Dialogue(object):
         self.burden_met(issue, best_arg_pro)
         self.dialogue_log(issue)
 
-        # the proponent's Burden of proof must first be met; otherwise she
-        # has lost the argument
-        # TODO: TEST WHAT IF DOWNSTREAM THE BURDEN OF PROOF IS NOT SATISFIABLE?
         if not self.burden_status:
-            logging.info('{} did not met the Burden of Proof for issue \'{}\''.
-                         format(self.actors[self.turn_num % 2], issue))
-            # raise Exception("Burden of Proof not met!")
+            logging.info("{} did not manage to satisfy her burden of proof".
+                         format(self.actors[self.turn_num % 2]))
             return False
 
         else:
             # ----------------------------------------------------------------
-            #   the respondent turn's to raise an issue
+            # At this stage, the burden of proof is satisfied by the proponent
+            # of the issue. Hence the respondent takes over
             # ----------------------------------------------------------------
             self.turn_num += 1
-            logging.debug("Turn num = {}".format(self.turn_num))
+            logging.debug('turn_num {}'.format(self.turn_num))
+            # First we check if the opponent can satisfy the exception:
             try:
-                # Finding an argument to attack the issue
-                (arg_con, arg_attacked) = self.find_argument(issue)
+                arg_for_exception = self.find_args_to_exceptions(issue)
+                # since we found an argument to support the issue,
+                # call dialogue on the issue
+                result = self.dialogue(arg_for_exception.conclusion)
+
+            except AttributeError:
+                # occurs when no exceptions found
                 logging.debug(
-                    'Found the following argument "{}" attacking "{}"'.format(
-                        arg_con, arg_attacked))
-                # -------------------------------------------------------------
-                # if there's an arg_con found, create a sub-dialogue on the
-                # issue to be debated upon
-                # -------------------------------------------------------------
+                    'No arguments found to satisfy exceptions in issue "{}"'.
+                    format(issue))
+
+                # Next, try luck at con arguments!
                 try:
-                    # is a con argument
-                    arg_questioned = self.dialogue_state_argset.get_arguments_status(
-                        'questioned')[0]
-                    sub_issue = arg_questioned.conclusion.negate()
-                except IndexError:
-                    # this is an exception
-                    sub_issue = arg_con.conclusion
-                    pass
+                    if issue != self.top_issue:
+                        # dont use arguments con issue that we are trying to
+                        # prove!
+                        arg_con_issue = self.find_best_con_argument(issue)
+                        result = self.dialogue(arg_con_issue.conclusion)
+                    else:
+                        # do something!
+                        pass
 
-                logging.info(
-                    '--------------\nSUB ISSUE: "{}""\n--------------'.format(
-                        sub_issue))
+                except AttributeError:
+                    # occurs when no con argument found
+                    logging.debug(
+                        'No arguments found to attack the issue "{}"'.format(
+                            issue))
+                    return True  # defeated
 
-                # Run a dialogue for this issue:
-                endmeets = self.dialogue(sub_issue)
-
-            except TypeError:
-                # If no arguments found, then the respondent lost the argument
-                # here
-                logging.info('No arguments found by {} for issue \'{}\''.
-                             format(self.actors[self.turn_num % 2], issue))
-                return False
-
-        # ----------------------------------------------------------------
-        #   NO LONGER DEBATABLE?
-        # ----------------------------------------------------------------
-
-        g_file = self.g_filename + 'final.pdf'
-        dot_file = self.dot_filename + 'final.dot'
-        # Do acceptability test using the the PS defined:
-        acceptability = self.run(g_filename=g_file,
-                                 dot_filename=dot_file,
-                                 argset=self.dialogue_state_argset,
-                                 issues=issue)
-
-        while not acceptability:
-            if len(args_pro):
-                # If there are other arguments that can help with the issue,
-                # add them in:
-                self.dialogue(issue)
-                acceptability = self.run(g_filename=g_file,
-                                         dot_filename=dot_file,
-                                         argset=self.dialogue_state_argset,
+            # ---------------------------------------------------------
+            if result:
+                # no more argument found, or no more argument to add to the issue
+                # Do acceptability test using the the PS defined:
+                acceptability = self.run(argset=self.dialogue_state_argset,
                                          issues=issue)
-            else:
-                logging.info('No arguments left')
-                return
 
-        return
+                while not acceptability:
+                    if len(args_pro):
+                        # If there are other arguments that can help with the issue,
+                        # add them in:
+                        self.dialogue(issue)
+                        acceptability = self.run(
+                            argset=self.dialogue_state_argset, issues=issue)
+                    else:
+                        break
+
+                if issue == self.top_issue:
+                    g_file = self.g_filename + 'final.pdf'
+                    dot_file = self.dot_filename + 'final.dot'
+                    self.run(g_filename=g_file,
+                             dot_filename=dot_file,
+                             argset=self.dialogue_state_argset,
+                             issues=issue)
+                    return True
+            else:
+                return True
 
     @TraceCalls()
     def burden_met(self, issue, current_argument):
@@ -701,40 +704,21 @@ class Dialogue(object):
                         logging.info('Nothing to add')
                         return self.burden_status
 
-            # proponent cant satisfy the Burden
-            # TODO: Need to log the status of the argument here!!!!
-            if not self.burden_status:
-                logging.info(
-                    "{} did not manage to satisfy her burden of proof".format(
-                        self.actors[self.turn_num % 2]))
             return self.burden_status
 
-    def find_argument(self, issue):
-        """
-        Based on the turn number and the current status of the argument set, search for argument is suitable for the issue
-        """
-        if (self.turn_num % 2 == 1):  # odd
-            (args_con, arg_attacked) = self.find_best_con_argument(issue)
-            return args_con, arg_attacked
-        elif (self.turn_num % 2 == 0):  # even
-            (args_con, arg_attacked) = self.find_best_pro_argument(issue)
-            return args_con, arg_attacked
-
     @TraceCalls()
-    def find_best_con_argument(self, issue):
+    def find_args_to_exceptions(self, issue):
         """
-        Recursively find the best con argument towards the issue given
+        find arguments to attack the exceptions
+        recursively, sieve through the arguments put forward for the issue now
 
-        if attacking an exception, then the sub-issue will be the exception itself
-        however, for a con argument, then the sub-issue will be the conclusion of the argument.
+        return the first argument that can satisfy one of the exception
         """
-        logging.debug('find_best_con_argument for "{}"'.format(issue))
+        logging.debug('find_args_to_exceptions in "{}"'.format(issue))
         args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
         # Consider the args with largest weight first:
         args_to_consider = sorted(
             args_to_consider_, key=lambda arg: arg.weight)
-        # args_claimed_ = self.dialogue_state_argset.get_arguments_status(
-        #     issue, 'claimed')
 
         while len(args_to_consider):
             # iterate through the args
@@ -759,38 +743,74 @@ class Dialogue(object):
 
             try:
                 arg_con = args_for_exceptions.pop()
-                print(arg_con)
+                # print(arg_con)
                 # set the exception to questioned
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg_con.conclusion, state='questioned')
                 logging.debug('Found an argument to prove the exception')
-                return (arg_con, arg)
+                return arg_con
 
             except IndexError:
                 # an empty list
                 pass
 
             # ----------------------------------------------------------------_
-            # second: find a con argument suing using the full argset
+            # add arguments for sub-issues to the list of arguments to be
+            # considered - similar to Breadth First Search
+            premises = arg.premises
+            for p in premises:
+                args_to_consider.extend(
+                    self.dialogue_state_argset.get_arguments(p))
+
+            args_to_consider = sorted(
+                args_to_consider, key=lambda arg: arg.weight)
+            logging.debug('args_to_consider: {}'.format(
+                [arg.__str__() for arg in args_to_consider]))
+            continue
+
+        return False
+
+    @TraceCalls()
+    def find_best_con_argument(self, issue):
+        """
+        Recursively find the best con argument towards the issue given
+
+        if attacking an exception, then the sub-issue will be the exception itself
+        however, for a con argument, then the sub-issue will be the conclusion of the argument.
+        """
+        logging.debug('find_best_con_argument for "{}"'.format(issue))
+        args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
+        # Consider the args with largest weight first:
+        args_to_consider = sorted(
+            args_to_consider_, key=lambda arg: arg.weight)
+
+        while len(args_to_consider):
+            # iterate through the args
+            arg = args_to_consider.pop()
+            logging.debug('arg: {}'.format(arg))
+            # ----------------------------------------------------------------_
+            # find a con argument suing using the full argset
             arg_cons_ = self.argset.get_arguments_con(arg.conclusion)
             arg_cons = sorted(arg_cons_, key=lambda a: a.weight)
             logging.debug('arg_cons {}'.format(
                 [arg.__str__() for arg in arg_cons]))
 
             try:
-                arg_con = arg_cons.pop()
+                arg_con_issue = arg_cons.pop()
                 # prevent the same argument that is already in the argset from
                 # being added in
-                check = self.dialogue_state_argset.get_arguments(arg_con.conclusion)
+                check = self.dialogue_state_argset.get_arguments(
+                    arg_con_issue.conclusion)
                 if len(check) != 0:
-                    logging.debug('argument "{}" has already been added!'.format(arg_con))
+                    logging.debug('argument "{}" has already been added!'.
+                                  format(arg_con_issue))
                     continue
 
                 # set the conclusion to questioned!
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg.conclusion, state='questioned')
                 logging.debug('Found a con argument')
-                return (arg_con, arg)
+                return arg_con_issue
 
             except IndexError:
                 pass
@@ -809,8 +829,6 @@ class Dialogue(object):
                 [arg.__str__() for arg in args_to_consider]))
             continue
 
-        logging.debug('No exceptions or con arguments found for issue "{}"'.
-                      format(issue))
         return False
 
     @TraceCalls()
