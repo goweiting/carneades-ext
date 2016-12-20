@@ -21,9 +21,6 @@ digraph G{
 "p06" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "arg6" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
 "p44" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg7" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
-"-p44" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"p45" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "issue" -> "arg0" ; 
 "arg0" -> "p11" ; 
 "arg0" -> "p12" ; 
@@ -40,6 +37,4 @@ digraph G{
 "arg8" -> "p06" ; 
 "-p12" -> "arg6" ; 
 "arg6" -> "p44" ; 
-"p44" -> "arg7" ; 
-"arg7" -> "p45" ; 
 }

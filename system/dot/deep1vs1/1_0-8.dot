@@ -12,18 +12,6 @@ digraph G{
 "-p21" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p31" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "e31" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg3" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
-"-p31" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"p41" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"e41" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg8" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
-"-p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"p06" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg6" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
-"p44" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg7" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
-"-p44" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"p45" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "issue" -> "arg0" ; 
 "arg0" -> "p11" ; 
 "arg0" -> "p12" ; 
@@ -33,13 +21,4 @@ digraph G{
 "p21" -> "arg2" ; 
 "arg2" -> "p31" ; 
 "arg2" -> "e31" [arrowhead=dot] ; 
-"p31" -> "arg3" ; 
-"arg3" -> "p41" ; 
-"arg3" -> "e41" [arrowhead=dot] ; 
-"p12" -> "arg8" ; 
-"arg8" -> "p06" ; 
-"-p12" -> "arg6" ; 
-"arg6" -> "p44" ; 
-"p44" -> "arg7" ; 
-"arg7" -> "p45" ; 
 }
