@@ -4,9 +4,6 @@ digraph G{
 "-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p11" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg8" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
-"-p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"p06" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "arg1" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
 "-p11" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p21" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
@@ -15,6 +12,9 @@ digraph G{
 "-p21" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p31" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "e31" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg8" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
+"-p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"p06" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "arg4" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
 "-e31" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p42" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
@@ -22,14 +22,14 @@ digraph G{
 "issue" -> "arg0" ; 
 "arg0" -> "p11" ; 
 "arg0" -> "p12" ; 
-"p12" -> "arg8" ; 
-"arg8" -> "p06" ; 
 "p11" -> "arg1" ; 
 "arg1" -> "p21" ; 
 "arg1" -> "e21" [arrowhead=dot] ; 
 "p21" -> "arg2" ; 
 "arg2" -> "p31" ; 
 "arg2" -> "e31" [arrowhead=dot] ; 
+"p12" -> "arg8" ; 
+"arg8" -> "p06" ; 
 "e31" -> "arg4" ; 
 "arg4" -> "p42" ; 
 "arg4" -> "e41" [arrowhead=dot] ; 

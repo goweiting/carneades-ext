@@ -23,9 +23,9 @@ Added proposition 'premise2' to graph with state None
 	Adding proofstandard to CAES
 	Adding issues to CAES
 	alpha:0.4, beta:0.3, gamme:0.3
-	propliterals: {'s1': support 1, 's2': support 2, 'p1': premise1, 'p2': premise2, 'i': issue} 
-	arguments:['[support 1], ~[] => issue', '[support 2], ~[] => issue', '[premise1], ~[] => support 1', '[premise2], ~[] => support 2'] 
-	weights : {arg1: 0.5, arg2: 0.5, arg4: 0.2, arg5: 0.2}
+	propliterals: {'p2': premise2, 'i': issue, 's2': support 2, 's1': support 1, 'p1': premise1} 
+	arguments:['[support 2], ~[] => issue', '[premise1], ~[] => support 1', '[premise2], ~[] => support 2', '[support 1], ~[] => issue'] 
+	weights : {arg2: 0.5, arg4: 0.2, arg5: 0.2, arg1: 0.5}
 	assumptions: {premise2, premise1} 
 	issues: {issue} 
 	proofstandard: []

@@ -52,10 +52,10 @@ Added proposition 'p50' to graph with state None
 	Adding proofstandard to CAES
 	Adding issues to CAES
 	alpha:0.4, beta:0.3, gamme:0.3
-	propliterals: {'e21': e21, 'i': issue, 'p44': p44, 'p42': p42, 'p43': p43, 'p06': p06, 'p50': p50, 'p60': p60, 'p21': p21, 'p45': p45, 'p55': p55, 'p11': p11, 'p31': p31, 'e41': e41, 'p12': p12, 'e31': e31} 
-	arguments:['[p21], ~[e21] => p11', '[p44], ~[p55] => -p12', '[p50], ~[] => p55', '[p60], ~[] => e41', '[p06], ~[] => p12', '[p45], ~[] => p44', '[p31], ~[e31] => p21', '[p42], ~[e41] => e31', '[p11, p12], ~[] => issue', '[p43], ~[] => p42'] 
-	weights : {arg1: 0.1, arg6: 0.2, arg9: 0.1, arg3: 0.1, arg8: 0.25, arg7: 0.01, arg2: 0.22, arg4: 0.1, arg0: 0.5, arg5: 0.01}
-	assumptions: {p06, p50, p60, p31, p45, p43} 
+	propliterals: {'p60': p60, 'p06': p06, 'e31': e31, 'p21': p21, 'p44': p44, 'p50': p50, 'e41': e41, 'p55': p55, 'i': issue, 'p43': p43, 'p31': p31, 'p12': p12, 'e21': e21, 'p45': p45, 'p42': p42, 'p11': p11} 
+	arguments:['[p31], ~[e31] => p21', '[p60], ~[] => e41', '[p42], ~[e41] => e31', '[p44], ~[p55] => -p12', '[p11, p12], ~[] => issue', '[p50], ~[] => p55', '[p21], ~[e21] => p11', '[p06], ~[] => p12', '[p43], ~[] => p42', '[p45], ~[] => p44'] 
+	weights : {arg2: 0.22, arg3: 0.1, arg4: 0.1, arg6: 0.2, arg0: 0.5, arg9: 0.1, arg1: 0.1, arg8: 0.25, arg5: 0.01, arg7: 0.01}
+	assumptions: {p60, p06, p50, p43, p31, p45} 
 	issues: {issue} 
 	proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Dialogue Mode: On
@@ -84,14 +84,14 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
       Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-        Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'scintilla'.
-          Calling meets_proof_standard(p12, scintilla)
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
+        Calling acceptable(p11)
+Checking whether proposition 'p11' meets proof standard 'scintilla'.
+          Calling meets_proof_standard(p11, scintilla)
 	arguments:[] 
-          meets_proof_standard(p12, scintilla)-->False
-        acceptable(p12)-->False
+          meets_proof_standard(p11, scintilla)-->False
+        acceptable(p11)-->False
       applicable([p11, p12], ~[] => issue)-->False
     meets_proof_standard(issue, scintilla)-->False
   acceptable(issue)-->False
@@ -106,58 +106,8 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
         Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-          Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'scintilla'.
-            Calling meets_proof_standard(p12, scintilla)
-	arguments:[] 
-            meets_proof_standard(p12, scintilla)-->False
-          acceptable(p12)-->False
-        applicable([p11, p12], ~[] => issue)-->False
-      meets_proof_standard(issue, scintilla)-->False
-    acceptable(issue)-->False
-Burden of Proof: False
-Current Premise: "p12"
-Adding arguments for "p12"
-Added argument 'arg8' to graph by 'PROPONENT'
-Proposition 'p12' is already in graph
-Added proposition '-p12' to graph with state None
-Added proposition 'p06' to graph with state None
-proposition "p12" state updated to "claimed"
-
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[p11, p12], ~[] => issue
-[p06], ~[] => p12
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-proofstandard: [(p12, 'preponderance')]
-Evaluating issue: "issue"
-    Calling acceptable(issue)
-Checking whether proposition 'issue' meets proof standard 'scintilla'.
-      Calling meets_proof_standard(issue, scintilla)
-	arguments:['[p11, p12], ~[] => issue'] 
-        Calling applicable([p11, p12], ~[] => issue)
-Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-          Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-            Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-              Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-              applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-            meets_proof_standard(p12, preponderance)-->True
-          acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
           Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'scintilla'.
             Calling meets_proof_standard(p11, scintilla)
@@ -167,43 +117,7 @@ Checking whether proposition 'p11' meets proof standard 'scintilla'.
         applicable([p11, p12], ~[] => issue)-->False
       meets_proof_standard(issue, scintilla)-->False
     acceptable(issue)-->False
------- "issue" IS NOT acceptable ------
-============================================
-
-    Calling burden_met(issue, [p06], ~[] => p12)
-Checking burden of proof for PROPONENT
-      Calling acceptable(issue)
-Checking whether proposition 'issue' meets proof standard 'scintilla'.
-        Calling meets_proof_standard(issue, scintilla)
-	arguments:['[p11, p12], ~[] => issue'] 
-          Calling applicable([p11, p12], ~[] => issue)
-Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-            Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(p12, scintilla)
-	arguments:['[p06], ~[] => p12'] 
-                Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                applicable([p06], ~[] => p12)-->True
-              meets_proof_standard(p12, scintilla)-->True
-            acceptable(p12)-->True
-            Calling acceptable(p11)
-Checking whether proposition 'p11' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(p11, scintilla)
-	arguments:[] 
-              meets_proof_standard(p11, scintilla)-->False
-            acceptable(p11)-->False
-          applicable([p11, p12], ~[] => issue)-->False
-        meets_proof_standard(issue, scintilla)-->False
-      acceptable(issue)-->False
 Burden of Proof: False
-Current Premise: "p06"
-    burden_met(issue, [p06], ~[] => p12)-->False
-
 Current Premise: "p11"
 Adding arguments for "p11"
 Added argument 'arg1' to graph by 'PROPONENT'
@@ -217,12 +131,11 @@ proposition "p11" state updated to "claimed"
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance')]
 Evaluating issue: "issue"
     Calling acceptable(issue)
 Checking whether proposition 'issue' meets proof standard 'scintilla'.
@@ -230,29 +143,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
         Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-          Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-            Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-              Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-              applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-            meets_proof_standard(p12, preponderance)-->True
-          acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
           Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
             Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
               Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                 Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -286,26 +185,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
           Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-            Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(p12, scintilla)
-	arguments:['[p06], ~[] => p12'] 
-                Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                applicable([p06], ~[] => p12)-->True
-              meets_proof_standard(p12, scintilla)-->True
-            acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
             Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'scintilla'.
               Calling meets_proof_standard(p11, scintilla)
 	arguments:['[p21], ~[e21] => p11'] 
                 Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                   Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -340,13 +228,12 @@ proposition "p21" state updated to "claimed"
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance')]
 Evaluating issue: "issue"
       Calling acceptable(issue)
 Checking whether proposition 'issue' meets proof standard 'scintilla'.
@@ -354,29 +241,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
           Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-            Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-              Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-                Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-              meets_proof_standard(p12, preponderance)-->True
-            acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
             Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
               Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
                 Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                   Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -384,7 +257,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                       Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                         Calling acceptable(e31)
@@ -409,10 +282,16 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
               meets_proof_standard(p11, preponderance)-->True
             acceptable(p11)-->True
-          applicable([p11, p12], ~[] => issue)-->True
-        meets_proof_standard(issue, scintilla)-->True
-      acceptable(issue)-->True
------- "issue" IS acceptable ------
+            Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(p12, scintilla)
+	arguments:[] 
+              meets_proof_standard(p12, scintilla)-->False
+            acceptable(p12)-->False
+          applicable([p11, p12], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+------ "issue" IS NOT acceptable ------
 ============================================
 
       Calling burden_met(issue, [p31], ~[e31] => p21)
@@ -423,26 +302,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
             Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-              Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'scintilla'.
-                Calling meets_proof_standard(p12, scintilla)
-	arguments:['[p06], ~[] => p12'] 
-                  Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                  applicable([p06], ~[] => p12)-->True
-                meets_proof_standard(p12, scintilla)-->True
-              acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
               Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'scintilla'.
                 Calling meets_proof_standard(p11, scintilla)
 	arguments:['[p21], ~[e21] => p11'] 
                   Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                     Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -450,7 +318,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                         Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                           Calling acceptable(e31)
@@ -472,13 +340,170 @@ Checking whether proposition 'e21' meets proof standard 'scintilla'.
                   applicable([p21], ~[e21] => p11)-->True
                 meets_proof_standard(p11, scintilla)-->True
               acceptable(p11)-->True
-            applicable([p11, p12], ~[] => issue)-->True
-          meets_proof_standard(issue, scintilla)-->True
-        acceptable(issue)-->True
-Burden of Proof: True
-      burden_met(issue, [p31], ~[e31] => p21)-->True
+              Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'scintilla'.
+                Calling meets_proof_standard(p12, scintilla)
+	arguments:[] 
+                meets_proof_standard(p12, scintilla)-->False
+              acceptable(p12)-->False
+            applicable([p11, p12], ~[] => issue)-->False
+          meets_proof_standard(issue, scintilla)-->False
+        acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "p31"
+      burden_met(issue, [p31], ~[e31] => p21)-->False
 
-    burden_met(issue, [p21], ~[e21] => p11)-->True
+    burden_met(issue, [p21], ~[e21] => p11)-->False
+
+Current Premise: "p12"
+Adding arguments for "p12"
+Added argument 'arg8' to graph by 'PROPONENT'
+Proposition 'p12' is already in graph
+Added proposition '-p12' to graph with state None
+Added proposition 'p06' to graph with state None
+proposition "p12" state updated to "claimed"
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[p11, p12], ~[] => issue
+[p21], ~[e21] => p11
+[p31], ~[e31] => p21
+[p06], ~[] => p12
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+      Calling meets_proof_standard(issue, scintilla)
+	arguments:['[p11, p12], ~[] => issue'] 
+        Calling applicable([p11, p12], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
+          Calling acceptable(p11)
+Checking whether proposition 'p11' meets proof standard 'preponderance'.
+            Calling meets_proof_standard(p11, preponderance)
+	arguments:['[p21], ~[e21] => p11'] 
+              Calling applicable([p21], ~[e21] => p11)
+Checking applicability of arg1...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p21}
+                Calling acceptable(p21)
+Checking whether proposition 'p21' meets proof standard 'scintilla'.
+                  Calling meets_proof_standard(p21, scintilla)
+	arguments:['[p31], ~[e31] => p21'] 
+                    Calling applicable([p31], ~[e31] => p21)
+Checking applicability of arg2...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p31}
+Current exception: {e31}
+                      Calling acceptable(e31)
+Checking whether proposition 'e31' meets proof standard 'scintilla'.
+                        Calling meets_proof_standard(e31, scintilla)
+	arguments:[] 
+                        meets_proof_standard(e31, scintilla)-->False
+                      acceptable(e31)-->False
+                    applicable([p31], ~[e31] => p21)-->True
+                  meets_proof_standard(p21, scintilla)-->True
+                acceptable(p21)-->True
+Current exception: {e21}
+                Calling acceptable(e21)
+Checking whether proposition 'e21' meets proof standard 'scintilla'.
+                  Calling meets_proof_standard(e21, scintilla)
+	arguments:[] 
+                  meets_proof_standard(e21, scintilla)-->False
+                acceptable(e21)-->False
+              applicable([p21], ~[e21] => p11)-->True
+Checking applicability and weights of [arg1]
+Weights of [arg1] are [0.1]
+No applicable arguments in []
+            meets_proof_standard(p11, preponderance)-->True
+          acceptable(p11)-->True
+          Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+            Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+              Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+              applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+            meets_proof_standard(p12, preponderance)-->True
+          acceptable(p12)-->True
+        applicable([p11, p12], ~[] => issue)-->True
+      meets_proof_standard(issue, scintilla)-->True
+    acceptable(issue)-->True
+------ "issue" IS acceptable ------
+============================================
+
+    Calling burden_met(issue, [p06], ~[] => p12)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+        Calling meets_proof_standard(issue, scintilla)
+	arguments:['[p11, p12], ~[] => issue'] 
+          Calling applicable([p11, p12], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
+            Calling acceptable(p11)
+Checking whether proposition 'p11' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(p11, scintilla)
+	arguments:['[p21], ~[e21] => p11'] 
+                Calling applicable([p21], ~[e21] => p11)
+Checking applicability of arg1...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p21}
+                  Calling acceptable(p21)
+Checking whether proposition 'p21' meets proof standard 'scintilla'.
+                    Calling meets_proof_standard(p21, scintilla)
+	arguments:['[p31], ~[e31] => p21'] 
+                      Calling applicable([p31], ~[e31] => p21)
+Checking applicability of arg2...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p31}
+Current exception: {e31}
+                        Calling acceptable(e31)
+Checking whether proposition 'e31' meets proof standard 'scintilla'.
+                          Calling meets_proof_standard(e31, scintilla)
+	arguments:[] 
+                          meets_proof_standard(e31, scintilla)-->False
+                        acceptable(e31)-->False
+                      applicable([p31], ~[e31] => p21)-->True
+                    meets_proof_standard(p21, scintilla)-->True
+                  acceptable(p21)-->True
+Current exception: {e21}
+                  Calling acceptable(e21)
+Checking whether proposition 'e21' meets proof standard 'scintilla'.
+                    Calling meets_proof_standard(e21, scintilla)
+	arguments:[] 
+                    meets_proof_standard(e21, scintilla)-->False
+                  acceptable(e21)-->False
+                applicable([p21], ~[e21] => p11)-->True
+              meets_proof_standard(p11, scintilla)-->True
+            acceptable(p11)-->True
+            Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(p12, scintilla)
+	arguments:['[p06], ~[] => p12'] 
+                Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+                applicable([p06], ~[] => p12)-->True
+              meets_proof_standard(p12, scintilla)-->True
+            acceptable(p12)-->True
+          applicable([p11, p12], ~[] => issue)-->True
+        meets_proof_standard(issue, scintilla)-->True
+      acceptable(issue)-->True
+Burden of Proof: True
+    burden_met(issue, [p06], ~[] => p12)-->True
 
   burden_met(issue, [p11, p12], ~[] => issue)-->True
 
@@ -486,13 +511,13 @@ Burden of Proof: True
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "issue"
   Calling acceptable(issue)
 Checking whether proposition 'issue' meets proof standard 'scintilla'.
@@ -500,29 +525,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
       Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-        Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-          Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-            Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-            applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-          meets_proof_standard(p12, preponderance)-->True
-        acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
         Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
           Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
             Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
               Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -530,7 +541,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                   Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                     Calling acceptable(e31)
@@ -555,6 +566,20 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
           meets_proof_standard(p11, preponderance)-->True
         acceptable(p11)-->True
+        Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+          Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+            Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+            applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+          meets_proof_standard(p12, preponderance)-->True
+        acceptable(p12)-->True
       applicable([p11, p12], ~[] => issue)-->True
     meets_proof_standard(issue, scintilla)-->True
   acceptable(issue)-->True
@@ -596,14 +621,14 @@ Added proposition 'e41' to graph with state None
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 -----------------------------------------
 Burden of proof met by RESPONDENT : ?
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "e31"
     Calling acceptable(e31)
 Checking whether proposition 'e31' meets proof standard 'scintilla'.
@@ -611,7 +636,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
         Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
           Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -637,29 +662,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
         Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-          Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-            Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-              Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-              applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-            meets_proof_standard(p12, preponderance)-->True
-          acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
           Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
             Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
               Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                 Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -667,7 +678,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                     Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                       Calling acceptable(e31)
@@ -676,7 +687,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                           Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                             Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -710,6 +721,20 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
             meets_proof_standard(p11, preponderance)-->True
           acceptable(p11)-->True
+          Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+            Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+              Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+              applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+            meets_proof_standard(p12, preponderance)-->True
+          acceptable(p12)-->True
         applicable([p11, p12], ~[] => issue)-->True
       meets_proof_standard(issue, scintilla)-->True
     acceptable(issue)-->True
@@ -724,7 +749,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
           Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
             Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -755,15 +780,15 @@ proposition "p42" state updated to "claimed"
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 -----------------------------------------
 Burden of proof met by RESPONDENT : False
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "e31"
       Calling acceptable(e31)
 Checking whether proposition 'e31' meets proof standard 'scintilla'.
@@ -771,7 +796,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
           Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
             Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -779,7 +804,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                 Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                 applicable([p43], ~[] => p42)-->True
               meets_proof_standard(p42, scintilla)-->True
@@ -802,29 +827,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
           Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-            Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-              Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-                Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-              meets_proof_standard(p12, preponderance)-->True
-            acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
             Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
               Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
                 Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                   Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -832,7 +843,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                       Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                         Calling acceptable(e31)
@@ -841,7 +852,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                             Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                               Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -849,7 +860,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                                   Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                                   applicable([p43], ~[] => p42)-->True
                                 meets_proof_standard(p42, scintilla)-->True
@@ -893,7 +904,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
             Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
               Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -901,7 +912,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                   Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                   applicable([p43], ~[] => p42)-->True
                 meets_proof_standard(p42, scintilla)-->True
@@ -925,15 +936,15 @@ Burden of Proof: True
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 -----------------------------------------
 Burden of proof met by RESPONDENT : True
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "e31"
     Calling acceptable(e31)
 Checking whether proposition 'e31' meets proof standard 'scintilla'.
@@ -941,7 +952,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
         Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
           Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -949,7 +960,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
               Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
               applicable([p43], ~[] => p42)-->True
             meets_proof_standard(p42, scintilla)-->True
@@ -972,29 +983,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
         Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-          Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-            Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-              Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-              applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-            meets_proof_standard(p12, preponderance)-->True
-          acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
           Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
             Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
               Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                 Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -1002,7 +999,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                     Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                       Calling acceptable(e31)
@@ -1011,7 +1008,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                           Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                             Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -1019,7 +1016,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                                 Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                                 applicable([p43], ~[] => p42)-->True
                               meets_proof_standard(p42, scintilla)-->True
@@ -1081,16 +1078,16 @@ Added proposition 'p60' to graph with state None
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 [p60], ~[] => e41
 -----------------------------------------
 Burden of proof met by PROPONENT : ?
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "e41"
       Calling acceptable(e41)
 Checking whether proposition 'e41' meets proof standard 'scintilla'.
@@ -1098,7 +1095,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
           Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
           applicable([p60], ~[] => e41)-->True
         meets_proof_standard(e41, scintilla)-->True
@@ -1111,29 +1108,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
           Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-            Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-              Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-                Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-              meets_proof_standard(p12, preponderance)-->True
-            acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
             Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
               Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
                 Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                   Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -1141,7 +1124,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                       Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                         Calling acceptable(e31)
@@ -1150,7 +1133,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                             Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                               Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -1158,7 +1141,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                                   Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                                   applicable([p43], ~[] => p42)-->True
                                 meets_proof_standard(p42, scintilla)-->True
@@ -1170,7 +1153,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
                                   Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
                                   applicable([p60], ~[] => e41)-->True
                                 meets_proof_standard(e41, scintilla)-->True
@@ -1194,6 +1177,20 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
               meets_proof_standard(p11, preponderance)-->True
             acceptable(p11)-->True
+            Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+              Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+                Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+                applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+              meets_proof_standard(p12, preponderance)-->True
+            acceptable(p12)-->True
           applicable([p11, p12], ~[] => issue)-->True
         meets_proof_standard(issue, scintilla)-->True
       acceptable(issue)-->True
@@ -1208,7 +1205,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
             Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
             applicable([p60], ~[] => e41)-->True
           meets_proof_standard(e41, scintilla)-->True
@@ -1220,16 +1217,16 @@ Burden of Proof: True
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 [p60], ~[] => e41
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "e41"
       Calling acceptable(e41)
 Checking whether proposition 'e41' meets proof standard 'scintilla'.
@@ -1237,7 +1234,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
           Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
           applicable([p60], ~[] => e41)-->True
         meets_proof_standard(e41, scintilla)-->True
@@ -1250,29 +1247,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
           Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-            Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-              Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-                Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-                applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-              meets_proof_standard(p12, preponderance)-->True
-            acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
             Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
               Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
                 Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
                   Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -1280,7 +1263,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                       Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                         Calling acceptable(e31)
@@ -1289,7 +1272,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                             Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                               Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -1297,7 +1280,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                                   Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                                   applicable([p43], ~[] => p42)-->True
                                 meets_proof_standard(p42, scintilla)-->True
@@ -1309,7 +1292,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
                                   Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
                                   applicable([p60], ~[] => e41)-->True
                                 meets_proof_standard(e41, scintilla)-->True
@@ -1333,6 +1316,20 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
               meets_proof_standard(p11, preponderance)-->True
             acceptable(p11)-->True
+            Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+              Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+                Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+                applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+              meets_proof_standard(p12, preponderance)-->True
+            acceptable(p12)-->True
           applicable([p11, p12], ~[] => issue)-->True
         meets_proof_standard(issue, scintilla)-->True
       acceptable(issue)-->True
@@ -1358,7 +1355,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
         Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
           Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -1366,7 +1363,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
               Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
               applicable([p43], ~[] => p42)-->True
             meets_proof_standard(p42, scintilla)-->True
@@ -1378,7 +1375,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
               Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
               applicable([p60], ~[] => e41)-->True
             meets_proof_standard(e41, scintilla)-->True
@@ -1387,7 +1384,7 @@ Current premises: {p60}
       meets_proof_standard(e31, scintilla)-->False
     acceptable(e31)-->False
 ------ "e31" IS NOT acceptable ------
-  dialogue(e31)-->None
+  dialogue(e31)-->False
 <=== issue: issue
 Evaluating issue: "issue"
   Calling acceptable(issue)
@@ -1396,29 +1393,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
       Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-        Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-          Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-            Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-            applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-          meets_proof_standard(p12, preponderance)-->True
-        acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
         Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
           Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
             Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
               Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -1426,7 +1409,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                   Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                     Calling acceptable(e31)
@@ -1435,7 +1418,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                         Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                           Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -1443,7 +1426,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                               Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                               applicable([p43], ~[] => p42)-->True
                             meets_proof_standard(p42, scintilla)-->True
@@ -1455,7 +1438,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
                               Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
                               applicable([p60], ~[] => e41)-->True
                             meets_proof_standard(e41, scintilla)-->True
@@ -1479,6 +1462,20 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
           meets_proof_standard(p11, preponderance)-->True
         acceptable(p11)-->True
+        Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+          Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+            Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+            applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+          meets_proof_standard(p12, preponderance)-->True
+        acceptable(p12)-->True
       applicable([p11, p12], ~[] => issue)-->True
     meets_proof_standard(issue, scintilla)-->True
   acceptable(issue)-->True
@@ -1488,16 +1485,16 @@ No applicable arguments in []
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 [p60], ~[] => e41
 -----------------------------------------
 Burden of proof met by RESPONDENT : NA
 -----------------------------------------
-proofstandard: [(p12, 'preponderance'), (p11, 'preponderance')]
+proofstandard: [(p11, 'preponderance'), (p12, 'preponderance')]
 Evaluating issue: "issue"
   Calling acceptable(issue)
 Checking whether proposition 'issue' meets proof standard 'scintilla'.
@@ -1505,29 +1502,15 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[p11, p12], ~[] => issue'] 
       Calling applicable([p11, p12], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p12, p11}
-        Calling acceptable(p12)
-Checking whether proposition 'p12' meets proof standard 'preponderance'.
-          Calling meets_proof_standard(p12, preponderance)
-	arguments:['[p06], ~[] => p12'] 
-            Calling applicable([p06], ~[] => p12)
-Checking applicability of arg8...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
-Current premises: {p06}
-            applicable([p06], ~[] => p12)-->True
-Checking applicability and weights of [arg8]
-Weights of [arg8] are [0.25]
-No applicable arguments in []
-          meets_proof_standard(p12, preponderance)-->True
-        acceptable(p12)-->True
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p11, p12}
         Calling acceptable(p11)
 Checking whether proposition 'p11' meets proof standard 'preponderance'.
           Calling meets_proof_standard(p11, preponderance)
 	arguments:['[p21], ~[e21] => p11'] 
             Calling applicable([p21], ~[e21] => p11)
 Checking applicability of arg1...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p21}
               Calling acceptable(p21)
 Checking whether proposition 'p21' meets proof standard 'scintilla'.
@@ -1535,7 +1518,7 @@ Checking whether proposition 'p21' meets proof standard 'scintilla'.
 	arguments:['[p31], ~[e31] => p21'] 
                   Calling applicable([p31], ~[e31] => p21)
 Checking applicability of arg2...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p31}
 Current exception: {e31}
                     Calling acceptable(e31)
@@ -1544,7 +1527,7 @@ Checking whether proposition 'e31' meets proof standard 'scintilla'.
 	arguments:['[p42], ~[e41] => e31'] 
                         Calling applicable([p42], ~[e41] => e31)
 Checking applicability of arg4...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p42}
                           Calling acceptable(p42)
 Checking whether proposition 'p42' meets proof standard 'scintilla'.
@@ -1552,7 +1535,7 @@ Checking whether proposition 'p42' meets proof standard 'scintilla'.
 	arguments:['[p43], ~[] => p42'] 
                               Calling applicable([p43], ~[] => p42)
 Checking applicability of arg5...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p43}
                               applicable([p43], ~[] => p42)-->True
                             meets_proof_standard(p42, scintilla)-->True
@@ -1564,7 +1547,7 @@ Checking whether proposition 'e41' meets proof standard 'scintilla'.
 	arguments:['[p60], ~[] => e41'] 
                               Calling applicable([p60], ~[] => e41)
 Checking applicability of arg3...
-Current assumptions: {p06, p50, p60, p31, p45, p43}
+Current assumptions: {p60, p06, p50, p43, p31, p45}
 Current premises: {p60}
                               applicable([p60], ~[] => e41)-->True
                             meets_proof_standard(e41, scintilla)-->True
@@ -1588,6 +1571,20 @@ Weights of [arg1] are [0.1]
 No applicable arguments in []
           meets_proof_standard(p11, preponderance)-->True
         acceptable(p11)-->True
+        Calling acceptable(p12)
+Checking whether proposition 'p12' meets proof standard 'preponderance'.
+          Calling meets_proof_standard(p12, preponderance)
+	arguments:['[p06], ~[] => p12'] 
+            Calling applicable([p06], ~[] => p12)
+Checking applicability of arg8...
+Current assumptions: {p60, p06, p50, p43, p31, p45}
+Current premises: {p06}
+            applicable([p06], ~[] => p12)-->True
+Checking applicability and weights of [arg8]
+Weights of [arg8] are [0.25]
+No applicable arguments in []
+          meets_proof_standard(p12, preponderance)-->True
+        acceptable(p12)-->True
       applicable([p11, p12], ~[] => issue)-->True
     meets_proof_standard(issue, scintilla)-->True
   acceptable(issue)-->True
@@ -1613,17 +1610,6 @@ Burden of proof met by PROPONENT : ?
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-		ISSUE "issue" acceptable? -> False
-============================================
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 -----------------------------------------
 Burden of proof met by PROPONENT : False
@@ -1634,9 +1620,20 @@ Burden of proof met by PROPONENT : False
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[p11, p12], ~[] => issue
+[p21], ~[e21] => p11
+[p31], ~[e31] => p21
+[p06], ~[] => p12
 -----------------------------------------
 Burden of proof met by PROPONENT : False
 -----------------------------------------
@@ -1646,9 +1643,9 @@ Burden of proof met by PROPONENT : False
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 -----------------------------------------
 Burden of proof met by PROPONENT : True
 -----------------------------------------
@@ -1658,9 +1655,9 @@ Burden of proof met by PROPONENT : True
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 -----------------------------------------
 Burden of proof met by RESPONDENT : ?
@@ -1672,9 +1669,9 @@ TOP ISSUE "issue" acceptable? -> True
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 -----------------------------------------
@@ -1687,9 +1684,9 @@ TOP ISSUE "issue" acceptable? -> False
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 -----------------------------------------
@@ -1702,9 +1699,9 @@ TOP ISSUE "issue" acceptable? -> False
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 [p60], ~[] => e41
@@ -1718,9 +1715,9 @@ TOP ISSUE "issue" acceptable? -> True
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 [p60], ~[] => e41
@@ -1734,9 +1731,9 @@ TOP ISSUE "issue" acceptable? -> True
 BURDEN OF PROOF @ RESPONDENT
 ARGUMENTS:
 [p11, p12], ~[] => issue
-[p06], ~[] => p12
 [p21], ~[e21] => p11
 [p31], ~[e31] => p21
+[p06], ~[] => p12
 [p42], ~[e41] => e31
 [p43], ~[] => p42
 [p60], ~[] => e41

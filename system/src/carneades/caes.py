@@ -298,11 +298,11 @@ class Reader(object):
             # Clearn the folders
             for the_file in os.listdir(dot_dir):
                 file_path = os.path.join(dot_dir, the_file)
-                if os.path.isfile(file_path):
+                if os.path.isfile(file_path) and the_file != 'full.dot':
                     os.unlink(file_path)
             for the_file in os.listdir(g_dir):
                 file_path = os.path.join(g_dir, the_file)
-                if os.path.isfile(file_path):
+                if os.path.isfile(file_path) and the_file != 'full.pdf':
                     os.unlink(file_path)
 
         if not dialogue:  # dialogue == False
@@ -696,6 +696,15 @@ class Dialogue(object):
                 # balance (such as in the case of a convergent argument)!
                 if len(args_pro_issue):
                     return self.dialogue(issue)
+                else:
+                    if issue == self.top_issue:
+                        g_file = self.g_filename + 'final.pdf'
+                        dot_file = self.dot_filename + 'final.dot'
+                        self.run(g_filename=g_file,
+                                 dot_filename=dot_file,
+                                 argset=self.dialogue_state_argset,
+                                 issues=issue)
+                    return False
 
     @TraceCalls()
     def burden_met(self, issue, current_argument):

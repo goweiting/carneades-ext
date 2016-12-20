@@ -1,0 +1,35 @@
+digraph G{ 
+"arg0" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
+"issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"s1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg1" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-s1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"s11" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"s12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg2" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-s12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg3" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-s11" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"s111" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg4" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-s111" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"s1111" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg5" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
+"-s1111" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"p1111" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"issue" -> "arg0" ; 
+"arg0" -> "s1" ; 
+"s1" -> "arg1" ; 
+"arg1" -> "s11" ; 
+"arg1" -> "s12" [arrowhead=dot] ; 
+"s12" -> "arg2" ; 
+"arg2" -> "p12" ; 
+"s11" -> "arg3" ; 
+"arg3" -> "s111" ; 
+"s111" -> "arg4" ; 
+"arg4" -> "s1111" ; 
+"s1111" -> "arg5" ; 
+"arg5" -> "p1111" ; 
+}
