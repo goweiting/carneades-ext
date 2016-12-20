@@ -23,10 +23,10 @@ Added proposition 'premise2' to graph with state None
 	Adding proofstandard to CAES
 	Adding issues to CAES
 	alpha:0.4, beta:0.3, gamme:0.3
-	propliterals: {'p2': premise2, 'i': issue, 's2': support 2, 's1': support 1, 'p1': premise1} 
-	arguments:['[support 2], ~[] => issue', '[premise1], ~[] => support 1', '[premise2], ~[] => support 2', '[support 1], ~[] => issue'] 
-	weights : {arg2: 0.5, arg4: 0.2, arg5: 0.2, arg1: 0.5}
-	assumptions: {premise2, premise1} 
+	propliterals: {'s1': support 1, 'p2': premise2, 'i': issue, 's2': support 2, 'p1': premise1} 
+	arguments:['[premise1], ~[] => support 1', '[premise2], ~[] => support 2', '[support 2], ~[] => issue', '[support 1], ~[] => issue'] 
+	weights : {arg4: 0.2, arg5: 0.2, arg2: 0.5, arg1: 0.5}
+	assumptions: {premise1, premise2} 
 	issues: {issue} 
 	proofstandard: []
 Dialogue Mode: On
@@ -54,7 +54,7 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 2], ~[] => issue'] 
       Calling applicable([support 2], ~[] => issue)
 Checking applicability of arg2...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {support 2}
         Calling acceptable(support 2)
 Checking whether proposition 'support 2' meets proof standard 'scintilla'.
@@ -76,7 +76,7 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 2], ~[] => issue'] 
         Calling applicable([support 2], ~[] => issue)
 Checking applicability of arg2...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {support 2}
           Calling acceptable(support 2)
 Checking whether proposition 'support 2' meets proof standard 'scintilla'.
@@ -112,7 +112,7 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 2], ~[] => issue'] 
         Calling applicable([support 2], ~[] => issue)
 Checking applicability of arg2...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {support 2}
           Calling acceptable(support 2)
 Checking whether proposition 'support 2' meets proof standard 'scintilla'.
@@ -120,7 +120,7 @@ Checking whether proposition 'support 2' meets proof standard 'scintilla'.
 	arguments:['[premise2], ~[] => support 2'] 
               Calling applicable([premise2], ~[] => support 2)
 Checking applicability of arg5...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {premise2}
               applicable([premise2], ~[] => support 2)-->True
             meets_proof_standard(support 2, scintilla)-->True
@@ -139,7 +139,7 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 2], ~[] => issue'] 
           Calling applicable([support 2], ~[] => issue)
 Checking applicability of arg2...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {support 2}
             Calling acceptable(support 2)
 Checking whether proposition 'support 2' meets proof standard 'scintilla'.
@@ -147,7 +147,7 @@ Checking whether proposition 'support 2' meets proof standard 'scintilla'.
 	arguments:['[premise2], ~[] => support 2'] 
                 Calling applicable([premise2], ~[] => support 2)
 Checking applicability of arg5...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {premise2}
                 applicable([premise2], ~[] => support 2)-->True
               meets_proof_standard(support 2, scintilla)-->True
@@ -176,7 +176,7 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 2], ~[] => issue'] 
       Calling applicable([support 2], ~[] => issue)
 Checking applicability of arg2...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {support 2}
         Calling acceptable(support 2)
 Checking whether proposition 'support 2' meets proof standard 'scintilla'.
@@ -184,7 +184,7 @@ Checking whether proposition 'support 2' meets proof standard 'scintilla'.
 	arguments:['[premise2], ~[] => support 2'] 
             Calling applicable([premise2], ~[] => support 2)
 Checking applicability of arg5...
-Current assumptions: {premise2, premise1}
+Current assumptions: {premise1, premise2}
 Current premises: {premise2}
             applicable([premise2], ~[] => support 2)-->True
           meets_proof_standard(support 2, scintilla)-->True
@@ -196,19 +196,26 @@ Current premises: {premise2}
 ============================================
 
 turn_num 1
-USING ALGORITHM 2 TO FIND ARGUMENTS
-  Calling defeat_issue(issue)
-find arguments to defeat issue "issue"
+USING ALGORITHM 1 TO FIND ARGUMENTS
+  Calling find_args_to_exceptions(issue)
+find_args_to_exceptions in "issue"
 arg: [support 2], ~[] => issue
 exceptions []
-arg_cons []
 args_to_consider: ['[premise2], ~[] => support 2']
 arg: [premise2], ~[] => support 2
 exceptions []
+args_to_consider: []
+  find_args_to_exceptions(issue)-->False
+No arguments found to satisfy exceptions in issue "issue"
+  Calling find_best_con_argument(issue)
+find_best_con_argument for "issue"
+arg: [support 2], ~[] => issue
+arg_cons []
+args_to_consider: ['[premise2], ~[] => support 2']
+arg: [premise2], ~[] => support 2
 arg_cons []
 args_to_consider: []
-No arguments found to attack the issue issue
-  defeat_issue(issue)-->False
+  find_best_con_argument(issue)-->False
 dialogue(issue)-->True
 
 

@@ -1,0 +1,10 @@
+digraph G{ 
+"arg1" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
+"issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"premise1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"premise2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"issue" -> "arg1" ; 
+"arg1" -> "premise1" ; 
+"arg1" -> "premise2" ; 
+}

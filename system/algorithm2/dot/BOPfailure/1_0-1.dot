@@ -1,0 +1,15 @@
+digraph G{ 
+"arg1" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
+"issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"premise1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"premise2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg4" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-premise2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"evidence 2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"issue" -> "arg1" ; 
+"arg1" -> "premise1" ; 
+"arg1" -> "premise2" ; 
+"premise2" -> "arg4" ; 
+"arg4" -> "evidence 2" ; 
+}

@@ -491,6 +491,7 @@ class Dialogue(object):
         self.dot_filename = dot_filename
         self.g_filename = g_filename
         self.run = run  # function for evaluation
+        self.alg_con_argument = 2 # either 1 or 2
 
     def initialise_dialogue(self):
         # -----------------------------------------------------------------
@@ -603,64 +604,63 @@ class Dialogue(object):
             self.turn_num += 1
             logging.debug('turn_num {}'.format(self.turn_num))
 
-            # # =========================================================
-            # # Experiment for finding arguments to defeat the issue:
-            # # =========================================================
-            # # Algorithm 1:
-            # # try to deafeat argument using exceptions first
-            # # Then find con arguments
-            # # =========================================================
-            # logging.debug('USING ALGORITHM 1 TO FIND ARGUMENTS')
-            # # First we check if the opponent can satisfy the exception:
-            # try:
-            #     arg_for_exception = self.find_args_to_exceptions(issue)
-            #     # since we found an argument to support the issue,
-            #     # call dialogue on the issue
-            #     result = self.dialogue(arg_for_exception.conclusion)
-            #
-            # except AttributeError:
-            #     # occurs when no exceptions found
-            #     logging.debug(
-            #         'No arguments found to satisfy exceptions in issue "{}"'.
-            #         format(issue))
-            #
-            #     # Next, try luck at con arguments!
-            #     try:
-            #         if issue != self.top_issue:
-            #             # dont use arguments con issue that we are trying to
-            #             # prove!
-            #             arg_con_issue = self.find_best_con_argument(issue)
-            #             result = self.dialogue(arg_con_issue.conclusion)
-            #         else:
-            #             # do something!
-            #             pass
-            #
-            #     except AttributeError:
-            #         # occurs when no con argument found
-            #         logging.debug(
-            #             'No arguments found to attack the issue "{}"'.format(
-            #                 issue))
-            #         return True  # defeated
-            # # =========================================================
-            # Algorithm 2:
-            # Simultaneously finding argument to prove the exceptions or con
-            # arguments to challenge pro arguments
-            # This results in the ability to attack the heaviest weighted
-            # arguments first
-            logging.debug('USING ALGORITHM 2 TO FIND ARGUMENTS')
-            # # =========================================================
-            try:
-                arg_found = self.defeat_issue(issue)
-                sub_issue = arg_found.conclusion
-                logging.info('===> sub-issue: {}'.format(sub_issue))
-                result = self.dialogue(sub_issue)
+            # The algorithm is set in the class
+            if self.alg_con_argument == 1:
+                # =========================================================
+                # Experiment for finding arguments to defeat the issue:
+                # =========================================================
+                # Algorithm 1:
+                # try to deafeat argument using exceptions first
+                # Then find con arguments
+                # =========================================================
+                logging.debug('USING ALGORITHM 1 TO FIND ARGUMENTS')
+                # First we check if the opponent can satisfy the exception:
+                try:
+                    arg_for_exception = self.find_args_to_exceptions(issue)
+                    # since we found an argument to support the issue,
+                    # call dialogue on the issue
+                    result = self.dialogue(arg_for_exception.conclusion)
 
-            except AttributeError:
-                # No con arguments to arguments leading to prove the exceptions
-                # found; hence the BOP is NA:
-                self.burden_status = 'NA'
-                return True
-            # # =========================================================
+                except AttributeError:
+                    # occurs when no exceptions found
+                    logging.debug(
+                        'No arguments found to satisfy exceptions in issue "{}"'.
+                        format(issue))
+
+                    # Next, try luck at con arguments!
+                    try:
+                        # dont use arguments con issue that we are trying to
+                        # prove!
+                        arg_con_issue = self.find_best_con_argument(issue)
+                        result = self.dialogue(arg_con_issue.conclusion)
+
+                    except AttributeError:
+                        # occurs when no con argument found
+                        self.burden_status = 'NA'
+                        return True  # defeated
+
+            elif self.alg_con_argument == 2:
+                # =========================================================
+                # Algorithm 2:
+                # Simultaneously finding argument to prove the exceptions or con
+                # arguments to challenge pro arguments
+                # This results in the ability to attack the heaviest weighted
+                # arguments first
+                # =========================================================
+                logging.debug('USING ALGORITHM 2 TO FIND ARGUMENTS')
+                # =========================================================
+                try:
+                    arg_found = self.defeat_issue(issue)
+                    sub_issue = arg_found.conclusion
+                    logging.info('===> sub-issue: {}'.format(sub_issue))
+                    result = self.dialogue(sub_issue)
+
+                except AttributeError:
+                    # No con arguments to arguments leading to prove the
+                    # exceptions found; hence the BOP is NA:
+                    self.burden_status = 'NA'
+                    return True
+            # =========================================================
 
             # Return to the proponent of the issue:
         logging.info('<=== issue: {}'.format(issue))
@@ -877,6 +877,8 @@ class Dialogue(object):
                 # set the conclusion to questioned!
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg.conclusion, state='questioned')
+                self.dialogue_state_argset.set_argument_status(
+                    concl=arg_con_issue.conclusion, state='claimed')
                 logging.debug('Found a con argument')
                 return arg_con_issue
 
@@ -944,11 +946,6 @@ class Dialogue(object):
             try:
                 possb_arg1 = args_for_exceptions.pop()
                 possb_arg.append((possb_arg1, arg))
-                # set the exception to questioned
-                # self.dialogue_state_argset.set_argument_status(
-                #     concl=arg_con.conclusion, state='questioned')
-                # logging.debug('Found an argument to prove the exception')
-                # return arg_con
             except IndexError:
                 # an empty list
                 pass
@@ -973,11 +970,6 @@ class Dialogue(object):
                     check = self.dialogue_state_argset.get_arguments(
                         possb_arg2.conclusion)
 
-                # set the conclusion to questioned!
-                # self.dialogue_state_argset.set_argument_status(
-                #     concl=arg.conclusion, state='questioned')
-                # logging.debug('Found a con argument')
-                # return arg_con
                 possb_arg.append((possb_arg2, arg))
             except IndexError:
                 pass
@@ -1010,7 +1002,7 @@ class Dialogue(object):
             logging.info('Attacking {} using a con argument: {}'.format(
                 arg, best_con))
             self.dialogue_state_argset.set_argument_status(
-                concl=best_con.conclusion, state='questioned')
+                concl=best_con.conclusion, state='claimed')
             self.dialogue_state_argset.set_argument_status(
                 concl=arg.conclusion, state='questioned')
             return best_con
@@ -1020,44 +1012,6 @@ class Dialogue(object):
             self.dialogue_state_argset.set_argument_status(
                 concl=best_con.conclusion, state='questioned')
             return best_con
-
-    @TraceCalls()
-    def find_best_pro_argument(self, issue):
-        """
-        The proponent tries to find the arguments to support her stand; or find one to attack the opponent! This can be done in two ways:
-
-        1) check if she can do anything to the exceptions for all the arguments
-        that are being questioned - i.e. using the :func find_best_con_argument to find arguments to attack these exceptions
-
-        2)
-        """
-        logging.debug('find_best_pro_argument for "{}"'.format(issue))
-        arg_questioned = self.dialogue_state_argset.get_arguments_status(
-            'questioned')[0]
-        if arg_questioned != issue:
-            # the repondent put forward a con argument:
-            try:
-                (arg_con, arg_attacked) = self.find_best_con_argument(issue)
-                # reset the claim status
-                self.dialogue_state_argset.set_argument_status(
-                    concl=arg_questioned.conclusion, state='claimed')
-                return (arg_con, arg_attacked)
-
-            except TypeError:
-                # no con argument found
-                pass
-        else:
-            # an exception is raised previously
-            # Try to defeat the exception and make it false
-            try:
-                (arg_con, arg_attacked) = self.find_best_con_argument(issue)
-                return (arg_con, attacked)
-            except TypeError:
-                pass
-
-        logging.debug('No exceptions or con arguments found for issue "{}"'.
-                      format(issue))
-        return False
 
     def dialogue_log(self, issue, draw=1):
         """
@@ -1150,7 +1104,6 @@ class Dialogue(object):
             self.dialogue_state_argset.write_to_graphviz(dot_file)
         logging.info('============================================\n')
         self.summary += '\n============================================\n'
-        return
 
 
 # ========================================================================

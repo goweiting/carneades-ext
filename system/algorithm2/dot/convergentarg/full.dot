@@ -1,0 +1,22 @@
+digraph G{ 
+"arg1" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
+"issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"support 1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg2" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
+"support 2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg4" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-support 1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"premise1" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg5" [color="black", fillcolor="coral",fixedsize=false, shape=box, style="filled"]; 
+"-support 2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"premise2" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"issue" -> "arg1" ; 
+"arg1" -> "support 1" ; 
+"issue" -> "arg2" ; 
+"arg2" -> "support 2" ; 
+"support 1" -> "arg4" ; 
+"arg4" -> "premise1" ; 
+"support 2" -> "arg5" ; 
+"arg5" -> "premise2" ; 
+}
