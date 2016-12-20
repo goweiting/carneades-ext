@@ -42,7 +42,7 @@ ARGUMENT:
     premise: [p60]
     exception: []
     conclusion: e41
-    weight: 0.4
+    weight: 0.1
 
   arg4:
     premise: [p42]

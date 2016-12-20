@@ -297,14 +297,13 @@ class Reader(object):
         else:
             # Clearn the folders
             for the_file in os.listdir(dot_dir):
-                    file_path = os.path.join(dot_dir, the_file)
-                    if os.path.isfile(file_path):
-                        os.unlink(file_path)
+                file_path = os.path.join(dot_dir, the_file)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
             for the_file in os.listdir(g_dir):
-                    file_path = os.path.join(g_dir, the_file)
-                    if os.path.isfile(file_path):
-                        os.unlink(file_path)
-
+                file_path = os.path.join(g_dir, the_file)
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
 
         if not dialogue:  # dialogue == False
             # define the filename for write_to_graphviz
@@ -555,16 +554,10 @@ class Dialogue(object):
                 # If the argument cannot be reached as there is nothing to argue
                 # about, then we will just evaluate it according to the full
                 # argumentaion set available.
-                g_file = self.g_filename + 'final.pdf'
-                dot_file = self.dot_filename + 'final.dot'
                 logging.info(
                     'ISSUE "{}" cannot be evaluated because there are insufficient arguments to form an argumentation graph'.
                     format(issue))
-                logging.info('Evaluating on the full argumentation set')
-                self.run(issues=issue,
-                         g_filename=g_file,
-                         dot_filename=dot_file)
-                return
+                return False
 
             else:
                 # all arguments pro the issue has been exhausted
@@ -658,32 +651,38 @@ class Dialogue(object):
             # # =========================================================
             try:
                 arg_found = self.defeat_issue(issue)
-                result = self.dialogue(arg_found.conclusion)
+                sub_issue = arg_found.conclusion
+                logging.info('===> sub-issue: {}'.format(sub_issue))
+                result = self.dialogue(sub_issue)
+
             except AttributeError:
                 # No con arguments to arguments leading to prove the exceptions
                 # found; hence the BOP is NA:
-                logging.debug('No arguments found to attack the issue "{}"'.
-                              format(issue))
                 self.burden_status = 'NA'
                 return True
             # # =========================================================
 
-        if result:
-            # -----------------------------------------------------
-            # no argument pro the issue is found,
-            # OR no more arguments to attack the issue
-            # Do acceptability test using the the PS defined by user:
-            # If the issue is acceptable, we are done here, otherwise,
-            # find if there are other arguments that can pro the issue
-            # -----------------------------------------------------
-            logging.info('Checking acceptability of issue \'{}\''.format(issue))
+            # Return to the proponent of the issue:
+        logging.info('<=== issue: {}'.format(issue))
+        if not result:
+            # Burden of proof not met for sub issues:
+            if issue == self.top_issue:
+                g_file = self.g_filename + 'final.pdf'
+                dot_file = self.dot_filename + 'final.dot'
+                self.run(g_filename=g_file,
+                         dot_filename=dot_file,
+                         argset=self.dialogue_state_argset,
+                         issues=issue)
+                self.dialogue_log(issue)
+            return False
+
+        else:
             acceptability = self.run(argset=self.dialogue_state_argset,
                                      issues=issue)
             if acceptability:
-                logging.debug('Current actor: {}'.format(self.actors[
-                    self.turn_num % 2]))
-
-                if self.burden_status == 'NA' and issue == self.top_issue and not self.turn_num % 2:
+                # proponent of issue still wins; we are happy and we shall end!
+                logging.info('proponent wins~')
+                if issue == self.top_issue:
                     g_file = self.g_filename + 'final.pdf'
                     dot_file = self.dot_filename + 'final.dot'
                     self.run(g_filename=g_file,
@@ -691,27 +690,12 @@ class Dialogue(object):
                              argset=self.dialogue_state_argset,
                              issues=issue)
                     self.dialogue_log(issue)
-                    return True  # will end the dialogue for the top issue!
-                else:
-                    return False # the opponent is deafeated
+                return True
             else:
-                # This means that the burden of proof have shifted, but it is
-                # not sufficient for the issue to be acceptable!
-                logging.info('{} still have to find more loopholes to attack!'.
-                             format(self.actors[self.turn_num % 2]))
+                # If there are still arguments that we can use to tilt the
+                # balance (such as in the case of a convergent argument)!
                 if len(args_pro_issue):
-                    # If there are other arguments that can help with the issue,
-                    # add them in:
-                    logging.info('Additional argument pro issue \'{}\' found'.
-                                 format(issue))
-                    self.dialogue(issue)
-
-                # else:
-        else:
-            # The burden of proof is NOT met, backtrack to the previous
-            logging.info(
-                'BOP not met, finding alternate arguments to prove the issue')
-            return False # deafated
+                    return self.dialogue(issue)
 
     @TraceCalls()
     def burden_met(self, issue, current_argument):
@@ -916,13 +900,17 @@ class Dialogue(object):
 
         In other words, this function tries to attack the most heavy weighted
         pro argument first by proving exception or con argument.
+        When proving the exception, the argument put forth is the best - in
+        terms of weight
+        And for con arguments, the function is the heaviest weight as well.
+        If two are found, we use the argument with the highest weight
         """
         logging.debug('find arguments to defeat issue "{}"'.format(issue))
         args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
         # Consider the args with largest weight first:
         args_to_consider = sorted(
             args_to_consider_, key=lambda arg: arg.weight)
-
+        possb_arg = []
         while len(args_to_consider):
             # iterate through the args
             arg = args_to_consider.pop()
@@ -945,14 +933,13 @@ class Dialogue(object):
                 [arg.__str__() for arg in args_for_exceptions_]))
 
             try:
-                arg_con = args_for_exceptions.pop()
-                print(arg_con)
+                possb_arg1 = args_for_exceptions.pop()
+                possb_arg.append((possb_arg1, arg))
                 # set the exception to questioned
-                self.dialogue_state_argset.set_argument_status(
-                    concl=arg_con.conclusion, state='questioned')
-                logging.debug('Found an argument to prove the exception')
-                return arg_con
-
+                # self.dialogue_state_argset.set_argument_status(
+                #     concl=arg_con.conclusion, state='questioned')
+                # logging.debug('Found an argument to prove the exception')
+                # return arg_con
             except IndexError:
                 # an empty list
                 pass
@@ -965,22 +952,24 @@ class Dialogue(object):
                 [arg.__str__() for arg in arg_cons]))
 
             try:
-                arg_con = arg_cons.pop()
+                possb_arg2 = arg_cons.pop()
                 # prevent the same argument that is already in the argset from
                 # being added in
                 check = self.dialogue_state_argset.get_arguments(
-                    arg_con.conclusion)
-                if len(check) != 0:
+                    possb_arg2.conclusion)
+                while len(check) != 0:
                     logging.debug('argument "{}" has already been added!'.
-                                  format(arg_con))
-                    continue
+                                  format(possb_arg2))
+                    possb_arg2 = arg_cons.pop()
+                    check = self.dialogue_state_argset.get_arguments(
+                        possb_arg2.conclusion)
 
                 # set the conclusion to questioned!
-                self.dialogue_state_argset.set_argument_status(
-                    concl=arg.conclusion, state='questioned')
-                logging.debug('Found a con argument')
-                return arg_con
-
+                # self.dialogue_state_argset.set_argument_status(
+                #     concl=arg.conclusion, state='questioned')
+                # logging.debug('Found a con argument')
+                # return arg_con
+                possb_arg.append((possb_arg2, arg))
             except IndexError:
                 pass
 
@@ -998,9 +987,30 @@ class Dialogue(object):
                 [arg.__str__() for arg in args_to_consider]))
             continue
 
-        logging.debug('No exceptions or con arguments found for issue "{}"'.
-                      format(issue))
-        return False
+        # now, choose the argument with the largest weight
+        posb_args = sorted(possb_arg, key=lambda x: x[0].weight)
+
+        try:
+            best_con, arg = possb_arg.pop()
+        except IndexError:
+            logging.info('No arguments found to attack the issue {}'.format(
+                issue))
+            return False
+
+        if best_con.conclusion == arg.conclusion.negate():
+            logging.info('Attacking {} using a con argument: {}'.format(
+                arg, best_con))
+            self.dialogue_state_argset.set_argument_status(
+                concl=best_con.conclusion, state='questioned')
+            self.dialogue_state_argset.set_argument_status(
+                concl=arg.conclusion, state='questioned')
+            return best_con
+        else:
+            logging.info('Attacking the exception of {} using {}'.format(
+                arg, best_con))
+            self.dialogue_state_argset.set_argument_status(
+                concl=best_con.conclusion, state='questioned')
+            return best_con
 
     @TraceCalls()
     def find_best_pro_argument(self, issue):
@@ -1465,7 +1475,8 @@ class ArgumentSet(object):
             args = []
             for v in vs.indices:
                 arg_id = self.graph.vs[v]['arg']
-                args.extend([arg for arg in self.arguments if arg.arg_id == arg_id ])
+                args.extend(
+                    [arg for arg in self.arguments if arg.arg_id == arg_id])
             return args
 
     def set_argument_status(self, concl, state):
@@ -1517,17 +1528,27 @@ class ArgumentSet(object):
         # plot_style['vertex_color'] = \
         #     ['lightblue' if x is None else 'pink' for x in g.vs['arg']]
         counter = 0
-        for x in g.vs['arg']:
+        for i, x in enumerate(g.vs['arg']):
             if x is None:  # if it is an arguments
-                plot_style['vertex_color'].append('lightblue')
+                # By argument status = 'claimed' or 'questioned':
+                status = g.vs[i]['state']
+                if status == 'claimed':
+                    plot_style['vertex_color'].append('lightblue')
+                elif status == 'questioned':
+                    plot_style['vertex_color'].append('purple')
+                else:
+                    plot_style['vertex_color'].append('gray')
             else:
                 # darker red = larger weight
                 how_red = [1, 1 - self.arguments[counter].weight, 0.5]
+                # By argument status = 'claimed' or 'questioned':
                 plot_style['vertex_color'].append(how_red)
+                by = g.vs[i]['claimer']
                 counter += 1
+
         plot_style['vertex_shape'] = \
-            ['circular' if x is None else 'rect' for x in g.vs['arg']]
-        plot_style['vertex_size'] = 30
+            ['circular' if g.vs[x]['arg'] is None else 'diamond' if g.vs[x]['claimer'] == 'PROPONENT' else 'rect' for x in g.vs.indices]
+        plot_style['vertex_size'] = 25
         # use thicker lines if the node is an exception of the argument
         plot_style["edge_width"] = [
             1 + 2 * int(is_exception) for is_exception in g.es["is_exception"]
@@ -1538,7 +1559,7 @@ class ArgumentSet(object):
         # plot_style['vertex_label_size'] = 20
         # General plot
         plot_style['margin'] = (100, 100, 100, 100)  # pixels of border
-        plot_style['bbox'] = (1400, 600)  # change the size of the image
+        plot_style['bbox'] = (1000, 600)  # change the size of the image
         plot_style['layout'] = layout
         # execute the plot
         plot(g, g_filename, autocurve=True, **plot_style)
