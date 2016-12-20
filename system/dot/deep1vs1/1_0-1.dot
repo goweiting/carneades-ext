@@ -4,14 +4,12 @@ digraph G{
 "-issue" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p11" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"arg1" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
-"-p11" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"p21" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
-"e21" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"arg8" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
+"-p12" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"p06" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
 "issue" -> "arg0" ; 
 "arg0" -> "p11" ; 
 "arg0" -> "p12" ; 
-"p11" -> "arg1" ; 
-"arg1" -> "p21" ; 
-"arg1" -> "e21" [arrowhead=dot] ; 
+"p12" -> "arg8" ; 
+"arg8" -> "p06" ; 
 }

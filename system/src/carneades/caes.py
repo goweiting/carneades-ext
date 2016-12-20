@@ -183,8 +183,12 @@ class Reader(object):
 
             premise = set(arg_id.find_child('premise').children)
             exception = set(arg_id.find_child('exception').children)
-            conclusion = arg_id.find_child('conclusion').children[0].data
-            weight = float(arg_id.find_child('weight').children[0].data)
+            try:
+                conclusion = arg_id.find_child('conclusion').children[0].data
+                weight = float(arg_id.find_child('weight').children[0].data)
+            except AttributeError:
+                raise ReaderError('Missing values in arg_id: \'{}\''.format(
+                    arg_id))
 
             # check the weight
             if weight < 0 or weight > 1:
@@ -289,8 +293,18 @@ class Reader(object):
 
         if not os.path.exists(dot_dir):
             os.makedirs(dot_dir)
-        if not os.path.exists(g_dir):
             os.makedirs(g_dir)
+        else:
+            # Clearn the folders
+            for the_file in os.listdir(dot_dir):
+                    file_path = os.path.join(dot_dir, the_file)
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
+            for the_file in os.listdir(g_dir):
+                    file_path = os.path.join(g_dir, the_file)
+                    if os.path.isfile(file_path):
+                        os.unlink(file_path)
+
 
         if not dialogue:  # dialogue == False
             # define the filename for write_to_graphviz
@@ -555,7 +569,7 @@ class Dialogue(object):
             else:
                 # all arguments pro the issue has been exhausted
                 logging.debug(
-                    'All pro argument for issue "{}" exhausted'.fromat(issue))
+                    'All pro argument for issue "{}" exhausted'.format(issue))
                 # return True so that we know that we should terminate this
                 # branch
                 return True
@@ -596,15 +610,15 @@ class Dialogue(object):
             self.turn_num += 1
             logging.debug('turn_num {}'.format(self.turn_num))
 
-            # =========================================================
-            # Experiment for finding arguments to defeat the issue:
-            # =========================================================
-            # Algorithm 1:
-            # try to deafeat argument using exceptions first
-            # Then find con arguments
-            # =========================================================
+            # # =========================================================
+            # # Experiment for finding arguments to defeat the issue:
+            # # =========================================================
+            # # Algorithm 1:
+            # # try to deafeat argument using exceptions first
+            # # Then find con arguments
+            # # =========================================================
             # logging.debug('USING ALGORITHM 1 TO FIND ARGUMENTS')
-            # First we check if the opponent can satisfy the exception:
+            # # First we check if the opponent can satisfy the exception:
             # try:
             #     arg_for_exception = self.find_args_to_exceptions(issue)
             #     # since we found an argument to support the issue,
@@ -634,25 +648,26 @@ class Dialogue(object):
             #             'No arguments found to attack the issue "{}"'.format(
             #                 issue))
             #         return True  # defeated
-            # =========================================================
+            # # =========================================================
             # Algorithm 2:
             # Simultaneously finding argument to prove the exceptions or con
             # arguments to challenge pro arguments
             # This results in the ability to attack the heaviest weighted
             # arguments first
             logging.debug('USING ALGORITHM 2 TO FIND ARGUMENTS')
-            # =========================================================
+            # # =========================================================
             try:
                 arg_found = self.defeat_issue(issue)
                 result = self.dialogue(arg_found.conclusion)
             except AttributeError:
                 # No con arguments to arguments leading to prove the exceptions
-                # found
-                # Then the RESPONDENT is done here
+                # found; hence the BOP is NA:
+                logging.debug('No arguments found to attack the issue "{}"'.
+                              format(issue))
+                self.burden_status = 'NA'
                 return True
-            # =========================================================
+            # # =========================================================
 
-            # --------------------------------------------------------------------
         if result:
             # -----------------------------------------------------
             # no argument pro the issue is found,
@@ -661,49 +676,42 @@ class Dialogue(object):
             # If the issue is acceptable, we are done here, otherwise,
             # find if there are other arguments that can pro the issue
             # -----------------------------------------------------
-            logging.info(
-                'No more pro arguments nor con arguments. Current issue: {}'.
-                format(issue))
-
-            if issue == self.top_issue:
-                g_file = self.g_filename + 'final.pdf'
-                dot_file = self.dot_filename + 'final.dot'
-                self.run(g_filename=g_file,
-                         dot_filename=dot_file,
-                         argset=self.dialogue_state_argset,
-                         issues=issue)
-                return True
-
+            logging.info('Checking acceptability of issue \'{}\''.format(issue))
             acceptability = self.run(argset=self.dialogue_state_argset,
                                      issues=issue)
+            if acceptability:
+                logging.debug('Current actor: {}'.format(self.actors[
+                    self.turn_num % 2]))
 
-            while not acceptability:
-                logging.info(
-                    'Not sustainable, finding other avenues to support the issue'
-                )
-                if len(args_pro):
+                if self.burden_status == 'NA' and issue == self.top_issue and not self.turn_num % 2:
+                    g_file = self.g_filename + 'final.pdf'
+                    dot_file = self.dot_filename + 'final.dot'
+                    self.run(g_filename=g_file,
+                             dot_filename=dot_file,
+                             argset=self.dialogue_state_argset,
+                             issues=issue)
+                    self.dialogue_log(issue)
+                    return True  # will end the dialogue for the top issue!
+                else:
+                    return False # the opponent is deafeated
+            else:
+                # This means that the burden of proof have shifted, but it is
+                # not sufficient for the issue to be acceptable!
+                logging.info('{} still have to find more loopholes to attack!'.
+                             format(self.actors[self.turn_num % 2]))
+                if len(args_pro_issue):
                     # If there are other arguments that can help with the issue,
                     # add them in:
+                    logging.info('Additional argument pro issue \'{}\' found'.
+                                 format(issue))
                     self.dialogue(issue)
-                    acceptability = self.run(argset=self.dialogue_state_argset,
-                                             issues=issue)
-                else:
-                    logging.info('No more arguments pro issue {}'.format(issue))
-                    break
 
+                # else:
         else:
             # The burden of proof is NOT met, backtrack to the previous
-            logging.info('BOP not met, finding alternate arguments to prove the issue')
-            if len(args_pro):
-                # If there are other arguments that can help with the issue,
-                # add them in:
-                self.dialogue(issue)
-                acceptability = self.run(argset=self.dialogue_state_argset,
-                                         issues=issue)
-            else:
-                logging.info('No more arguments pro issue {}'.format(issue))
-                return False
-
+            logging.info(
+                'BOP not met, finding alternate arguments to prove the issue')
+            return False # deafated
 
     @TraceCalls()
     def burden_met(self, issue, current_argument):
@@ -1334,11 +1342,10 @@ class ArgumentSet(object):
             raise ValueError('"{}" is already in the argument set'.format(
                 argument))
         self.arguments.append(argument)  # store a list of arguments
+        self.arg_count += 1  # keep track of the number of arguments
         # -----------------------------------------------------------
         #   VERTICES
         # -----------------------------------------------------------
-        if state is not None:
-            assert state == 'claimed' or state == 'questioned'
         # add the arg_id as a vertex attribute, recovered via the 'arg' key
         self.graph.add_vertex(arg=argument.arg_id, claimer=claimer)
         logging.info('Added argument \'{}\' to graph by \'{}\''.format(
@@ -1347,6 +1354,8 @@ class ArgumentSet(object):
         arg_v = g.vs.select(arg=argument.arg_id)[0]
         # add proposition vertices to the graph
         # conclusion:
+        if state is not None:
+            assert state == 'claimed' or state == 'questioned'
         conclusion_v = self.add_proposition(argument.conclusion, state=state)
         # automatically add the negated state for conclusion
         self.add_proposition(argument.conclusion.negate())
@@ -1443,6 +1452,21 @@ class ArgumentSet(object):
         logging.debug('found args with status "{}": {}'.format(
             status, [str(arg) for arg in args]))
         return args
+
+    def get_arguments_claimer(self, claimer):
+        """
+        Get arguments made by the claimer - either 'PROPONENT' or 'RESPONDENT'
+        """
+        if str(claimer) != 'PROPONENT' and str(claimer) != 'RESPONDENT':
+            raise ValueError('{} is not a valid claimer'.format(claimer))
+        else:
+            # this is an verticeset of argument ID
+            vs = self.graph.vs.select(claimer=claimer)
+            args = []
+            for v in vs.indices:
+                arg_id = self.graph.vs[v]['arg']
+                args.extend([arg for arg in self.arguments if arg.arg_id == arg_id ])
+            return args
 
     def set_argument_status(self, concl, state):
         """
@@ -2006,7 +2030,7 @@ if __name__ == '__main__':
                 logger = logging.getLogger()
                 logger.removeHandler(logger.handlers[0])
 
-        else:  # Support if user gives a directory instead of a list of filename
+        else:
             if os.path.isfile(file_check):
                 logger_file = '../../log/{}.log'.format(
                     file_check.split('/')[-1][:-4])

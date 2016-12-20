@@ -1,0 +1,43 @@
+# Toy example to illistrate:
+# The failure to satisfy the burden of proof will lead to early termination
+# In this example, the proponent fails to sufficiently supports her issue
+# (as the audience did not "assume" her evidence)
+
+PROPOSITION:
+  i: issue
+  ev1: evidence 1
+  ev2: evidence 2
+  p1: premise1
+  p2: premise2
+
+ASSUMPTION: [ev1]
+
+ARGUMENT:
+
+  arg1: # linked argument
+    premise: [p1, p2]
+    exception: []
+    conclusion: i
+    weight: 0.5
+
+  arg2:
+    premise: [ev1]
+    exception: []
+    conclusion: p1
+    weight: 0.5
+
+  arg4:
+    premise: [ev2]
+    exception: []
+    conclusion: p2
+    weight: 0.2
+
+
+ISSUE: [i]
+
+PROOFSTANDARD: []
+
+PARAMETER:
+  alpha: 0.4
+  beta: 0.3
+  gamma: 0.3

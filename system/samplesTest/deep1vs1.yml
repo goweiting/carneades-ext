@@ -7,16 +7,17 @@ PROPOSITION:
   e21: e21
   p31: p31
   e31: e31
-  p41: p41
-  e41: e41
   p42: p42
   e41: e41
   p43: p43
   p44: p44
   p45: p45
   p06: p06
+  p55: p55
+  p50: p50
+  p60: p60
 
-ASSUMPTION: [p41, p43, p45, p06]
+ASSUMPTION: [p31, p43, p45, p06, p50, p60]
 
 ARGUMENT:
   arg0:
@@ -29,7 +30,7 @@ ARGUMENT:
     premise: [p21]
     exception: [e21]
     conclusion: p11
-    weight: 0.22
+    weight: 0.1
 
   arg2:
     premise: [p31]
@@ -38,14 +39,14 @@ ARGUMENT:
     weight: 0.22
 
   arg3:
-    premise: [p41]
-    exception: [e41]
-    conclusion: p31
-    weight: 0.23
+    premise: [p60]
+    exception: []
+    conclusion: e41
+    weight: 0.4
 
   arg4:
     premise: [p42]
-    exception: []
+    exception: [e41]
     conclusion: e31
     weight: 0.1
 
@@ -57,7 +58,7 @@ ARGUMENT:
 
   arg6:
     premise: [p44]
-    exception: []
+    exception: [p55]
     conclusion: -p12
     weight: 0.2
 
@@ -71,7 +72,13 @@ ARGUMENT:
     premise: [p06]
     exception: []
     conclusion: p12
-    weight: 0.3 # higher than con argument, hence winning in preponderance
+    weight: 0.25 # higher than con argument, hence winning in preponderance
+
+  arg9:
+    premise: [p50]
+    exception: []
+    conclusion: p55
+    weight: 0.1
 
 ISSUE: [i]
 

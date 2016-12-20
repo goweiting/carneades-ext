@@ -1,0 +1,348 @@
+	Tokenizing file...
+	Parsing tokens...
+	Adding propositions to CAES
+	Adding assumptions to CAES
+	Adding arguments to CAES
+Added argument 'arg1' to graph by 'None'
+Added proposition 'issue' to graph with state None
+Added proposition '-issue' to graph with state None
+Added proposition 'premise1' to graph with state None
+Added proposition 'premise2' to graph with state None
+Added argument 'arg2' to graph by 'None'
+Proposition 'premise1' is already in graph
+Added proposition '-premise1' to graph with state None
+Added proposition 'evidence 1' to graph with state None
+Added argument 'arg4' to graph by 'None'
+Proposition 'premise2' is already in graph
+Added proposition '-premise2' to graph with state None
+Added proposition 'evidence 2' to graph with state None
+	Adding parameter to CAES
+	Adding proofstandard to CAES
+	Adding issues to CAES
+	alpha:0.4, beta:0.3, gamme:0.3
+	propliterals: {'i': issue, 'ev1': evidence 1, 'ev2': evidence 2, 'p1': premise1, 'p2': premise2} 
+	arguments:['[premise1, premise2], ~[] => issue', '[evidence 1], ~[] => premise1', '[evidence 2], ~[] => premise2'] 
+	weights : {arg1: 0.5, arg2: 0.5, arg4: 0.2}
+	assumptions: {evidence 1} 
+	issues: {issue} 
+	proofstandard: []
+Dialogue Mode: On
+********************************************************************************
+ISSUE 0: "issue"
+********************************************************************************
+Calling dialogue(issue)
+Added argument 'arg1' to graph by 'PROPONENT'
+Added proposition 'issue' to graph with state claimed
+Added proposition '-issue' to graph with state None
+Added proposition 'premise1' to graph with state None
+Added proposition 'premise2' to graph with state None
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+proofstandard: []
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+    Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+      Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+        Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+          Calling meets_proof_standard(premise2, scintilla)
+	arguments:[] 
+          meets_proof_standard(premise2, scintilla)-->False
+        acceptable(premise2)-->False
+      applicable([premise1, premise2], ~[] => issue)-->False
+    meets_proof_standard(issue, scintilla)-->False
+  acceptable(issue)-->False
+------ "issue" IS NOT acceptable ------
+============================================
+
+  Calling burden_met(issue, [premise1, premise2], ~[] => issue)
+Checking burden of proof for PROPONENT
+    Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+      Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+        Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+          Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(premise2, scintilla)
+	arguments:[] 
+            meets_proof_standard(premise2, scintilla)-->False
+          acceptable(premise2)-->False
+        applicable([premise1, premise2], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "premise2"
+Adding arguments for "premise2"
+Added argument 'arg4' to graph by 'PROPONENT'
+Proposition 'premise2' is already in graph
+Added proposition '-premise2' to graph with state None
+Added proposition 'evidence 2' to graph with state None
+proposition "premise2" state updated to "claimed"
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+[evidence 2], ~[] => premise2
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+proofstandard: []
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+      Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+        Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+          Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(premise2, scintilla)
+	arguments:['[evidence 2], ~[] => premise2'] 
+              Calling applicable([evidence 2], ~[] => premise2)
+Checking applicability of arg4...
+Current assumptions: {evidence 1}
+Current premises: {evidence 2}
+                Calling acceptable(evidence 2)
+Checking whether proposition 'evidence 2' meets proof standard 'scintilla'.
+                  Calling meets_proof_standard(evidence 2, scintilla)
+	arguments:[] 
+                  meets_proof_standard(evidence 2, scintilla)-->False
+                acceptable(evidence 2)-->False
+              applicable([evidence 2], ~[] => premise2)-->False
+            meets_proof_standard(premise2, scintilla)-->False
+          acceptable(premise2)-->False
+        applicable([premise1, premise2], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+------ "issue" IS NOT acceptable ------
+============================================
+
+    Calling burden_met(issue, [evidence 2], ~[] => premise2)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+        Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+          Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+            Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(premise2, scintilla)
+	arguments:['[evidence 2], ~[] => premise2'] 
+                Calling applicable([evidence 2], ~[] => premise2)
+Checking applicability of arg4...
+Current assumptions: {evidence 1}
+Current premises: {evidence 2}
+                  Calling acceptable(evidence 2)
+Checking whether proposition 'evidence 2' meets proof standard 'scintilla'.
+                    Calling meets_proof_standard(evidence 2, scintilla)
+	arguments:[] 
+                    meets_proof_standard(evidence 2, scintilla)-->False
+                  acceptable(evidence 2)-->False
+                applicable([evidence 2], ~[] => premise2)-->False
+              meets_proof_standard(premise2, scintilla)-->False
+            acceptable(premise2)-->False
+          applicable([premise1, premise2], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "evidence 2"
+    burden_met(issue, [evidence 2], ~[] => premise2)-->False
+
+Current Premise: "premise1"
+Adding arguments for "premise1"
+Added argument 'arg2' to graph by 'PROPONENT'
+Proposition 'premise1' is already in graph
+Added proposition '-premise1' to graph with state None
+Added proposition 'evidence 1' to graph with state None
+proposition "premise1" state updated to "claimed"
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+[evidence 2], ~[] => premise2
+[evidence 1], ~[] => premise1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+proofstandard: []
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+      Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+        Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+          Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(premise2, scintilla)
+	arguments:['[evidence 2], ~[] => premise2'] 
+              Calling applicable([evidence 2], ~[] => premise2)
+Checking applicability of arg4...
+Current assumptions: {evidence 1}
+Current premises: {evidence 2}
+                Calling acceptable(evidence 2)
+Checking whether proposition 'evidence 2' meets proof standard 'scintilla'.
+                  Calling meets_proof_standard(evidence 2, scintilla)
+	arguments:[] 
+                  meets_proof_standard(evidence 2, scintilla)-->False
+                acceptable(evidence 2)-->False
+              applicable([evidence 2], ~[] => premise2)-->False
+            meets_proof_standard(premise2, scintilla)-->False
+          acceptable(premise2)-->False
+        applicable([premise1, premise2], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+------ "issue" IS NOT acceptable ------
+============================================
+
+    Calling burden_met(issue, [evidence 1], ~[] => premise1)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+        Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+          Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+            Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(premise2, scintilla)
+	arguments:['[evidence 2], ~[] => premise2'] 
+                Calling applicable([evidence 2], ~[] => premise2)
+Checking applicability of arg4...
+Current assumptions: {evidence 1}
+Current premises: {evidence 2}
+                  Calling acceptable(evidence 2)
+Checking whether proposition 'evidence 2' meets proof standard 'scintilla'.
+                    Calling meets_proof_standard(evidence 2, scintilla)
+	arguments:[] 
+                    meets_proof_standard(evidence 2, scintilla)-->False
+                  acceptable(evidence 2)-->False
+                applicable([evidence 2], ~[] => premise2)-->False
+              meets_proof_standard(premise2, scintilla)-->False
+            acceptable(premise2)-->False
+          applicable([premise1, premise2], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "evidence 1"
+    burden_met(issue, [evidence 1], ~[] => premise1)-->False
+
+  burden_met(issue, [premise1, premise2], ~[] => issue)-->False
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+[evidence 2], ~[] => premise2
+[evidence 1], ~[] => premise1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+proofstandard: []
+Evaluating issue: "issue"
+  Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+    Calling meets_proof_standard(issue, scintilla)
+	arguments:['[premise1, premise2], ~[] => issue'] 
+      Calling applicable([premise1, premise2], ~[] => issue)
+Checking applicability of arg1...
+Current assumptions: {evidence 1}
+Current premises: {premise2, premise1}
+        Calling acceptable(premise2)
+Checking whether proposition 'premise2' meets proof standard 'scintilla'.
+          Calling meets_proof_standard(premise2, scintilla)
+	arguments:['[evidence 2], ~[] => premise2'] 
+            Calling applicable([evidence 2], ~[] => premise2)
+Checking applicability of arg4...
+Current assumptions: {evidence 1}
+Current premises: {evidence 2}
+              Calling acceptable(evidence 2)
+Checking whether proposition 'evidence 2' meets proof standard 'scintilla'.
+                Calling meets_proof_standard(evidence 2, scintilla)
+	arguments:[] 
+                meets_proof_standard(evidence 2, scintilla)-->False
+              acceptable(evidence 2)-->False
+            applicable([evidence 2], ~[] => premise2)-->False
+          meets_proof_standard(premise2, scintilla)-->False
+        acceptable(premise2)-->False
+      applicable([premise1, premise2], ~[] => issue)-->False
+    meets_proof_standard(issue, scintilla)-->False
+  acceptable(issue)-->False
+------ "issue" IS NOT acceptable ------
+============================================
+
+PROPONENT did not manage to satisfy her burden of proof
+dialogue(issue)-->False
+
+
+
+********************************************************************************DIALOGUE SUMMARY:
+********************************************************************************
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+-----------------------------------------
+Burden of proof met by PROPONENT : ?
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+[evidence 2], ~[] => premise2
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+[evidence 2], ~[] => premise2
+[evidence 1], ~[] => premise1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[premise1, premise2], ~[] => issue
+[evidence 2], ~[] => premise2
+[evidence 1], ~[] => premise1
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+********************************************************************************
