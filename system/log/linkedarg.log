@@ -25,10 +25,10 @@ Added proposition 'premise3' to graph with state None
 	Adding proofstandard to CAES
 	Adding issues to CAES
 	alpha:0.4, beta:0.3, gamme:0.3
-	propliterals: {'p3': premise3, 'i': issue, 'p2': premise2, 's1': support 1, 's2': support 2, 's3': support 3, 'p1': premise1} 
-	arguments:['[support 1, support 2, support 3], ~[] => issue', '[premise2], ~[] => support 2', '[premise3], ~[] => support 3', '[premise1], ~[] => support 1'] 
-	weights : {arg0: 0.5, arg2: 0.1, arg3: 0.1, arg1: 0.2}
-	assumptions: {premise1, premise2, premise3} 
+	propliterals: {'p3': premise3, 'p1': premise1, 'p2': premise2, 's2': support 2, 's3': support 3, 's1': support 1, 'i': issue} 
+	arguments:['[premise1], ~[] => support 1', '[premise2], ~[] => support 2', '[support 1, support 2, support 3], ~[] => issue', '[premise3], ~[] => support 3'] 
+	weights : {arg1: 0.2, arg2: 0.1, arg0: 0.5, arg3: 0.1}
+	assumptions: {premise2, premise3, premise1} 
 	issues: {issue} 
 	proofstandard: []
 Dialogue Mode: On
@@ -58,14 +58,14 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
       Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-        Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-          Calling meets_proof_standard(support 2, scintilla)
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
+        Calling acceptable(support 1)
+Checking whether proposition 'support 1' meets proof standard 'scintilla'.
+          Calling meets_proof_standard(support 1, scintilla)
 	arguments:[] 
-          meets_proof_standard(support 2, scintilla)-->False
-        acceptable(support 2)-->False
+          meets_proof_standard(support 1, scintilla)-->False
+        acceptable(support 1)-->False
       applicable([support 1, support 2, support 3], ~[] => issue)-->False
     meets_proof_standard(issue, scintilla)-->False
   acceptable(issue)-->False
@@ -80,55 +80,8 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
         Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-          Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-            Calling meets_proof_standard(support 2, scintilla)
-	arguments:[] 
-            meets_proof_standard(support 2, scintilla)-->False
-          acceptable(support 2)-->False
-        applicable([support 1, support 2, support 3], ~[] => issue)-->False
-      meets_proof_standard(issue, scintilla)-->False
-    acceptable(issue)-->False
-Burden of Proof: False
-Current Premise: "support 2"
-Adding arguments for "support 2"
-Added argument 'arg2' to graph by 'PROPONENT'
-Proposition 'support 2' is already in graph
-Added proposition '-support 2' to graph with state None
-Added proposition 'premise2' to graph with state None
-proposition "support 2" state updated to "claimed"
-
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-proofstandard: []
-Evaluating issue: "issue"
-    Calling acceptable(issue)
-Checking whether proposition 'issue' meets proof standard 'scintilla'.
-      Calling meets_proof_standard(issue, scintilla)
-	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
-        Calling applicable([support 1, support 2, support 3], ~[] => issue)
-Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-          Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-            Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-              Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-              applicable([premise2], ~[] => support 2)-->True
-            meets_proof_standard(support 2, scintilla)-->True
-          acceptable(support 2)-->True
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
           Calling acceptable(support 1)
 Checking whether proposition 'support 1' meets proof standard 'scintilla'.
             Calling meets_proof_standard(support 1, scintilla)
@@ -138,43 +91,7 @@ Checking whether proposition 'support 1' meets proof standard 'scintilla'.
         applicable([support 1, support 2, support 3], ~[] => issue)-->False
       meets_proof_standard(issue, scintilla)-->False
     acceptable(issue)-->False
------- "issue" IS NOT acceptable ------
-============================================
-
-    Calling burden_met(issue, [premise2], ~[] => support 2)
-Checking burden of proof for PROPONENT
-      Calling acceptable(issue)
-Checking whether proposition 'issue' meets proof standard 'scintilla'.
-        Calling meets_proof_standard(issue, scintilla)
-	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
-          Calling applicable([support 1, support 2, support 3], ~[] => issue)
-Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-            Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-                Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-                applicable([premise2], ~[] => support 2)-->True
-              meets_proof_standard(support 2, scintilla)-->True
-            acceptable(support 2)-->True
-            Calling acceptable(support 1)
-Checking whether proposition 'support 1' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(support 1, scintilla)
-	arguments:[] 
-              meets_proof_standard(support 1, scintilla)-->False
-            acceptable(support 1)-->False
-          applicable([support 1, support 2, support 3], ~[] => issue)-->False
-        meets_proof_standard(issue, scintilla)-->False
-      acceptable(issue)-->False
 Burden of Proof: False
-Current Premise: "premise2"
-    burden_met(issue, [premise2], ~[] => support 2)-->False
-
 Current Premise: "support 1"
 Adding arguments for "support 1"
 Added argument 'arg1' to graph by 'PROPONENT'
@@ -187,7 +104,6 @@ proposition "support 1" state updated to "claimed"
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
 [premise1], ~[] => support 1
 -----------------------------------------
 Burden of proof met by PROPONENT : False
@@ -200,36 +116,25 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
         Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-          Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-            Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-              Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-              applicable([premise2], ~[] => support 2)-->True
-            meets_proof_standard(support 2, scintilla)-->True
-          acceptable(support 2)-->True
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
           Calling acceptable(support 1)
 Checking whether proposition 'support 1' meets proof standard 'scintilla'.
             Calling meets_proof_standard(support 1, scintilla)
 	arguments:['[premise1], ~[] => support 1'] 
               Calling applicable([premise1], ~[] => support 1)
 Checking applicability of arg1...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise1}
               applicable([premise1], ~[] => support 1)-->True
             meets_proof_standard(support 1, scintilla)-->True
           acceptable(support 1)-->True
-          Calling acceptable(support 3)
-Checking whether proposition 'support 3' meets proof standard 'scintilla'.
-            Calling meets_proof_standard(support 3, scintilla)
+          Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(support 2, scintilla)
 	arguments:[] 
-            meets_proof_standard(support 3, scintilla)-->False
-          acceptable(support 3)-->False
+            meets_proof_standard(support 2, scintilla)-->False
+          acceptable(support 2)-->False
         applicable([support 1, support 2, support 3], ~[] => issue)-->False
       meets_proof_standard(issue, scintilla)-->False
     acceptable(issue)-->False
@@ -244,30 +149,125 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
           Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-            Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-                Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-                applicable([premise2], ~[] => support 2)-->True
-              meets_proof_standard(support 2, scintilla)-->True
-            acceptable(support 2)-->True
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
             Calling acceptable(support 1)
 Checking whether proposition 'support 1' meets proof standard 'scintilla'.
               Calling meets_proof_standard(support 1, scintilla)
 	arguments:['[premise1], ~[] => support 1'] 
                 Calling applicable([premise1], ~[] => support 1)
 Checking applicability of arg1...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise1}
                 applicable([premise1], ~[] => support 1)-->True
               meets_proof_standard(support 1, scintilla)-->True
             acceptable(support 1)-->True
+            Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(support 2, scintilla)
+	arguments:[] 
+              meets_proof_standard(support 2, scintilla)-->False
+            acceptable(support 2)-->False
+          applicable([support 1, support 2, support 3], ~[] => issue)-->False
+        meets_proof_standard(issue, scintilla)-->False
+      acceptable(issue)-->False
+Burden of Proof: False
+Current Premise: "premise1"
+    burden_met(issue, [premise1], ~[] => support 1)-->False
+
+Current Premise: "support 2"
+Adding arguments for "support 2"
+Added argument 'arg2' to graph by 'PROPONENT'
+Proposition 'support 2' is already in graph
+Added proposition '-support 2' to graph with state None
+Added proposition 'premise2' to graph with state None
+proposition "support 2" state updated to "claimed"
+
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1, support 2, support 3], ~[] => issue
+[premise1], ~[] => support 1
+[premise2], ~[] => support 2
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+proofstandard: []
+Evaluating issue: "issue"
+    Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+      Calling meets_proof_standard(issue, scintilla)
+	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
+        Calling applicable([support 1, support 2, support 3], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
+          Calling acceptable(support 1)
+Checking whether proposition 'support 1' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(support 1, scintilla)
+	arguments:['[premise1], ~[] => support 1'] 
+              Calling applicable([premise1], ~[] => support 1)
+Checking applicability of arg1...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise1}
+              applicable([premise1], ~[] => support 1)-->True
+            meets_proof_standard(support 1, scintilla)-->True
+          acceptable(support 1)-->True
+          Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(support 2, scintilla)
+	arguments:['[premise2], ~[] => support 2'] 
+              Calling applicable([premise2], ~[] => support 2)
+Checking applicability of arg2...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise2}
+              applicable([premise2], ~[] => support 2)-->True
+            meets_proof_standard(support 2, scintilla)-->True
+          acceptable(support 2)-->True
+          Calling acceptable(support 3)
+Checking whether proposition 'support 3' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(support 3, scintilla)
+	arguments:[] 
+            meets_proof_standard(support 3, scintilla)-->False
+          acceptable(support 3)-->False
+        applicable([support 1, support 2, support 3], ~[] => issue)-->False
+      meets_proof_standard(issue, scintilla)-->False
+    acceptable(issue)-->False
+------ "issue" IS NOT acceptable ------
+============================================
+
+    Calling burden_met(issue, [premise2], ~[] => support 2)
+Checking burden of proof for PROPONENT
+      Calling acceptable(issue)
+Checking whether proposition 'issue' meets proof standard 'scintilla'.
+        Calling meets_proof_standard(issue, scintilla)
+	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
+          Calling applicable([support 1, support 2, support 3], ~[] => issue)
+Checking applicability of arg0...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
+            Calling acceptable(support 1)
+Checking whether proposition 'support 1' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(support 1, scintilla)
+	arguments:['[premise1], ~[] => support 1'] 
+                Calling applicable([premise1], ~[] => support 1)
+Checking applicability of arg1...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise1}
+                applicable([premise1], ~[] => support 1)-->True
+              meets_proof_standard(support 1, scintilla)-->True
+            acceptable(support 1)-->True
+            Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(support 2, scintilla)
+	arguments:['[premise2], ~[] => support 2'] 
+                Calling applicable([premise2], ~[] => support 2)
+Checking applicability of arg2...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise2}
+                applicable([premise2], ~[] => support 2)-->True
+              meets_proof_standard(support 2, scintilla)-->True
+            acceptable(support 2)-->True
             Calling acceptable(support 3)
 Checking whether proposition 'support 3' meets proof standard 'scintilla'.
               Calling meets_proof_standard(support 3, scintilla)
@@ -278,8 +278,8 @@ Checking whether proposition 'support 3' meets proof standard 'scintilla'.
         meets_proof_standard(issue, scintilla)-->False
       acceptable(issue)-->False
 Burden of Proof: False
-Current Premise: "premise1"
-    burden_met(issue, [premise1], ~[] => support 1)-->False
+Current Premise: "premise2"
+    burden_met(issue, [premise2], ~[] => support 2)-->False
 
 Current Premise: "support 3"
 Adding arguments for "support 3"
@@ -293,8 +293,8 @@ proposition "support 3" state updated to "claimed"
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
 [premise1], ~[] => support 1
+[premise2], ~[] => support 2
 [premise3], ~[] => support 3
 -----------------------------------------
 Burden of proof met by PROPONENT : False
@@ -307,37 +307,37 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
         Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-          Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-            Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-              Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-              applicable([premise2], ~[] => support 2)-->True
-            meets_proof_standard(support 2, scintilla)-->True
-          acceptable(support 2)-->True
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
           Calling acceptable(support 1)
 Checking whether proposition 'support 1' meets proof standard 'scintilla'.
             Calling meets_proof_standard(support 1, scintilla)
 	arguments:['[premise1], ~[] => support 1'] 
               Calling applicable([premise1], ~[] => support 1)
 Checking applicability of arg1...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise1}
               applicable([premise1], ~[] => support 1)-->True
             meets_proof_standard(support 1, scintilla)-->True
           acceptable(support 1)-->True
+          Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+            Calling meets_proof_standard(support 2, scintilla)
+	arguments:['[premise2], ~[] => support 2'] 
+              Calling applicable([premise2], ~[] => support 2)
+Checking applicability of arg2...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise2}
+              applicable([premise2], ~[] => support 2)-->True
+            meets_proof_standard(support 2, scintilla)-->True
+          acceptable(support 2)-->True
           Calling acceptable(support 3)
 Checking whether proposition 'support 3' meets proof standard 'scintilla'.
             Calling meets_proof_standard(support 3, scintilla)
 	arguments:['[premise3], ~[] => support 3'] 
               Calling applicable([premise3], ~[] => support 3)
 Checking applicability of arg3...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise3}
               applicable([premise3], ~[] => support 3)-->True
             meets_proof_standard(support 3, scintilla)-->True
@@ -356,37 +356,37 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
           Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-            Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-              Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-                Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-                applicable([premise2], ~[] => support 2)-->True
-              meets_proof_standard(support 2, scintilla)-->True
-            acceptable(support 2)-->True
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
             Calling acceptable(support 1)
 Checking whether proposition 'support 1' meets proof standard 'scintilla'.
               Calling meets_proof_standard(support 1, scintilla)
 	arguments:['[premise1], ~[] => support 1'] 
                 Calling applicable([premise1], ~[] => support 1)
 Checking applicability of arg1...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise1}
                 applicable([premise1], ~[] => support 1)-->True
               meets_proof_standard(support 1, scintilla)-->True
             acceptable(support 1)-->True
+            Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+              Calling meets_proof_standard(support 2, scintilla)
+	arguments:['[premise2], ~[] => support 2'] 
+                Calling applicable([premise2], ~[] => support 2)
+Checking applicability of arg2...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise2}
+                applicable([premise2], ~[] => support 2)-->True
+              meets_proof_standard(support 2, scintilla)-->True
+            acceptable(support 2)-->True
             Calling acceptable(support 3)
 Checking whether proposition 'support 3' meets proof standard 'scintilla'.
               Calling meets_proof_standard(support 3, scintilla)
 	arguments:['[premise3], ~[] => support 3'] 
                 Calling applicable([premise3], ~[] => support 3)
 Checking applicability of arg3...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise3}
                 applicable([premise3], ~[] => support 3)-->True
               meets_proof_standard(support 3, scintilla)-->True
@@ -403,8 +403,8 @@ Burden of Proof: True
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
 [premise1], ~[] => support 1
+[premise2], ~[] => support 2
 [premise3], ~[] => support 3
 -----------------------------------------
 Burden of proof met by PROPONENT : True
@@ -417,37 +417,37 @@ Checking whether proposition 'issue' meets proof standard 'scintilla'.
 	arguments:['[support 1, support 2, support 3], ~[] => issue'] 
       Calling applicable([support 1, support 2, support 3], ~[] => issue)
 Checking applicability of arg0...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {support 2, support 1, support 3}
-        Calling acceptable(support 2)
-Checking whether proposition 'support 2' meets proof standard 'scintilla'.
-          Calling meets_proof_standard(support 2, scintilla)
-	arguments:['[premise2], ~[] => support 2'] 
-            Calling applicable([premise2], ~[] => support 2)
-Checking applicability of arg2...
-Current assumptions: {premise1, premise2, premise3}
-Current premises: {premise2}
-            applicable([premise2], ~[] => support 2)-->True
-          meets_proof_standard(support 2, scintilla)-->True
-        acceptable(support 2)-->True
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {support 1, support 2, support 3}
         Calling acceptable(support 1)
 Checking whether proposition 'support 1' meets proof standard 'scintilla'.
           Calling meets_proof_standard(support 1, scintilla)
 	arguments:['[premise1], ~[] => support 1'] 
             Calling applicable([premise1], ~[] => support 1)
 Checking applicability of arg1...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise1}
             applicable([premise1], ~[] => support 1)-->True
           meets_proof_standard(support 1, scintilla)-->True
         acceptable(support 1)-->True
+        Calling acceptable(support 2)
+Checking whether proposition 'support 2' meets proof standard 'scintilla'.
+          Calling meets_proof_standard(support 2, scintilla)
+	arguments:['[premise2], ~[] => support 2'] 
+            Calling applicable([premise2], ~[] => support 2)
+Checking applicability of arg2...
+Current assumptions: {premise2, premise3, premise1}
+Current premises: {premise2}
+            applicable([premise2], ~[] => support 2)-->True
+          meets_proof_standard(support 2, scintilla)-->True
+        acceptable(support 2)-->True
         Calling acceptable(support 3)
 Checking whether proposition 'support 3' meets proof standard 'scintilla'.
           Calling meets_proof_standard(support 3, scintilla)
 	arguments:['[premise3], ~[] => support 3'] 
             Calling applicable([premise3], ~[] => support 3)
 Checking applicability of arg3...
-Current assumptions: {premise1, premise2, premise3}
+Current assumptions: {premise2, premise3, premise1}
 Current premises: {premise3}
             applicable([premise3], ~[] => support 3)-->True
           meets_proof_standard(support 3, scintilla)-->True
@@ -459,38 +459,19 @@ Current premises: {premise3}
 ============================================
 
 turn_num 1
-USING ALGORITHM 1 TO FIND ARGUMENTS
-  Calling find_args_to_exceptions(issue)
-find_args_to_exceptions in "issue"
+USING ALGORITHM 2 TO FIND ARGUMENTS
+  Calling defeat_issue(issue)
+find arguments to defeat issue "issue"
 arg: [support 1, support 2, support 3], ~[] => issue
-exceptions []
-args_to_consider: ['[premise2], ~[] => support 2', '[premise3], ~[] => support 3', '[premise1], ~[] => support 1']
-arg: [premise1], ~[] => support 1
-exceptions []
-args_to_consider: ['[premise2], ~[] => support 2', '[premise3], ~[] => support 3']
+args_to_consider: ['[premise1], ~[] => support 1', '[premise2], ~[] => support 2', '[premise3], ~[] => support 3']
 arg: [premise3], ~[] => support 3
-exceptions []
-args_to_consider: ['[premise2], ~[] => support 2']
+args_to_consider: ['[premise1], ~[] => support 1', '[premise2], ~[] => support 2']
 arg: [premise2], ~[] => support 2
-exceptions []
-args_to_consider: []
-  find_args_to_exceptions(issue)-->False
-No arguments found to satisfy exceptions in issue "issue"
-  Calling find_best_con_argument(issue)
-find_best_con_argument for "issue"
-arg: [support 1, support 2, support 3], ~[] => issue
-arg_cons []
-args_to_consider: ['[premise2], ~[] => support 2', '[premise3], ~[] => support 3', '[premise1], ~[] => support 1']
+args_to_consider: ['[premise1], ~[] => support 1']
 arg: [premise1], ~[] => support 1
-arg_cons []
-args_to_consider: ['[premise2], ~[] => support 2', '[premise3], ~[] => support 3']
-arg: [premise3], ~[] => support 3
-arg_cons []
-args_to_consider: ['[premise2], ~[] => support 2']
-arg: [premise2], ~[] => support 2
-arg_cons []
 args_to_consider: []
-  find_best_con_argument(issue)-->False
+No arguments found to attack the issue issue
+  defeat_issue(issue)-->False
 dialogue(issue)-->True
 
 
@@ -510,17 +491,6 @@ Burden of proof met by PROPONENT : ?
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
------------------------------------------
-Burden of proof met by PROPONENT : False
------------------------------------------
-		ISSUE "issue" acceptable? -> False
-============================================
-================== turn 0 ==================
-BURDEN OF PROOF @ PROPONENT
-ARGUMENTS:
-[support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
 [premise1], ~[] => support 1
 -----------------------------------------
 Burden of proof met by PROPONENT : False
@@ -531,8 +501,19 @@ Burden of proof met by PROPONENT : False
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
 [premise1], ~[] => support 1
+[premise2], ~[] => support 2
+-----------------------------------------
+Burden of proof met by PROPONENT : False
+-----------------------------------------
+		ISSUE "issue" acceptable? -> False
+============================================
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[support 1, support 2, support 3], ~[] => issue
+[premise1], ~[] => support 1
+[premise2], ~[] => support 2
 [premise3], ~[] => support 3
 -----------------------------------------
 Burden of proof met by PROPONENT : False
@@ -543,8 +524,8 @@ Burden of proof met by PROPONENT : False
 BURDEN OF PROOF @ PROPONENT
 ARGUMENTS:
 [support 1, support 2, support 3], ~[] => issue
-[premise2], ~[] => support 2
 [premise1], ~[] => support 1
+[premise2], ~[] => support 2
 [premise3], ~[] => support 3
 -----------------------------------------
 Burden of proof met by PROPONENT : True

@@ -1,0 +1,16 @@
+digraph G{ 
+"did google contravene s52?" [color="black", fillcolor="coral4",fixedsize=false, shape=box, style="filled"]; 
+"-Google has engaged in misleading and\ndeceptive conduct by publishing or\ndisplaying the sponsored links" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Google has engaged in misleading and\ndeceptive conduct by publishing or\ndisplaying the sponsored links" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-Google contravene Section 52(1) of\nTrade Practice Act" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Google contravene Section 52(1) of Trade\nPractice Act" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"proof for s52? 2" [color="black", fillcolor="coral3",fixedsize=false, shape=box, style="filled"]; 
+"-It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-Google has engaged in misleading and\ndeceptive conduct by publishing or\ndisplaying the sponsored links" -> "did google contravene s52?" ; 
+"did google contravene s52?" -> "-Google contravene Section 52(1) of\nTrade Practice Act" ; 
+"did google contravene s52?" -> "Google contravene Section 52(1) of Trade\nPractice Act" [arrowhead=dot] ; 
+"-Google contravene Section 52(1) of\nTrade Practice Act" -> "proof for s52? 2" ; 
+"proof for s52? 2" -> "-It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" ; 
+"proof for s52? 2" -> "It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" [arrowhead=dot] ; 
+}

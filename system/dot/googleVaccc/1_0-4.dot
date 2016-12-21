@@ -1,0 +1,33 @@
+digraph G{ 
+"did google contravene s52?" [color="black", fillcolor="coral4",fixedsize=false, shape=box, style="filled"]; 
+"-Google has engaged in misleading and\ndeceptive conduct by publishing or\ndisplaying the sponsored links" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Google has engaged in misleading and\ndeceptive conduct by publishing or\ndisplaying the sponsored links" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-Google contravene Section 52(1) of\nTrade Practice Act" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Google contravene Section 52(1) of Trade\nPractice Act" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"proof for s52? 2" [color="black", fillcolor="coral3",fixedsize=false, shape=box, style="filled"]; 
+"-It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"is relevant class of consumers affected?" [color="black", fillcolor="coral3",fixedsize=false, shape=box, style="filled"]; 
+"An internet user who wishes to access a\nwebpage is likely to use an internet\nsearch engine, such as Google" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"It is not possible for Internet users to\nuse a search engine without any\nmeaningful way without knowing something\nabout how it operates" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"User of Google will be able to tell\napart organic results and sponsored\nlinks" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"is Google response to users request\ndistinguishable?" [color="black", fillcolor="coral1",fixedsize=false, shape=box, style="filled"]; 
+"-User of Google will be able to tell\napart organic results and sponsored\nlinks" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Organic search results are links to\nwebpages ranked in order of relevance to\nthe search terms entered by the user" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Sponsored links only appear when the\nuser's search term matches one of the\nadvertisers'" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"organic results and sponsored links are\ndisplayed at different location and\nlabelled" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-Google has engaged in misleading and\ndeceptive conduct by publishing or\ndisplaying the sponsored links" -> "did google contravene s52?" ; 
+"did google contravene s52?" -> "-Google contravene Section 52(1) of\nTrade Practice Act" ; 
+"did google contravene s52?" -> "Google contravene Section 52(1) of Trade\nPractice Act" [arrowhead=dot] ; 
+"-Google contravene Section 52(1) of\nTrade Practice Act" -> "proof for s52? 2" ; 
+"proof for s52? 2" -> "-It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" ; 
+"proof for s52? 2" -> "It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" [arrowhead=dot] ; 
+"-It is established that Google conduct\nleads to the ordinary or reasonable\nmembers of that class are misled or\ndeceived" -> "is relevant class of consumers affected?" ; 
+"is relevant class of consumers affected?" -> "An internet user who wishes to access a\nwebpage is likely to use an internet\nsearch engine, such as Google" ; 
+"is relevant class of consumers affected?" -> "It is not possible for Internet users to\nuse a search engine without any\nmeaningful way without knowing something\nabout how it operates" ; 
+"is relevant class of consumers affected?" -> "User of Google will be able to tell\napart organic results and sponsored\nlinks" ; 
+"User of Google will be able to tell\napart organic results and sponsored\nlinks" -> "is Google response to users request\ndistinguishable?" ; 
+"is Google response to users request\ndistinguishable?" -> "Organic search results are links to\nwebpages ranked in order of relevance to\nthe search terms entered by the user" ; 
+"is Google response to users request\ndistinguishable?" -> "Sponsored links only appear when the\nuser's search term matches one of the\nadvertisers'" ; 
+"is Google response to users request\ndistinguishable?" -> "organic results and sponsored links are\ndisplayed at different location and\nlabelled" ; 
+}

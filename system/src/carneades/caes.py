@@ -491,7 +491,7 @@ class Dialogue(object):
         self.dot_filename = dot_filename
         self.g_filename = g_filename
         self.run = run  # function for evaluation
-        self.alg_con_argument = 2 # either 1 or 2
+        self.alg_con_argument = 2  # either 1 or 2
 
     def initialise_dialogue(self):
         # -----------------------------------------------------------------
@@ -830,7 +830,7 @@ class Dialogue(object):
                     self.dialogue_state_argset.get_arguments(p))
 
             args_to_consider = sorted(
-                args_to_consider, key=lambda arg: arg.weight)
+                args_to_consider, key=lambda arg: arg.weight, reverse=True)
             logging.debug('args_to_consider: {}'.format(
                 [arg.__str__() for arg in args_to_consider]))
             continue
@@ -893,7 +893,7 @@ class Dialogue(object):
                     self.dialogue_state_argset.get_arguments(p))
 
             args_to_consider = sorted(
-                args_to_consider, key=lambda arg: arg.weight)
+                args_to_consider, key=lambda arg: arg.weight, reverse=True)
             logging.debug('args_to_consider: {}'.format(
                 [arg.__str__() for arg in args_to_consider]))
             continue
@@ -920,11 +920,11 @@ class Dialogue(object):
         # Consider the args with least weight first - easiest path
         args_to_consider = sorted(
             args_to_consider_, key=lambda arg: arg.weight, reverse=True)
-        possb_arg = [] # store all the arguments that we can use to attack
+        possb_arg = []  # store all the arguments that we can use to attack
 
         while len(args_to_consider):
             # iterate through the args
-            arg = args_to_consider.pop() # least weight
+            arg = args_to_consider.pop()  # least weight
             logging.debug('arg: {}'.format(arg))
 
             # ----------------------------------------------------------------_
@@ -937,14 +937,14 @@ class Dialogue(object):
             for e in exceptions:
                 args_for_exceptions_ = self.argset.get_arguments(e)
                 # Add into the list
-                possb_arg.extend([(arg_e, arg) for arg_e in args_for_exceptions_])
+                possb_arg.extend(
+                    [(arg_e, arg) for arg_e in args_for_exceptions_])
 
             # ----------------------------------------------------------------_
             # second: find a con argument using using the full argset
             arg_cons_ = self.argset.get_arguments_con(arg.conclusion)
 
-
-            for arg_con in arg_cons:
+            for arg_con in arg_cons_:
                 # prevent the same argument that is already in the argset from
                 # being added in
                 check = self.dialogue_state_argset.get_arguments(
@@ -955,7 +955,7 @@ class Dialogue(object):
                     possb_arg.extend([(arg_con, arg)])
                 else:
                     logging.debug('argument "{}" has already been added!'.
-                                  format(possb_arg2))
+                                  format(arg_con))
 
             # ----------------------------------------------------------------_
             # add arguments for subissues to the list of arguments to be
@@ -966,7 +966,7 @@ class Dialogue(object):
                     self.dialogue_state_argset.get_arguments(p))
 
             args_to_consider = sorted(
-                args_to_consider, key=lambda arg: arg.weight)
+                args_to_consider, key=lambda arg: arg.weight, reverse=True)
             logging.debug('args_to_consider: {}'.format(
                 [arg.__str__() for arg in args_to_consider]))
 

@@ -40,10 +40,10 @@ Added proposition '-Witness2 is credible' to graph with state None
 	Adding proofstandard to CAES
 	Adding issues to CAES
 	alpha:0.4, beta:0.3, gamme:0.3
-	propliterals: {'ev1 tampered': tampering of evidence 1, 'killing': killing, 'malice': malice, 'self-defense': an act of self-defense, 's187 valid': Section 187 is valid, 'ev1': evidence 1 supports killing, 'w1-liar': Witness1 lied in court, 'ev2 tampered': tampering of evidence 2, 's197 excluded': s197 is excluded, 'w1': Witness1 testified 'attack', 'ev2': evidence 2 supports malice, 's197 valid': Section 197 is valid, 'w1-credible': Witness1 is credible, 's187 excluded': s187 is excluded, 'w2': Witness2 saw testified 'time to run away', 'w2-credible': Witness2 is credible, 'murder': murder} 
-	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing', '[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded', "[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense", '[evidence 2 supports malice], ~[tampering of evidence 2] => malice', '[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder', "[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense"] 
-	weights : {arg01: 0.2, arg2: 0.5, arg3: 0.5, arg02: 0.2, arg1: 0.5, arg4: 0.49}
-	assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'} 
+	propliterals: {'ev1': evidence 1 supports killing, 'murder': murder, 's187 valid': Section 187 is valid, 'killing': killing, 'malice': malice, 'w2-credible': Witness2 is credible, 'w1-credible': Witness1 is credible, 'w1': Witness1 testified 'attack', 'ev2': evidence 2 supports malice, 'w1-liar': Witness1 lied in court, 's197 valid': Section 197 is valid, 'ev2 tampered': tampering of evidence 2, 's197 excluded': s197 is excluded, 'w2': Witness2 saw testified 'time to run away', 'self-defense': an act of self-defense, 'ev1 tampered': tampering of evidence 1, 's187 excluded': s187 is excluded} 
+	arguments:["[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense", "[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense", '[evidence 2 supports malice], ~[tampering of evidence 2] => malice', '[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder', '[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded', '[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
+	weights : {arg4: 0.49, arg3: 0.5, arg02: 0.2, arg1: 0.5, arg2: 0.5, arg01: 0.2}
+	assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'} 
 	issues: {murder} 
 	proofstandard: [(murder, 'beyond_reasonable_doubt'), (an act of self-defense, 'preponderance')]
 Dialogue Mode: On
@@ -76,7 +76,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
         Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
           Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -112,7 +112,7 @@ Checking whether proposition 'murder' meets proof standard 'scintilla'.
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
         Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
           Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -159,7 +159,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
           Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
             Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -167,7 +167,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                 Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                   Calling acceptable(tampering of evidence 1)
@@ -213,7 +213,7 @@ Checking whether proposition 'murder' meets proof standard 'scintilla'.
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
           Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
             Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -221,7 +221,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                 Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                   Calling acceptable(tampering of evidence 1)
@@ -281,7 +281,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
           Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
             Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -289,7 +289,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                 Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                   Calling acceptable(tampering of evidence 1)
@@ -307,7 +307,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                 Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                   Calling acceptable(tampering of evidence 2)
@@ -349,7 +349,7 @@ Checking whether proposition 'murder' meets proof standard 'scintilla'.
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
           Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
             Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -357,7 +357,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                 Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                   Calling acceptable(tampering of evidence 1)
@@ -375,7 +375,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                 Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                   Calling acceptable(tampering of evidence 2)
@@ -421,7 +421,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
         Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
           Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -429,7 +429,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
               Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                 Calling acceptable(tampering of evidence 1)
@@ -447,7 +447,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
               Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                 Calling acceptable(tampering of evidence 2)
@@ -482,14 +482,19 @@ No applicable arguments in []
 ============================================
 
 turn_num 1
-USING ALGORITHM 1 TO FIND ARGUMENTS
-  Calling find_args_to_exceptions(murder)
-find_args_to_exceptions in "murder"
+USING ALGORITHM 2 TO FIND ARGUMENTS
+  Calling defeat_issue(murder)
+find arguments to defeat issue "murder"
 arg: [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
-exceptions ['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded']
+args_to_consider: ['[evidence 1 supports killing], ~[tampering of evidence 1] => killing', '[evidence 2 supports malice], ~[tampering of evidence 2] => malice']
+arg: [evidence 2 supports malice], ~[tampering of evidence 2] => malice
+args_to_consider: ['[evidence 1 supports killing], ~[tampering of evidence 1] => killing']
+arg: [evidence 1 supports killing], ~[tampering of evidence 1] => killing
+args_to_consider: []
+Attacking the exception of [Section 187 is valid, killing, malice], ~[s187 is excluded] => murder using [Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
 proposition "s187 is excluded" state updated to "questioned"
-Found an argument to prove the exception
-  find_args_to_exceptions(murder)-->[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+  defeat_issue(murder)-->[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+===> sub-issue: s187 is excluded
   Calling dialogue(s187 is excluded)
 Added argument 'arg2' to graph by 'RESPONDENT'
 Proposition 's187 is excluded' is already in graph
@@ -516,7 +521,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
         Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
           Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'scintilla'.
@@ -544,7 +549,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
           Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
             Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -552,7 +557,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                 Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                   Calling acceptable(tampering of evidence 1)
@@ -570,7 +575,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                 Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                   Calling acceptable(tampering of evidence 2)
@@ -589,7 +594,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
                 Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                   Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'scintilla'.
@@ -630,7 +635,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
           Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
             Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'scintilla'.
@@ -678,7 +683,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
           Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
             Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -686,7 +691,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                 Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                   Calling acceptable(-Witness1 is credible)
@@ -721,7 +726,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
             Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
               Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -729,7 +734,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                   Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                     Calling acceptable(tampering of evidence 1)
@@ -747,7 +752,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                   Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                     Calling acceptable(tampering of evidence 2)
@@ -766,7 +771,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
                   Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                     Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -774,7 +779,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                         Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                           Calling acceptable(-Witness1 is credible)
@@ -820,7 +825,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
             Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
               Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'scintilla'.
@@ -828,7 +833,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'scin
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                   Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                     Calling acceptable(-Witness1 is credible)
@@ -874,7 +879,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
         Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
           Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -882,7 +887,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
               Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                 Calling acceptable(-Witness1 is credible)
@@ -917,7 +922,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
           Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
             Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -925,7 +930,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                 Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                   Calling acceptable(tampering of evidence 1)
@@ -943,7 +948,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                 Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                   Calling acceptable(tampering of evidence 2)
@@ -962,7 +967,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
                 Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                   Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -970,7 +975,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                       Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                         Calling acceptable(-Witness1 is credible)
@@ -1009,28 +1014,18 @@ diff between pro and con = 0.0 > gamma: False
 ============================================
 
 turn_num 2
-USING ALGORITHM 1 TO FIND ARGUMENTS
-    Calling find_args_to_exceptions(s187 is excluded)
-find_args_to_exceptions in "s187 is excluded"
+USING ALGORITHM 2 TO FIND ARGUMENTS
+    Calling defeat_issue(s187 is excluded)
+find arguments to defeat issue "s187 is excluded"
 arg: [Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
-exceptions []
 args_to_consider: ["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"]
 arg: [Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
-exceptions []
 args_to_consider: []
-    find_args_to_exceptions(s187 is excluded)-->False
-No arguments found to satisfy exceptions in issue "s187 is excluded"
-    Calling find_best_con_argument(s187 is excluded)
-find_best_con_argument for "s187 is excluded"
-arg: [Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
-arg_cons []
-args_to_consider: ["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"]
-arg: [Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
-arg_cons ["[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense"]
-proposition "an act of self-defense" state updated to "questioned"
+Attacking [Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense using a con argument: [Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
 proposition "-an act of self-defense" state updated to "claimed"
-Found a con argument
-    find_best_con_argument(s187 is excluded)-->[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+proposition "an act of self-defense" state updated to "questioned"
+    defeat_issue(s187 is excluded)-->[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+===> sub-issue: -an act of self-defense
     Calling dialogue(-an act of self-defense)
 Added argument 'arg4' to graph by 'PROPONENT'
 Proposition '-an act of self-defense' is already in graph
@@ -1058,7 +1053,7 @@ Checking whether proposition '-an act of self-defense' meets proof standard 'sci
 	arguments:["[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense"] 
           Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
             Calling acceptable(-Witness2 is credible)
@@ -1080,7 +1075,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
             Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
               Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -1088,7 +1083,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                   Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                     Calling acceptable(tampering of evidence 1)
@@ -1106,7 +1101,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                   Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                     Calling acceptable(tampering of evidence 2)
@@ -1125,7 +1120,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
                   Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                     Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -1133,7 +1128,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                         Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                           Calling acceptable(-Witness1 is credible)
@@ -1147,7 +1142,7 @@ Checking applicability and weights of [arg3]
 Weights of [arg3] are [0.5]
                         Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
                           Calling acceptable(-Witness2 is credible)
@@ -1192,7 +1187,7 @@ Checking whether proposition '-an act of self-defense' meets proof standard 'sci
 	arguments:["[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense"] 
             Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
               Calling acceptable(-Witness2 is credible)
@@ -1227,7 +1222,7 @@ Checking whether proposition '-an act of self-defense' meets proof standard 'sci
 	arguments:["[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense"] 
           Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
             Calling acceptable(-Witness2 is credible)
@@ -1249,7 +1244,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
             Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
               Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -1257,7 +1252,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
                   Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                     Calling acceptable(tampering of evidence 1)
@@ -1275,7 +1270,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
                   Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                     Calling acceptable(tampering of evidence 2)
@@ -1294,7 +1289,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
                   Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                     Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -1302,7 +1297,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                         Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                           Calling acceptable(-Witness1 is credible)
@@ -1316,7 +1311,7 @@ Checking applicability and weights of [arg3]
 Weights of [arg3] are [0.5]
                         Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
                           Calling acceptable(-Witness2 is credible)
@@ -1354,20 +1349,14 @@ diff between pro and con = 0.0 > gamma: False
 ============================================
 
 turn_num 3
-USING ALGORITHM 1 TO FIND ARGUMENTS
-      Calling find_args_to_exceptions(-an act of self-defense)
-find_args_to_exceptions in "-an act of self-defense"
+USING ALGORITHM 2 TO FIND ARGUMENTS
+      Calling defeat_issue(-an act of self-defense)
+find arguments to defeat issue "-an act of self-defense"
 arg: [Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
-exceptions []
-args_to_consider: []
-      find_args_to_exceptions(-an act of self-defense)-->False
-No arguments found to satisfy exceptions in issue "-an act of self-defense"
-      Calling find_best_con_argument(-an act of self-defense)
-find_best_con_argument for "-an act of self-defense"
-arg: [Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
-arg_cons ["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"]
 argument "[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense" has already been added!
-      find_best_con_argument(-an act of self-defense)-->False
+args_to_consider: []
+No arguments found to attack the issue -an act of self-defense
+      defeat_issue(-an act of self-defense)-->False
     dialogue(-an act of self-defense)-->True
 <=== issue: s187 is excluded
 Evaluating issue: "s187 is excluded"
@@ -1377,7 +1366,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
         Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
           Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -1385,7 +1374,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
               Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                 Calling acceptable(-Witness1 is credible)
@@ -1399,7 +1388,7 @@ Checking applicability and weights of [arg3]
 Weights of [arg3] are [0.5]
               Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
                 Calling acceptable(-Witness2 is credible)
@@ -1436,7 +1425,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
         Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
           Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -1444,7 +1433,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
               Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                 Calling acceptable(tampering of evidence 1)
@@ -1462,7 +1451,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
               Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                 Calling acceptable(tampering of evidence 2)
@@ -1481,7 +1470,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
               Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                 Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -1489,7 +1478,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                     Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                       Calling acceptable(-Witness1 is credible)
@@ -1503,7 +1492,7 @@ Checking applicability and weights of [arg3]
 Weights of [arg3] are [0.5]
                     Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
                       Calling acceptable(-Witness2 is credible)
@@ -1547,7 +1536,7 @@ Checking whether proposition 'murder' meets proof standard 'beyond_reasonable_do
 	arguments:['[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder'] 
         Calling applicable([Section 187 is valid, killing, malice], ~[s187 is excluded] => murder)
 Checking applicability of arg1...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 187 is valid, killing, malice}
           Calling acceptable(killing)
 Checking whether proposition 'killing' meets proof standard 'scintilla'.
@@ -1555,7 +1544,7 @@ Checking whether proposition 'killing' meets proof standard 'scintilla'.
 	arguments:['[evidence 1 supports killing], ~[tampering of evidence 1] => killing'] 
               Calling applicable([evidence 1 supports killing], ~[tampering of evidence 1] => killing)
 Checking applicability of arg01...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 1 supports killing}
 Current exception: {tampering of evidence 1}
                 Calling acceptable(tampering of evidence 1)
@@ -1573,7 +1562,7 @@ Checking whether proposition 'malice' meets proof standard 'scintilla'.
 	arguments:['[evidence 2 supports malice], ~[tampering of evidence 2] => malice'] 
               Calling applicable([evidence 2 supports malice], ~[tampering of evidence 2] => malice)
 Checking applicability of arg02...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {evidence 2 supports malice}
 Current exception: {tampering of evidence 2}
                 Calling acceptable(tampering of evidence 2)
@@ -1592,7 +1581,7 @@ Checking whether proposition 's187 is excluded' meets proof standard 'scintilla'
 	arguments:['[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded'] 
               Calling applicable([Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded)
 Checking applicability of arg2...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Section 197 is valid, an act of self-defense}
                 Calling acceptable(an act of self-defense)
 Checking whether proposition 'an act of self-defense' meets proof standard 'preponderance'.
@@ -1600,7 +1589,7 @@ Checking whether proposition 'an act of self-defense' meets proof standard 'prep
 	arguments:["[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense"] 
                     Calling applicable([Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense)
 Checking applicability of arg3...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness1 testified 'attack'}
 Current exception: {-Witness1 is credible}
                       Calling acceptable(-Witness1 is credible)
@@ -1614,7 +1603,7 @@ Checking applicability and weights of [arg3]
 Weights of [arg3] are [0.5]
                     Calling applicable([Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense)
 Checking applicability of arg4...
-Current assumptions: {Witness2 saw testified 'time to run away', Section 187 is valid, evidence 2 supports malice, evidence 1 supports killing, Section 197 is valid, Witness1 testified 'attack'}
+Current assumptions: {evidence 1 supports killing, Section 187 is valid, evidence 2 supports malice, Section 197 is valid, Witness2 saw testified 'time to run away', Witness1 testified 'attack'}
 Current premises: {Witness2 saw testified 'time to run away'}
 Current exception: {-Witness2 is credible}
                       Calling acceptable(-Witness2 is credible)

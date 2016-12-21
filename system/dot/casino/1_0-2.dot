@@ -1,0 +1,28 @@
+digraph G{ 
+"should singapore build the IR (casino)?" [color="black", fillcolor="coral4",fixedsize=false, shape=box, style="filled"]; 
+"IR (casino) should be built" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"-IR (casino) should be built" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"IR will boost tourism, construction and\nemployment" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"aggregate social ill-effects from IR" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"economic benefit outweights" [color="black", fillcolor="coral2",fixedsize=false, shape=box, style="filled"]; 
+"-IR will boost tourism, construction and\nemployment" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"ecnonomic stimulus needed" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"more locals will be employed" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"stimulus for construction sector" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"stimulus for tourism sector" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"economic stimulus argument" [color="black", fillcolor="coral3",fixedsize=false, shape=box, style="filled"]; 
+"-ecnonomic stimulus needed" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"Slumbering Singapore tourism sector due\nto competition from neighbouring\ncountries" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"impending technical recession" [color="black", fillcolor="lightblue", fixedsize=false,  shape="box", style="rounded,filled"]; 
+"IR (casino) should be built" -> "should singapore build the IR (casino)?" ; 
+"should singapore build the IR (casino)?" -> "IR will boost tourism, construction and\nemployment" ; 
+"should singapore build the IR (casino)?" -> "aggregate social ill-effects from IR" [arrowhead=dot] ; 
+"IR will boost tourism, construction and\nemployment" -> "economic benefit outweights" ; 
+"economic benefit outweights" -> "ecnonomic stimulus needed" ; 
+"economic benefit outweights" -> "more locals will be employed" ; 
+"economic benefit outweights" -> "stimulus for construction sector" ; 
+"economic benefit outweights" -> "stimulus for tourism sector" ; 
+"ecnonomic stimulus needed" -> "economic stimulus argument" ; 
+"economic stimulus argument" -> "Slumbering Singapore tourism sector due\nto competition from neighbouring\ncountries" ; 
+"economic stimulus argument" -> "impending technical recession" ; 
+}

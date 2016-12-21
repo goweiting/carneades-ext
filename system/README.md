@@ -1,11 +1,4 @@
-Requirements for the second coursework for INFR09043 Artificial Intelligence Large Practical ([AILP](#http://www.inf.ed.ac.uk/teaching/courses/ailp/)) 2016/17 are:
-
-- [4.1](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#4) Implementing file-reading capability
-- [4.2](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Devising a syntax
-- [4.3](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Deserialisation
-- [4.4](http://www.inf.ed.ac.uk/teaching/courses/ailp/2016-17/assignments/assignment2.pdf#5) Provide examples
-
-You can preview this markdown file using this [tool](https://jbt.github.io/markdown-editor/), although not necessary.
+INFR09043 Artificial Intelligence Large Practical ([AILP](#http://www.inf.ed.ac.uk/teaching/courses/ailp/)) 2016/17
 
 ## Getting around this file:
 Sections for this documentation includes:
@@ -57,9 +50,14 @@ system
 |       |   tokenizer.py
 |       |   parser.py
 |       |   ...
+└───samplesTest ( all the test examples are here! )
+|   |   deep1vs1.yml
+|   |   linkedarg.yml
+|   |   convergentarg.yml
+|   |   ...
 └───samples ( all the test examples are here! )
-|   |   example.yml
-|   |   template.yml
+|   |   caes_org.yml
+|   |   paper07.yml
 |   |   ...
 └───dot
 |   ( contains all the .dot files generated from write_to_graphviz() function )
@@ -94,6 +92,33 @@ You can run CAES to evaluate single or multiple files. Assuming your source file
 (ailp_env) $ python caes.py '../../samples/example.yml' '../../samples/example2.yml'
 ```
 
+Additional support and help function is available for users who wish to customised the output from the system:
+```$
+(ailp_env) $ python caes.py -husage: caes.py [-h] [-d] [-logger {DEBUG,INFO}] [-buffer BUFFER_SIZE]
+               [-indent INDENT_SIZE]
+               pathname [pathname ...]
+
+Welcome to Carneades Argument Evaluation System.
+
+positional arguments:
+  pathname              path to each of your .yml file(s). At least one must
+                        be given (example: "../../samples/example.yml")
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d, --dialogue        shows the shifting burden of proof while the arguments
+                        are evaluated in CAES. If the flag is used, dialogue
+                        mode will be used for all the files
+  -logger {DEBUG,INFO}  logging level (default: DEBUG)
+  -buffer BUFFER_SIZE, --buffer_size BUFFER_SIZE
+                        set the buffer size of the reader (default: 4096)
+  -indent INDENT_SIZE, --indent_size INDENT_SIZE
+                        set the indent_size used in the .yml files (default:
+                        2)
+
+```
+The user can pass these as an argument in the command line together with the file for a variation of output.
+
 #### 2) from the interpreter
 ```(python)
 from the system folder:
@@ -105,6 +130,62 @@ from the system folder:
 ```
 
 Running from the command line is *preferred*, as it allows graph,log and the dot files to be generated for future use. In comparison, using the interpreter provides an understanding on the working of the system.
+
+#### Dialogue Mode
+With the extension from Coursework 3, we added support for the dialogue mode.
+This is activated using the  ```-d``` flag from the command line:
+```$
+(ailp_env) $ python caes.py -d '../../samples/paper07.yml'
+```
+
+A dialogue summary is accompanied in the log file which is useful for understanding the dialogical process. To supplement the log file, graphs are output whenever new arguments are added into the argument set.
+
+For instance, the argument for `murder` from the paper will have a dialogue summary shown below. (this dialogue summary is truncated in the interest of space, we show the 3 argumentation stage between the proponent and opponent during the process where the burden of proof has been satisfied)
+```
+================== turn 0 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+-----------------------------------------
+		ISSUE "murder" acceptable? -> True
+============================================
+
+================== turn 1 ==================
+BURDEN OF PROOF @ RESPONDENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+-----------------------------------------
+Burden of proof met by RESPONDENT : True
+-----------------------------------------
+		ISSUE "s187 is excluded" acceptable? -> True
+TOP ISSUE "murder" acceptable? -> False
+============================================
+
+================== turn 2 ==================
+BURDEN OF PROOF @ PROPONENT
+ARGUMENTS:
+[Section 187 is valid, killing, malice], ~[s187 is excluded] => murder
+[evidence 1 supports killing], ~[tampering of evidence 1] => killing
+[evidence 2 supports malice], ~[tampering of evidence 2] => malice
+[Section 197 is valid, an act of self-defense], ~[s197 is excluded] => s187 is excluded
+[Witness1 testified 'attack'], ~[-Witness1 is credible] => an act of self-defense
+[Witness2 saw testified 'time to run away'], ~[-Witness2 is credible] => -an act of self-defense
+-----------------------------------------
+Burden of proof met by PROPONENT : True
+-----------------------------------------
+		ISSUE "-an act of self-defense" acceptable? -> True
+TOP ISSUE "murder" acceptable? -> False
+============================================
+
+```
 
 ## Demo
 The three examples that I came up with are:
