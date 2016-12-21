@@ -786,7 +786,7 @@ class Dialogue(object):
         args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
         # Consider the args with largest weight first:
         args_to_consider = sorted(
-            args_to_consider_, key=lambda arg: arg.weight)
+            args_to_consider_, key=lambda arg: arg.weight, reverse=True)
 
         while len(args_to_consider):
             # iterate through the args
@@ -803,7 +803,7 @@ class Dialogue(object):
             for e in exceptions:
                 args_for_exceptions_.extend(self.argset.get_arguments(e))
 
-            # sorted by weight:
+            # sorted by weight, largest will be pop-ed first:
             args_for_exceptions = sorted(
                 args_for_exceptions_, key=lambda arg: arg.weight)
             logging.debug('exceptions {}'.format(
@@ -811,7 +811,6 @@ class Dialogue(object):
 
             try:
                 arg_con = args_for_exceptions.pop()
-                # print(arg_con)
                 # set the exception to questioned
                 self.dialogue_state_argset.set_argument_status(
                     concl=arg_con.conclusion, state='questioned')
@@ -848,16 +847,16 @@ class Dialogue(object):
         """
         logging.debug('find_best_con_argument for "{}"'.format(issue))
         args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
-        # Consider the args with largest weight first:
+        # The easiest path is to defeat the argument with the lowest weight
         args_to_consider = sorted(
-            args_to_consider_, key=lambda arg: arg.weight)
+            args_to_consider_, key=lambda arg: arg.weight, reverse=True)
 
         while len(args_to_consider):
             # iterate through the args
             arg = args_to_consider.pop()
             logging.debug('arg: {}'.format(arg))
             # ----------------------------------------------------------------_
-            # find a con argument suing using the full argset
+            # find a con argument using using the full argset
             arg_cons_ = self.argset.get_arguments_con(arg.conclusion)
             arg_cons = sorted(arg_cons_, key=lambda a: a.weight)
             logging.debug('arg_cons {}'.format(
@@ -918,13 +917,14 @@ class Dialogue(object):
         """
         logging.debug('find arguments to defeat issue "{}"'.format(issue))
         args_to_consider_ = self.dialogue_state_argset.get_arguments(issue)
-        # Consider the args with largest weight first:
+        # Consider the args with least weight first - easiest path
         args_to_consider = sorted(
-            args_to_consider_, key=lambda arg: arg.weight)
-        possb_arg = []
+            args_to_consider_, key=lambda arg: arg.weight, reverse=True)
+        possb_arg = [] # store all the arguments that we can use to attack
+
         while len(args_to_consider):
             # iterate through the args
-            arg = args_to_consider.pop()
+            arg = args_to_consider.pop() # least weight
             logging.debug('arg: {}'.format(arg))
 
             # ----------------------------------------------------------------_
@@ -935,44 +935,27 @@ class Dialogue(object):
             # here, we use the full argset instead of the dialogue argset!
             args_for_exceptions_ = []
             for e in exceptions:
-                args_for_exceptions_.extend(self.argset.get_arguments(e))
-
-            # sorted by weight:
-            args_for_exceptions = sorted(
-                args_for_exceptions_, key=lambda arg: arg.weight)
-            logging.debug('exceptions {}'.format(
-                [arg.__str__() for arg in args_for_exceptions_]))
-
-            try:
-                possb_arg1 = args_for_exceptions.pop()
-                possb_arg.append((possb_arg1, arg))
-            except IndexError:
-                # an empty list
-                pass
+                args_for_exceptions_ = self.argset.get_arguments(e)
+                # Add into the list
+                possb_arg.extend([(arg_e, arg) for arg_e in args_for_exceptions_])
 
             # ----------------------------------------------------------------_
             # second: find a con argument using using the full argset
             arg_cons_ = self.argset.get_arguments_con(arg.conclusion)
-            arg_cons = sorted(arg_cons_, key=lambda a: a.weight)
-            logging.debug('arg_cons {}'.format(
-                [arg.__str__() for arg in arg_cons]))
 
-            try:
-                possb_arg2 = arg_cons.pop()
+
+            for arg_con in arg_cons:
                 # prevent the same argument that is already in the argset from
                 # being added in
                 check = self.dialogue_state_argset.get_arguments(
-                    possb_arg2.conclusion)
-                while len(check) != 0:
+                    arg_con.conclusion)
+
+                if len(check) == 0:
+                    # add into the list to be considered
+                    possb_arg.extend([(arg_con, arg)])
+                else:
                     logging.debug('argument "{}" has already been added!'.
                                   format(possb_arg2))
-                    possb_arg2 = arg_cons.pop()
-                    check = self.dialogue_state_argset.get_arguments(
-                        possb_arg2.conclusion)
-
-                possb_arg.append((possb_arg2, arg))
-            except IndexError:
-                pass
 
             # ----------------------------------------------------------------_
             # add arguments for subissues to the list of arguments to be
@@ -986,8 +969,11 @@ class Dialogue(object):
                 args_to_consider, key=lambda arg: arg.weight)
             logging.debug('args_to_consider: {}'.format(
                 [arg.__str__() for arg in args_to_consider]))
+
+            # continue until all the arguments are considered
             continue
 
+        # ===============================================================
         # now, choose the argument with the largest weight
         posb_args = sorted(possb_arg, key=lambda x: x[0].weight)
 
