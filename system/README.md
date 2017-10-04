@@ -19,7 +19,7 @@ To infer the depth and nesting of maps (or dictionary in python terms) in the so
 
 The diagram that is produced from the native` draw()` and `write_to_graphviz()` functions are also modified to illustrate the weights of the arguments. The degree of 'red' for the boxes representing arguments highlight their respective weight, i.e. a darker red denotes a higher weight for that argument.
 
-![example graphvviz file](system/dot/example.yml.png)
+![example graphvviz file](system/graph/paper07/1_final.pdf)
 
 The preferred method to visualise the argumentation graph is to use Graphviz. This overcomes the issue of user not able to get `python-igraph` or `cairo` on their computer. In such cases, they should comment out the `draw()` function in the `Reader` class, and the `import` of `Graph, plot` in the `caes.py` file to prevent errors. The graphviz digraph can be interpreted using an [online viewer](http://dreampuf.github.io/GraphvizOnline/) by copying the contents of the respective `.dot` file (found in the `dot` folder adjacent to `src`).
 
